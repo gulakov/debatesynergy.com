@@ -3,7 +3,7 @@ var app = express.Router();
 
 var model = require('./models');
 var User = model.User, Round = model.Round;
-//pass io from app.js
+
 var io; 
 
 
@@ -16,7 +16,7 @@ app.get('/', function(req, res, next) {
 
     Round.find(
         { $or:[{aff1: email}, {aff2: email}, {neg1: email}, {neg2: email}, {judge1: email}] },
-        //{sort: [['date', -1]]},
+        //{sort: [['date', -1]]}, // not returning
         function (e, foundRounds) {
 
         return res.json(foundRounds);
@@ -52,7 +52,6 @@ app.get('/create', function(req, res) {
             return res.json(foundUserList.map(function(i){return !i;}));
 
 
-
         Round.create({
             aff1: foundUserList[0].email,
             aff2: foundUserList[1].email,
@@ -78,67 +77,135 @@ app.get('/create', function(req, res) {
 
             return res.json({roundId: newRoundJson._id, people: people  });
 
+        });        
+    });
+});
+
+
+app.all('/read', function(req, res) {
+
+    Round.findOne({_id: req.query.id}, function (e, f) {
+        return res.json(f);
+    });
+
+});
+
+
+app.all('/accept', function(req, res) {
+
+
+    if (!req.user)
+        return res.send("no login");
+
+    var userId = req.user._id;
+
+   
+
+    var roundId = req.query.roundId;
+    var userEmail;
+
+    User.findOne({_id: userId}).exec(function (e, f) {
+
+
+        userEmail = f.email;
+        userName = f.name.toLowerCase();
+
+
+        Round.findOne({_id: roundId}).exec(function (e, f) {
+
+            if (f.aff1.toLowerCase() == userName || f.aff1 == userEmail)
+                Round.update({_id: roundId}, {status_aff1: true},function () {
+                });
+            if (f.aff2.toLowerCase() == userName || f.aff2 == userEmail)
+                Round.update({_id: roundId}, {status_aff2: true},function () {
+                });
+            if (f.neg1.toLowerCase() == userName || f.neg1 == userEmail)
+                Round.update({_id: roundId}, {status_neg1: true},function () {
+                });
+            if (f.neg2.toLowerCase() == userName || f.neg2 == userEmail)
+                Round.update({_id: roundId}, {status_neg2: true},function () {
+                });
+            if (f.judge1.toLowerCase() == userName || f.judge1 == userEmail)
+                Round.update({_id: roundId}, {status_judge1: true},function () {
+                });
+
+
+            //notify your friend that you accepted the round
+            Round.findOne({_id: roundId},function (e, f) {
+
+                var usersToPing = [];
+
+                if (f.status_aff1)
+                    usersToPing.push(f.aff1);
+                if (f.status_aff2)
+                    usersToPing.push(f.aff2);
+                if (f.status_neg1)
+                    usersToPing.push(f.neg1);
+                if (f.status_neg2)
+                    usersToPing.push(f.neg2);
+                if (f.status_judge1)
+                    usersToPing.push(f.judge1);
+
+
+                for (var i in usersToPing)
+
+                    User.findOne({email: usersToPing[i]}, function (e, f) {
+
+
+                        io.sockets.to(f.socket).emit( 'round_inviteResponse', {roundId: roundId});
+
+
+                    });
+
+
+            });
+
+
+            return res.end(roundId);
 
 
         });
 
 
-        
     });
 
-});
-app.all('/read', function(req, res) {
-
-    var roundId = req.param("id");
-
-    Round.findOne({id: roundId}).exec(function (e, f) {
-
-
-        return res.json(f);
-
-
-    });
 
 });
 
 
 
-/*
 
 
-app.all('/update', function(req, res) {
+app.post('/update', function(req, res) {
 
 
 
-    var roundId = req.param("roundId");
+    if (!req.user)
+        return res.send("no login");
+
+    var roundId = req.body.roundId;
 
     var sanitizeHtml = require("sanitize-html");
 
-    var userId = req.session.passport.user;
+    var userId = req.user._id;
 
-    var userEmail;
-
-    if (!userId || !roundId)
-        return res.end();
-
-    User.findOne({uid: userId}).exec(function (e, f) {
-        if (f) userEmail = f.email;
-    });
+    var userEmail = req.user.email;
 
 
-    Round.update({id: roundId}, {
-        speech1AC: sanitizeHtml(req.param("speech1AC")),
-        speech1NC: sanitizeHtml(req.param("speech1NC")),
-        speech2AC: sanitizeHtml(req.param("speech2AC")),
-        speech2NC: sanitizeHtml(req.param("speech2NC")),
-        speech1NR: sanitizeHtml(req.param("speech1NR")),
-        speech1AR: sanitizeHtml(req.param("speech1AR")),
-        speech2NR: sanitizeHtml(req.param("speech2NR")),
-        speech2AR: sanitizeHtml(req.param("speech2AR"))
-    }).exec(function () {
+
+    Round.findOneAndUpdate({_id: roundId}, {
+        speech1AC: sanitizeHtml(req.body.speech1AC),
+        speech1NC: sanitizeHtml(req.body.speech1NC),
+        speech2AC: sanitizeHtml(req.body.speech2AC),
+        speech2NC: sanitizeHtml(req.body.speech2NC),
+        speech1NR: sanitizeHtml(req.body.speech1NR),
+        speech1AR: sanitizeHtml(req.body.speech1AR),
+        speech2NR: sanitizeHtml(req.body.speech2NR),
+        speech2AR: sanitizeHtml(req.body.speech2AR)
+    }, function (e, f) {
 
 
-        Round.findOne({id: roundId}).exec(function (e, f) {
+        Round.findOne({_id: roundId}, function (e, f) {
 
             var usersToPing = [];
 
@@ -162,10 +229,10 @@ app.all('/update', function(req, res) {
 
 
             for (var i in usersToPing)
-                User.find().where({email: usersToPing[i]}).exec(function (e, f) {
+                User.findOne({email: usersToPing[i]}, function (e, f) {
 
-                    if (req.session.passport.user != f[0].uid)
-                        sails.sockets.emit(f[0].socket, 'round_newTextForPartner', {roundId: roundId});
+                    if (req.user._id != f._id)
+                         io.sockets.to(f.socket).emit( 'round_newTextForPartner', {roundId: roundId});
 
 
                 });
@@ -177,57 +244,55 @@ app.all('/update', function(req, res) {
     });
 
 
-    return res.end("");
+    return res.end();
 
 });
 
 
-app.all('/updateScroll', function(req, res) {
+
+app.get('/updateScroll', function(req, res) {
 
 
-    var roundId = req.param("roundId");
-    var speechName = req.param("speechName");
-    var scrollTo = req.param("scrollTo");
+    var roundId = req.query.roundId;
+    var speechName = req.query.speechName;
+    var scrollTo = req.query.scrollTo;
 
-    var userId = req.session.passport.user;
+    
+    if (!req.user)
+        return res.send("no login");
 
-    var userEmail;
+    var roundId = req.body.roundId;
 
+    var userEmail = req.user.email;
 
-    if (!userId || !roundId)
-        return res.end();
-
-    User.findOne({uid: userId}).exec(function (e, f) {
-        userEmail = f.email;
-    });
 
     if (speechName == "speech1AC")
-        Round.update({id: roundId}, {scroll_1AC: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_1AC: scrollTo},function () {
         });
     if (speechName == "speech1NC")
-        Round.update({id: roundId}, {scroll_1NC: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_1NC: scrollTo},function () {
         });
     if (speechName == "speech2AC")
-        Round.update({id: roundId}, {scroll_2AC: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_2AC: scrollTo},function () {
         });
     if (speechName == "speech2NC")
-        Round.update({id: roundId}, {scroll_2NC: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_2NC: scrollTo},function () {
         });
     if (speechName == "speech1NR")
-        Round.update({id: roundId}, {scroll_1NR: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_1NR: scrollTo},function () {
         });
     if (speechName == "speech1AR")
-        Round.update({id: roundId}, {scroll_1AR: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_1AR: scrollTo},function () {
         });
     if (speechName == "speech2NR")
-        Round.update({id: roundId}, {scroll_2NR: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_2NR: scrollTo},function () {
         });
     if (speechName == "speech2AR")
-        Round.update({id: roundId}, {scroll_2AR: scrollTo}).exec(function () {
+        Round.findOneAndUpdate({_id: roundId}, {scroll_2AR: scrollTo},function () {
         });
 
 
-    Round.findOne({id: roundId}).exec(function (e, f) {
+    Round.findOne({_id: roundId},function (e, f) {
 
         var usersToPing = [];
 
@@ -278,10 +343,10 @@ app.all('/updateScroll', function(req, res) {
 
 
         for (var i in usersToPing)
-            User.find().where({email: usersToPing[i]}).exec(function (e, f) {
+            User.findOne({email: usersToPing[i]}, function (e, f) {
 
-                if (req.session.passport.user != f[0].uid)
-                    sails.sockets.emit(f[0].socket, 'round_newTextForEnemy', {
+                if (req.user._id != f._id)
+                    io.sockets.to(f.socket).emit( 'round_newTextForEnemy', {
                         speechName: speechName,
                         speechPartial: speechPartial
 
@@ -292,96 +357,18 @@ app.all('/updateScroll', function(req, res) {
 
     });
 
-    return res.end("");
+    return res.end();
 
 
 });
 
-app.all('/accept', function(req, res) {
+
+app.get('/resend', function(req, res) {
 
 
-    var userId = req.session.passport.user;
+    var roundId = req.query.roundId;
 
-    if (!userId)
-        return res.end();
-
-    var roundId = req.param("roundId");
-    var userEmail;
-
-    User.findOne({uid: userId}).exec(function (e, f) {
-
-
-        userEmail = f.email;
-        userName = f.name.toLowerCase();
-
-
-        Round.findOne({id: roundId}).exec(function (e, f) {
-
-            if (f.aff1.toLowerCase() == userName || f.aff1 == userEmail)
-                Round.update({id: roundId}, {status_aff1: true}).exec(function () {
-                });
-            if (f.aff2.toLowerCase() == userName || f.aff2 == userEmail)
-                Round.update({id: roundId}, {status_aff2: true}).exec(function () {
-                });
-            if (f.neg1.toLowerCase() == userName || f.neg1 == userEmail)
-                Round.update({id: roundId}, {status_neg1: true}).exec(function () {
-                });
-            if (f.neg2.toLowerCase() == userName || f.neg2 == userEmail)
-                Round.update({id: roundId}, {status_neg2: true}).exec(function () {
-                });
-            if (f.judge1.toLowerCase() == userName || f.judge1 == userEmail)
-                Round.update({id: roundId}, {status_judge1: true}).exec(function () {
-                });
-
-
-            //notify your friend that you accepted the round
-            Round.findOne({id: roundId}).exec(function (e, f) {
-
-                var usersToPing = [];
-
-                if (f.status_aff1)
-                    usersToPing.push(f.aff1);
-                if (f.status_aff2)
-                    usersToPing.push(f.aff2);
-                if (f.status_neg1)
-                    usersToPing.push(f.neg1);
-                if (f.status_neg2)
-                    usersToPing.push(f.neg2);
-                if (f.status_judge1)
-                    usersToPing.push(f.judge1);
-
-
-                for (var i in usersToPing)
-
-                    User.find().where({or: [{email: usersToPing[i]}, {name: usersToPing[i]}]}).exec(function (e, f) {
-
-
-                        sails.sockets.emit(f[0].socket, 'round_inviteresponse', {roundId: roundId});
-
-
-                    });
-
-
-            });
-
-
-            return res.end(roundId);
-
-
-        });
-
-
-    });
-
-
-});
-
-app.all('/resend', function(req, res) {
-
-
-    var roundId = req.param("roundId");
-
-    Round.findOne({id: roundId}).exec(function (e, f) {
+    Round.findOne({_id: roundId}, function (e, f) {
 
         var usersToPing = [];
 
@@ -399,10 +386,9 @@ app.all('/resend', function(req, res) {
 
         for (var i in usersToPing)
 
-            User.find().where({or: [{email: usersToPing[i]}, {name: usersToPing[i]}]}).exec(function (e, f) {
+            User.findOne({email: usersToPing[i]}, function (e, f) {
 
-
-                sails.sockets.emit(f[0].socket, 'round_youareinvited', {roundId: roundId});
+                 io.sockets.to(f.socket).emit(  'round_youareinvited', {roundId: roundId});
 
 
             });
@@ -413,7 +399,7 @@ app.all('/resend', function(req, res) {
     return res.end();
 
 });
-*/
+
 
 
 app.all('/join', function(req, res) {

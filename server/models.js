@@ -30,14 +30,14 @@ exports.Round = mongoose.model('Round', new Schema({
     status_neg2: {type: Boolean, default: false},
     status_judge1: {type: Boolean, default: false},
 
-    speech1AC: String,
-    speech1NC: String,
-    speech2AC: String,
-    speech2NC: String,
-    speech1NR: String,
-    speech1AR: String,
-    speech2NR: String,
-    speech2AR: String,
+    speech1AC: {type: String, default: ""},
+    speech1NC: {type: String, default: ""},
+    speech2AC: {type: String, default: ""},
+    speech2NC: {type: String, default: ""},
+    speech1NR: {type: String, default: ""},
+    speech1AR: {type: String, default: ""},
+    speech2NR: {type: String, default: ""},
+    speech2AR: {type: String, default: ""},
 
     scroll_1AC: {type: Number, default: 0},
     scroll_1NC: {type: Number, default: 0},
@@ -47,6 +47,8 @@ exports.Round = mongoose.model('Round', new Schema({
     scroll_1AR: {type: Number, default: 0},
     scroll_2NR: {type: Number, default: 0},
     scroll_2AR: {type: Number, default: 0},
+
+    date_created: {type: Date, default: Date.now}
 }));
 
 

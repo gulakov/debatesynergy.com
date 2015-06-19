@@ -10,21 +10,28 @@ socket.on('connect', function(){
 
 
 
+
     socket.on('round_youAreInvited', function (msg) {
 
 
         $("#info").append('<div class="alert alert-success alert-dismissable">' +
             '<button  class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-            'You have been invited into a round with ' + msg.people + '. <button class="btn btn-xs btn-primary">Accept</button></div>')
+            'You have been invited into a round with ' + msg.people + '. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
             .find(".btn-primary").click(function () {
-
-                r.id = msg.roundId;
-
-                $(this).find(".alert").alert('close');
+                
+                r = {id : msg.roundId};
 
                 $.get("/round/accept", {roundId: msg.roundId}, startRound);
 
             })
+
+    });
+
+
+
+    socket.on('round_inviteResponse', function onServerSentEvent(msg) {
+        startRound();
+
 
     });
 
@@ -121,7 +128,7 @@ $(document).ready(function () {
 
         } else {
 
-            $.get('round/resend', {roundId: r.id});
+            $.get('round/resend', {roundId: r._id});
 
 
         }
@@ -162,7 +169,7 @@ $(document).ready(function () {
 
 
         $.get('round/updateScroll', {
-            roundId: r.id,
+            roundId: r._id,
             speechName: $(this).attr("id"),
             scrollTo: scrollTo
         });
@@ -222,7 +229,7 @@ $(document).ready(function () {
 
 
         $.post('round/update', {
-            roundId: r.id,
+            roundId: r._id,
             speech1AC: $("#speech1AC").html(),
             speech1NC: $("#speech1NC").html(),
             speech2AC: $("#speech2AC").html(),
@@ -358,7 +365,7 @@ function round_init(){
 
             var roundLabel = $("<a class='label label-default'>");
 
-            var date = (new Date(resp[i].updatedAt)).toLocaleDateString();
+            var date = (new Date(resp[i].date_created)).toLocaleDateString();
 
             roundLabel.html(date);
 
@@ -366,12 +373,12 @@ function round_init(){
             people = people.replace(/\@[^ ]+/gi, '');
             roundDiv.html(people);
 
-            roundLabel.attr('id', resp[i].id);
+            roundLabel.attr('id', resp[i]._id);
 
             roundLabel.click(function() {
 
 
-                r.id = $(this).attr('id');
+                r._id = $(this).attr('id');
 
 
                 startRound();
@@ -398,10 +405,9 @@ function startRound() {
         $("#editor").removeClass("col-xs-10").addClass("col-xs-5");
 
     }
-   console.log(r.id)
 
 
-    $.getJSON("/round/read", {id: r.id}, function (roundJSON) {
+    $.getJSON("/round/read", {id: r._id}, function (roundJSON) {
 
         //set global
 
@@ -497,18 +503,18 @@ function startRound() {
 //SOCKET LISTENERS
 
 
-/*
 
-io.socket.on('round_newTextForEnemy', function onServerSentEvent(r) {
+
+socket.on('round_newTextForEnemy', function (r) {
 
     $("#" + r.speechName).html(r.speechPartial);
 
 });
 
 
-socket.on('round_newTextForPartner', function onServerSentEvent(msg) {
+socket.on('round_newTextForPartner', function (msg) {
 
-    $.getJSON("/round/read", {roundId: r.id}, function (r) {
+    $.getJSON("/round/read", {roundId: r._id}, function (r) {
 
         $("#speech1AC").html(r.speech1AC);
         $("#speech1NC").html(r.speech1NC);
@@ -524,34 +530,4 @@ socket.on('round_newTextForPartner', function onServerSentEvent(msg) {
 });
 
 
-socket.on('chat', function onServerSentEvent(msg) {
-    alert(msg.msg)
-});
 
-
-socket.on('round_inviteresponse', function onServerSentEvent(msg) {
-    startRound();
-
-
-});
-
-socket.on('round_youAreInvited', function onServerSentEvent(msg) {
-
-
-    $("#info").append('<div class="alert alert-success alert-dismissable">' +
-	    '<button  class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-	    'You have been invited into a round with ' + msg.people + '. <button class="btn btn-xs btn-primary">Accept</button></div>')
-	    .find(".btn-primary").click(function () {
-
-	        round.id = msg.roundId;
-
-	        $(this).find(".alert").alert('close');
-
-	        $.get("/round/accept", {roundId: msg.roundId}, startRound);
-
-	    })
-
-});
-
-
-*/

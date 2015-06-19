@@ -1,0 +1,744 @@
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+Mongo Express server listening on port 8081
+Database connected!
+Admin Database connected
+[3;J[H[2J[3;J[H[2J[3;J[H[2Jconnect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+Mongo Express server listening on port 8081
+Database connected!
+Admin Database connected
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+Mongo Express server listening on port 99
+Database connected!
+Admin Database connected
+[90mGET / [32m200 [90m43ms - 3.57kb[0m
+[90mGET /stylesheets/bootstrap.css [32m200 [90m6ms - 96.66kb[0m
+[90mGET /stylesheets/style.css [32m200 [90m4ms - 117b[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [32m200 [90m4ms - 92.62kb[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [32m200 [90m3ms - 10.27kb[0m
+[90mGET /javascripts/bootstrap.min.js [32m200 [90m1ms - 21.8kb[0m
+[90mGET / [32m200 [90m11ms - 3.59kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+Mongo Express server listening on port 99
+Database connected!
+Admin Database connected
+[90mGET / [32m200 [90m49ms - 4.32kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /images/glyphicons-halflings.png [32m200 [90m4ms - 13.5kb[0m
+[90mGET /db/debatedata [32m200 [90m18ms - 8.23kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m19ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m20ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m19ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m3ms[0m
+[90mGET /images/glyphicons-halflings-white.png [32m200 [90m2ms - 8.57kb[0m
+[90mGET /db/debatedata/users [32m200 [90m46ms - 12.04kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/codemirror.css [32m200 [90m1ms - 2.96kb[0m
+[90mGET /stylesheets/theme/rubyblue.css [32m200 [90m3ms - 1.27kb[0m
+[90mGET /javascripts/codemirror-compressed.js [32m200 [90m2ms - 76.05kb[0m
+[90mGET /db/debatedata/docs [32m200 [90m7ms - 11.8kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m4ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m4ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m4ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m4ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m4ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m3ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/docs [32m200 [90m4ms - 11.79kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m6ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m6ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m6ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m5ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m4ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m3ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users [32m200 [90m8ms - 11.91kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/users/5582b7147296f934079e5e23 [36m302 [90m13ms - 96b[0m
+[90mGET /db/debatedata/users [32m200 [90m3ms - 10.15kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m3ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/docs [32m200 [90m6ms - 17.98kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m2ms[0m
+[90mDELETE /db/debatedata/docs/5582bd65364028ff07617c3b [36m302 [90m5ms - 94b[0m
+[90mGET /db/debatedata/docs [32m200 [90m7ms - 17.16kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/docs/5582b7157296f934079e5e24 [36m302 [90m4ms - 94b[0m
+[90mGET /db/debatedata/docs [32m200 [90m6ms - 16.11kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m3ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET / [32m200 [90m8ms - 4.34kb[0m
+[90mGET /stylesheets/style.css [32m200 [90m4ms - 117b[0m
+[90mGET /stylesheets/bootstrap.css [32m200 [90m6ms - 96.66kb[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [32m200 [90m2ms - 92.62kb[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [32m200 [90m1ms - 10.27kb[0m
+[90mGET /javascripts/bootstrap.min.js [32m200 [90m1ms - 21.8kb[0m
+[90mGET /images/glyphicons-halflings.png [32m200 [90m2ms - 13.5kb[0m
+[90mGET /db/debatedata [32m200 [90m8ms - 8.23kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /images/glyphicons-halflings-white.png [32m200 [90m2ms - 8.57kb[0m
+[90mGET /db/debatedata/docs [32m200 [90m5ms - 15.95kb[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [32m200 [90m2ms - 2.96kb[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m5ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [32m200 [90m4ms - 1.27kb[0m
+[90mGET /javascripts/codemirror-compressed.js [32m200 [90m1ms - 76.05kb[0m
+[90mGET /images/glyphicons-halflings.png [36m304 [90m0ms[0m
+[90mGET /images/glyphicons-halflings-white.png [36m304 [90m0ms[0m
+[90mGET /db/debatedata [36m304 [90m4ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /images/glyphicons-halflings.png [36m304 [90m1ms[0m
+[90mGET /images/glyphicons-halflings-white.png [36m304 [90m0ms[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 12.08kb[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m6ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m7ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m5ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m4ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m5ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m6ms[0m
+[3;J[H[2J[3;J[H[2J[H[J[H[Jconnect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+Mongo Express server listening on port 99
+Database connected!
+Admin Database connected
+[90mGET / [32m200 [90m46ms - 4.34kb[0m
+[90mGET /stylesheets/bootstrap.css [32m200 [90m6ms - 96.66kb[0m
+[90mGET /stylesheets/style.css [32m200 [90m4ms - 117b[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [32m200 [90m4ms - 10.27kb[0m
+[90mGET /javascripts/bootstrap.min.js [32m200 [90m3ms - 21.8kb[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [32m200 [90m4ms - 92.62kb[0m
+[90mGET /images/glyphicons-halflings.png [32m200 [90m1ms - 13.5kb[0m
+[90mGET /db/debatedata [32m200 [90m15ms - 8.23kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m20ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m20ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /images/glyphicons-halflings-white.png [32m200 [90m2ms - 8.57kb[0m
+[90mGET /db/debatedata/users [32m200 [90m48ms - 12.37kb[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/codemirror.css [32m200 [90m1ms - 2.96kb[0m
+[90mGET /stylesheets/theme/rubyblue.css [32m200 [90m1ms - 1.27kb[0m
+[90mGET /javascripts/codemirror-compressed.js [32m200 [90m1ms - 76.05kb[0m
+[90mGET /db/debatedata/docs [32m200 [90m9ms - 12.85kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/docs [32m200 [90m5ms - 12.85kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+Mongo Express server listening on port 99
+Database connected!
+Admin Database connected
+[90mGET /db/debatedata/docs [32m200 [90m71ms - 12.95kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m4ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/downloads [32m200 [90m18ms - 13.66kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/downloads [32m200 [90m8ms - 16.39kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m6ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m3ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/downloads [32m200 [90m6ms - 17.39kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mDELETE /db/debatedata/downloads/558332ba52c7e0d3290b6c65 [36m302 [90m15ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m9ms - 16.64kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m3ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m3ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/downloads/558332be52c7e0d3290b6c66 [36m302 [90m6ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m6ms - 15.73kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/downloads/558332d052c7e0d3290b6c67 [36m302 [90m5ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m7ms - 14.82kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m2ms[0m
+[90mDELETE /db/debatedata/downloads/5583330e52c7e0d3290b6c68 [36m302 [90m4ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m7ms - 13.92kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m4ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m3ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/downloads/55833312411336ee297f134d [36m302 [90m6ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m7ms - 13kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m28ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m27ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mDELETE /db/debatedata/downloads/5583332b411336ee297f134e [36m302 [90m5ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m5ms - 12.09kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m5ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/downloads/5583334ed09685fe29719c60 [36m302 [90m6ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m3ms - 10.31kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/downloads [32m200 [90m6ms - 12kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/downloads [32m200 [90m5ms - 12kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/downloads [32m200 [90m6ms - 12kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m3ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mDELETE /db/debatedata/downloads/558333f28e20640e2af39229 [36m302 [90m3ms - 104b[0m
+[90mGET /db/debatedata/downloads [32m200 [90m4ms - 10.31kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m3ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/downloads [32m200 [90m5ms - 12kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET / [32m200 [90m23ms - 4.44kb[0m
+[90mGET /stylesheets/bootstrap.css [32m200 [90m5ms - 96.66kb[0m
+[90mGET /javascripts/bootstrap.min.js [32m200 [90m2ms - 21.8kb[0m
+[90mGET /stylesheets/style.css [32m200 [90m1ms - 117b[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [32m200 [90m3ms - 10.27kb[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [32m200 [90m2ms - 92.62kb[0m
+[90mGET /images/glyphicons-halflings.png [32m200 [90m2ms - 13.5kb[0m
+[90mGET /db/debatedata [32m200 [90m240ms - 9.2kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m10ms[0m
+[90mGET /images/glyphicons-halflings-white.png [32m200 [90m2ms - 8.57kb[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 12.47kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [32m200 [90m2ms - 1.27kb[0m
+[90mGET /javascripts/codemirror-compressed.js [32m200 [90m4ms - 76.05kb[0m
+[90mGET /stylesheets/codemirror.css [32m200 [90m1ms - 2.96kb[0m
+[90mDELETE /db/debatedata/users/5582c43cd5e26830094013ec [36m302 [90m4ms - 96b[0m
+[90mGET /db/debatedata/users [32m200 [90m4ms - 10.25kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users [32m200 [90m11ms - 12.14kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m5ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m5ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/docs [32m200 [90m9ms - 14kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/users [32m200 [90m4ms - 13.46kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 13.46kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 13.46kb[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 13.46kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m3ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mDELETE /db/debatedata/users/5583505c8e26ecd833f2124b [36m302 [90m3ms - 96b[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 12.34kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m2ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mDELETE /db/debatedata/users/558350eff23121f233933d5a [36m302 [90m5ms - 96b[0m
+[90mGET /db/debatedata/users [32m200 [90m4ms - 10.25kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 12.23kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m16ms - 4.59kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m7ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m3ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m4ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m4ms - 4.59kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m2ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m4ms - 4.59kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m4ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m3ms - 4.59kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m4ms - 4.59kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m3ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m3ms - 4.59kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m4ms - 4.59kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m5ms - 4.59kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m4ms - 4.59kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m3ms - 4.61kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m3ms - 4.61kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/users [32m200 [90m4ms - 13.57kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m4ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/users [32m200 [90m5ms - 13.63kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata [32m200 [90m4ms - 9.2kb[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m3ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+Mongo Express server listening on port 99
+Database connected!
+Admin Database connected
+[90mGET /db/debatedata [32m200 [90m45ms - 10.15kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /db/debatedata/rounds [32m200 [90m50ms - 14.04kb[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/rounds/55835dbd2688e2053a6ece97 [36m302 [90m19ms - 98b[0m
+[90mGET /db/debatedata/rounds [32m200 [90m8ms - 12.67kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/rounds/55835dbf113bf30d3a90ccaa [36m302 [90m6ms - 98b[0m
+[90mGET /db/debatedata/rounds [32m200 [90m5ms - 10.36kb[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m8ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m3ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/users [32m200 [90m9ms - 13.7kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m2ms[0m
+[90mGET /db/debatedata/users/558358af87cfe45739b3ed97 [32m200 [90m15ms - 4.71kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m0ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/rounds [32m200 [90m16ms - 26.51kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mDELETE /db/debatedata/rounds/55835fa3db9e7a5f3aeefda1 [36m302 [90m12ms - 98b[0m
+[90mGET /db/debatedata/rounds [32m200 [90m26ms - 26.67kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m5ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m5ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m4ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m4ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m5ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m4ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m20ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m33ms[0m
+[90mGET /db/debatedata/rounds?skip=30&key=&value=&type=&query=&fields= [32m200 [90m8ms - 21.9kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m0ms[0m
+[90mGET /db/debatedata/rounds?skip=20&key=&value=&type=&query=&fields= [32m200 [90m7ms - 26.63kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m2ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /db/debatedata/rounds?skip=0&key=&value=&type=&query=&fields= [32m200 [90m8ms - 26.51kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m0ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m5ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m5ms[0m
+[90mGET /db/debatedata/rounds?skip=10&key=&value=&type=&query=&fields= [32m200 [90m7ms - 26.63kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m0ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mGET /db/debatedata/rounds/55836b472d80dde33db822b5 [32m200 [90m4ms - 4.88kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m0ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m
+[90mPUT /db/debatedata/rounds/55836b472d80dde33db822b5 [36m302 [90m32ms - 98b[0m
+[90mGET /db/debatedata/rounds [32m200 [90m9ms - 26.67kb[0m
+[90mGET /stylesheets/bootstrap.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/style.css [36m304 [90m1ms[0m
+[90mGET /stylesheets/bootstrap-responsive.min.css [36m304 [90m1ms[0m
+[90mGET /javascripts/bootstrap.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/codemirror.css [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery-1.7.2.min.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/theme/rubyblue.css [36m304 [90m1ms[0m
+[90mGET /javascripts/codemirror-compressed.js [36m304 [90m1ms[0m

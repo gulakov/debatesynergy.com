@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Debate Synergy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+
+<link rel="stylesheet" href="/lib/css/bootstrap.min.css" />
+<link rel="stylesheet" href="/css/fileround.css"/>
+
+<script type="text/javascript" src="/lib/js/jquery.min.js"></script>
+<script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/lib/js/socket.io.min.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=gapiInit" async defer></script>
+
+<script type="text/javascript" src="/js/buttons.js"></script>
+<script type="text/javascript" src="/js/filetree.js"></script>
+<script type="text/javascript" src="/js/round.js"></script>
+<script type="text/javascript" src="/js/timer.js"></script>
+
+
+<script>$.get("/refresh").error(function(e){if(!e.readyState)location.reload()})</script>
+
+</head>
+<body>
+
+<div id="sidebar">
+
+    <div id="controls" class="btn-group btn-group-xs">
+        <button id="block" class="btn btn-default glyphicon glyphicon-header" data-toggle="tooltip" data-placement="bottom" title="Heading"></button>
+        <button id="read" class="btn btn-default glyphicon glyphicon-bold" data-toggle="tooltip" data-placement="bottom" title="Bold"></button>
+        <button id="readcard" class="btn btn-default glyphicon glyphicon-star-empty" data-toggle="tooltip" data-placement="bottom" title="Read text"></button>
+        <button id="superreadcard" class="btn btn-default glyphicon glyphicon-star" data-toggle="tooltip" data-placement="bottom" title="Super read text"></button>
+        <button id="normal" class="btn btn-default glyphicon glyphicon-align-justify" data-toggle="tooltip" data-placement="bottom" title="Clear formatting"></button>
+        <button id="file-new" class="btn btn-default glyphicon glyphicon-plus" data-toggle="tooltip" data-placement="bottom" title="New File"></button>
+        <button id="showround" class="btn btn-default glyphicon glyphicon-transfer" data-toggle="tooltip" data-placement="bottom" title="Round"></button>
+        <button id="showsettings" class="btn btn-default glyphicon glyphicon-cog" data-toggle="tooltip" data-placement="bottom" title="Settings"></button>
+
+        <div class="form-search form-inline form-group-sm">
+	        <input id="searchtext" type="text" class="form-control"/>
+	    </div>
+    </div>
+
+
+    <div id="info"></div>
+
+    <div id="filetree-container"><div id="filetree-container-scroll"><div id="filetree"></div></div></div>
+</div>
+
+
+<div id="editor" contenteditable="true"></div>
+
+
+<div id="round">
+    <div id="drag-copy"></div>
+    <ul id="speech-tabs" class="nav nav-pills nav-justified ">
+
+        <li><button id="fullscreen" class="btn btn-default  glyphicon glyphicon-fullscreen" data-toggle="tooltip"
+                    data-placement="bottom" title="Full screen on/off"></button></li>
+        <li><button id="sidebyside" class="btn btn-default  " data-toggle="tooltip" data-placement="bottom"
+                    title="Side by side view with prior speech"></button></li>
+        <li><button id="speechscroll" class="btn btn-default glyphicon glyphicon-circle-arrow-down"
+                    data-toggle="tooltip" data-placement="bottom" title="Publish scrolled-to for opponents"></button></li>
+
+        <li><button id="big" class="btn btn-default glyphicon glyphicon glyphicon-font"
+                    data-toggle="tooltip" data-placement="bottom" title="Toggle font size"></button></li>
+
+        <li class="active"><a href="#speechmain" data-toggle="pill">Main</a></li>
+
+        <li><a href="#speech1AC" data-toggle="pill">1AC</a></li>
+        <li><a href="#speech1NC" data-toggle="pill">1NC</a></li>
+        <li><a href="#speech2AC" data-toggle="pill">2AC</a></li>
+        <li><a href="#speech2NC" data-toggle="pill">2NC</a></li>
+        <li><a href="#speech1NR" data-toggle="pill">1NR</a></li>
+        <li><a href="#speech1AR" data-toggle="pill">1AR</a></li>
+        <li><a href="#speech2NR" data-toggle="pill">2NR</a></li>
+        <li><a href="#speech2AR" data-toggle="pill">2AR</a></li>
+    </ul>
+
+
+    <div id="timer">
+        <input id="count" type="text" maxlength="5" />
+        <div id="timer-btn-container">
+            <div id="btn-prep-container" >
+                <div id="btn-timer-aff"></div>
+                <div id="btn-timer-neg"></div>
+            </div>
+            <div id="btn-play-container"><div id="btn-play" class="play"></div></div>
+            <div id="btn-times-container">
+                <div id="btn-timer-constructive"></div>
+                <div id="btn-timer-rebuttal"></div>
+                <div id="btn-timer-crossx"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="speechmain">
+            <input id="judge1" type="text" class="form-control input-xlarge" placeholder="Judge email or name">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <input id="aff1" type="text" class="form-control input-xlarge" placeholder="1A email or name">
+                    <input id="aff2" type="text" class="form-control input-xlarge" placeholder="2A email or name">
+                </div>
+                <div class="col-lg-6">
+                    <input id="neg1" type="text" class="form-control input-xlarge" placeholder="1N email or name">
+                    <input id="neg2" type="text" class="form-control input-xlarge" placeholder="2N email or name">
+                </div>
+            </div>
+
+            <button id="roundcreate" type="submit" class="btn btn-primary form-control">Invite</button>
+
+            <div id="pastrounds"></div>
+        </div>
+
+        <div class="tab-pane speech" id="speech1AC" contenteditable="true"></div>
+        <div class="tab-pane speech" id="speech1NC" contenteditable="true"></div>
+        <div class="tab-pane speech" id="speech2AC" contenteditable="true"></div>
+        <div class="tab-pane speech" id="speech2NC" contenteditable="true"></div>
+        <div class="tab-pane speech" id="speech1NR" contenteditable="true"></div>
+        <div class="tab-pane speech" id="speech1AR" contenteditable="true"></div>
+        <div class="tab-pane speech" id="speech2NR" contenteditable="true"></div>
+        <div class="tab-pane speech" id="speech2AR" contenteditable="true"></div>
+
+    </div>
+</div>
+
+
+
+<div id="settings" class="modal fade" tabindex="2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Settings</h4>
+            </div>
+            <div class="modal-body">
+                <label>Debate Type:</label>
+                <label class="radio-inline"> <input type="radio" name="debatetype" class="debatetype" value="1"> Policy</label>
+                <label class="radio-inline"> <input type="radio" name="debatetype" class="debatetype" value="2"> LD</label>
+                <br>
+                <label>Team name: <input id="teamname" class="form-control"> </label>
+            </div>
+            <div class="modal-footer">
+                <button id="settings_logout" type="button" class="btn btn-default glyphicon glyphicon-off" data-dismiss="modal"> Logout </button>
+                <button id="settings_save" type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="file-new-modal" class="modal fade" tabindex="2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Create New File or Folder</h4>
+            </div>
+            <div class="modal-body">
+                <label class="radio-inline"> <input type="radio" name="filetype" class="filetype" value="file" checked="true"> File</label>
+                <label class="radio-inline"> <input type="radio" name="filetype" class="filetype" value="folder"> Folder</label>
+                <label class="radio-inline"> <input type="button" class="btn btn-info" id="import_googledrive" value="Import from Google Drive"> </label>
+                <br>
+                <label>Name: <input id="filename" class="form-control" autofocus> </label>
+            </div>
+            <div class="modal-footer">
+                <button id="file-new-modal-submit" type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-34608293-1', 'debatesynergy.com');
+ga('send', 'pageview');
+</script>
+<!--Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com
+The "debatesynergy.com" website is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the website or the use or other dealings in the website.-->
+</body>
+</html>

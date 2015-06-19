@@ -1,0 +1,33 @@
+{
+  "name": "debatesynergy.com",
+  "description": "Debate Synergy is a web app for high school and college debate teams to store online research, discuss debate in the forums, and livestream debate rounds.",
+  "version": "2.1.0",
+  "scripts": {
+    "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -v -w app.js > public/server.log &",
+    "start-out": "forever --minUptime=10 --spinSleepTime=2000 -v -w app.js",
+    "mongo": "nohup service mongodb stop &&  rm -f db/mongod.lock &&  mongod --dbpath=db --smallfiles --nojournal &",
+    "admin": "nohup node node_modules/mongo-express/app.js &",
+    "setup": " npm install forever -g && mkdir db && mv node_modules/mongo-express/config.default.js node_modules/mongo-express/config.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.12.4",
+    "cookie-parser": "~1.3.5",
+    "debug": "^2.2.0",
+    "ejs": "^2.3.1",
+    "express": "~4.12.4",
+    "express-session": "^1.11.3",
+    "mongo-express": "^0.21.0",
+    "mongoose": "^4.0.5",
+    "passport": "^0.2.2",
+    "passport-google-oauth2": "^0.1.6",
+    "q": "^1.4.1",
+    "request": "^2.58.0",
+    "socket.io": "^1.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gulakov/debatesynergy.com-beta.com"
+  },
+  "private": true,
+  "license": "MIT"
+}

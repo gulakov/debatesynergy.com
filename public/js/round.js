@@ -265,7 +265,7 @@ $(document).ready(function () {
     });
 
     $('#editor').bind('dragend', function (e) {
-        alert(1)
+        //alert(1)
         $("#drag-copy").empty();
     })
 

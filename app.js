@@ -4,6 +4,7 @@ server = require('http').createServer(app),
 bodyParser = require('body-parser'),
 cookieParser = require('cookie-parser'),
 session = require('express-session');
+var io = require('socket.io')(server);
 
 
 //db signin
@@ -36,28 +37,8 @@ fs.open('filepath', 'a', 666, function( e, id ) {
 });
 */
 
-//socket io 
 
-var io = require('socket.io')(server);
-
-io.on('connection', function(socket){
-
-
-   
-    socket.on('chat_to_server', function (data) {
-
-
-     // console.log((data));
-
-      socket.broadcast.to(data.id).emit('chat_to_client', {
-        msg: data.msg
-      });
-
-    });
-
-    socket.on('disconnect', function(){});
-  });
-
+/******************** ROUTES ********************/
 
 //forever autorefresh
 app.get('/refresh', function(){});
@@ -66,10 +47,17 @@ app.get('/refresh', function(){});
 app.use('/', require('./server/auth') );
 
 
-
-/******************** ROUTES ********************/
-
 app.use('/user', require('./server/user'));
+
+//require auth below
+app.all('*', function (req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+
+  res.send("Login required");
+  //res.redirect('/auth');
+});
+
 app.use('/doc', require('./server/doc'));
 app.use('/round', require('./server/round')(io));
 

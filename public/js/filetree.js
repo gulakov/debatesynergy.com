@@ -1,5 +1,3 @@
-
-
 var ft = {
 init: function(el, json) {
 
@@ -144,7 +142,7 @@ init: function(el, json) {
 
 
 	           var fileData = {
-	             "class": "file",
+	             "type": "file",
 	             "title": $("#filename").val(),
 	             "text": ""
 	           }
@@ -197,7 +195,7 @@ init: function(el, json) {
 	       } else {
 
 	         var folderData = {
-	           "class": "folder",
+	           "type": "folder",
 	           "userid": "local",
 	           "title": $("#filename").val()
 	         }
@@ -261,7 +259,7 @@ populate: function(div, json) {
 
     for (var i in json) {
 
-        var item = $('<div class="ft-item" draggable="true"><div  id="' + json[i].id + '" class="ft-name ' + json[i].class + '">' + json[i].title + '</div> </div>');
+        var item = $('<div class="ft-item" draggable="true"><div  id="' + json[i].id + '" class="ft-name ' + json[i].type + '">' + json[i].title + '</div> </div>');
         item.appendTo(div)
 
         if (json[i].children && json[i].children.length){
@@ -292,7 +290,7 @@ toJSON: function(startLevel) {
         var item = {
             id: itemName.id,
             title: itemName.textContent,
-            class: itemName.className.replace(/ft-name/gi,'').trim()
+            type: itemName.className.replace(/ft-name/gi,'').trim()
         };
 
 
@@ -329,7 +327,7 @@ update: function() {
             headingList.push({
                 'id': ft.selected.id + "_" + i.toString(),
                 'title': $(this).text().substring(0, 50),
-                'class': 'heading '  + 'heading-'+$(this).prop("tagName").toLowerCase() + ( selectedId == i ? " ft-selected" : "")
+                'type': 'heading '  + 'heading-'+$(this).prop("tagName").toLowerCase() + ( selectedId == i ? " ft-selected" : "")
             });
     
 	    }
@@ -447,7 +445,32 @@ click: function(e) {
 
 dblclick:function() {
 
-	var editHtml = '<div class="aboutfile-title-edit-container input-group input-group-sm"><input id="aboutfile-title-edit" type="text" '+
+  if($(this).hasClass("heading")){
+    
+      var id = $(this).attr('id');
+
+      var headingId = parseInt(id.substring(id.indexOf("_")+1));
+      id = id.substring(0, id.indexOf("_"));
+
+      
+      var headingList = $("#editor").find("h1, h2, h3");
+
+
+      range = document.createRange();
+      range.setStart(headingList[headingId], 0);
+      range.setEnd(headingList[headingId+1], 0);
+      sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+  }
+
+  if(!$(this).hasClass("file")&&!$(this).hasClass("folder"))
+    return;
+
+
+
+ 	var editHtml = '<div class="aboutfile-title-edit-container input-group input-group-sm"><input id="aboutfile-title-edit" type="text" '+
 			'class="form-control" placeholder="File name: "><span class="input-group-btn"><button id="aboutfile-delete" '+
 			'class="btn btn-default glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title=""></button></span></div>';
 

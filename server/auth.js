@@ -41,7 +41,7 @@ passport.use(new GoogleStrategy({
               }, function(err, firstDoc){
 
                 newAppUser.index= '[{"id":"' +
-                  firstDoc._id +'","title":"First","class":"file"}]';
+                  firstDoc._id +'","title":"First","type":"file"}]';
 
                 newAppUser.save(function(e){
 
@@ -77,18 +77,9 @@ app.get( '/auth/index/callback',
         failureRedirect: '/'
 }));
 
-app.get('/logout', function(req, res){
+app.get('/auth/logout', function(req, res){
   req.logout();
   res.redirect('/');
-});
-
-
-
-app.get('/account', ensureAuthenticated, function(req, res){
-
-  res.json(req.user)
-
-
 });
 
 

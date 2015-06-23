@@ -1,9 +1,12 @@
 <!DOCTYPE html><html lang="en">
 <head>
+<!--Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com
+The "debatesynergy.com" website is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the website or the use or other dealings in the website.-->
 <meta charset="utf-8">
 <title>Debate Synergy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAABGdBTUEAALGPC/xhBQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98GFhQlO5dZy9YAAAK1SURBVDjLhZFNTFR3FMV/f3jw3jAC8lEYwIERKxgDNUZB/EiLMbELY6oudGHswkXT0E1XsjYV+xFbqk7SDxtTNTZ14co0lcTEhWKkmBgrIaUSBUZ4tIjQYRiZ90aPCwJIaeNJbvK/ufd/7sk5mZJ433Xhp717kYSRBEAGc5BE6sfz+qO6Wh3BoNi9/yKVNd1qfm9IE+m/F/7MwYq3tSl+5QoTsRg3JiZmOSK1JyWJgrJPRVH5Vb3V1Kej38e06C7A4/0H8P7sU/LJExLpNOmmJkP/1q06FQjoeusRJPFrVZWihYWStKC8IPS5MrPWUl5Rw1/Dd6hvXMGRL5fT/lX2rIi52rmvV6/2khYvSOJRe/uifl7k00uXSESjejY8TDI+xXR+Hht6eow10tpK6fYdsjpvkXBdMvQCMgz9sRi/19XD5VBI0VBonvI729bZ9euRxOWbHVj7XNcA1DZ+w1TikUZmZgxAw9vtjMUjMus2fUFfn6NwuBk7IJLTgxz46A28zBJOfFBmrERijXJzCzAGAsE81jVtpHHbpNlTX70QqCSOR+9zsKV/iQ9L8vw3HjY0yBsbI52bSyo/34TajlHxTvP8fJ7g2cAgmQODPI8NKfVbF6l79/DGx/HTPr7n4/senjf7fu77/JNK8TQcxop9chS7q1vem6sZmJxkuOs28dFRfN9H2dlsKS4mIDE6nWQomWTGtsmoqjQf9vbOSjgfieh0ScmSSOfqs6Iifmlp+c/Z5ne/1iIPdh06Ree1F/I8Q3HpCqpXrebw4RFz4WKMcTfJwweerCxDYVkpqeAaVkayjQnXnJDr2jhOOTmBEmzbxnFsnBybQNDGCWaRX2RRWwd1WyapCM/QczfLfLy7CggumPjDz3c5dzZBYspRfMpmWZ5D5UqLb89YpiKn8n9Tem2Mr8NLRNeqIV4A25EAAAAASUVORK5CYII=">
 
 <link rel="stylesheet" href="/lib/css/bootstrap.min.css" />
 <link rel="stylesheet" href="/css/fileround.css"/>
@@ -11,15 +14,13 @@
 <script type="text/javascript" src="/lib/js/jquery.min.js"></script>
 <script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/lib/js/socket.io.min.js"></script>
-<script src="https://apis.google.com/js/client.js?onload=gapiInit" async defer></script>
-
+<script type="text/javascript" src="/lib/js/gapi.js?onload=gapiInit" async defer></script>
 
 <script type="text/javascript" src="/js/init.js"></script>
 <script type="text/javascript" src="/js/buttons.js"></script>
 <script type="text/javascript" src="/js/filetree.js"></script>
 <script type="text/javascript" src="/js/round.js"></script>
 <script type="text/javascript" src="/js/timer.js"></script>
-
 
 <script>$.get("/refresh").error(function(e){if(!e.readyState)location.reload()})</script>
 
@@ -176,16 +177,5 @@
         </div>
     </div>
 </div>
-
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-34608293-1', 'debatesynergy.com');
-ga('send', 'pageview');
-</script>
-<!--Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com
-The "debatesynergy.com" website is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the website or the use or other dealings in the website.-->
 </body>
 </html>

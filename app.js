@@ -46,20 +46,16 @@ app.get('/refresh', function(){});
 //auth
 app.use('/', require('./server/auth') );
 
-
-app.use('/user', require('./server/user'));
-
-//require auth below
-app.all('*', function (req, res, next) {
+function auth(req, res, next) {
   if (req.isAuthenticated())
     return next();
-
   res.send("Login required");
   //res.redirect('/auth');
-});
+}
 
-app.use('/doc', require('./server/doc'));
-app.use('/round', require('./server/round')(io));
+app.use('/user', require('./server/user'));
+app.use('/doc', auth, require('./server/doc'));
+app.use('/round', auth, require('./server/round')(io));
 
 
 //errors
@@ -70,7 +66,7 @@ app.use(function(req, res, next) {
 });
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.send("<pre>"+(app.get('env') === 'development'? err.stack : err.message) +"</pre>");
+  res.send("<pre>"+(app.get('env') === 'development'? err.message : err.message) +"</pre>");
 });
 
 

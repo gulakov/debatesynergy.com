@@ -237,7 +237,7 @@ $(document).ready(function () {
             speech1NR: $("#speech1NR").html(),
             speech1AR: $("#speech1AR").html(),
             speech2NR: $("#speech2NR").html(),
-            speech2AR: $("#speech2AR").html(),
+            speech2AR: $("#speech2AR").html()
         });
 
 

@@ -31,7 +31,6 @@ passport.use(new GoogleStrategy({
           User.create({
             email: profile.email,
             name: profile.displayName,
-            google_id: profile.id
           }, function (err, newAppUser ) {
 
               Doc.create({

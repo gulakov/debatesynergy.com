@@ -1,5 +1,10 @@
 var app = require('express').Router(), model = require('./models');
 var io, User = model.User, Round = model.Round;
+module.exports = function (_io) {
+    //pass io from app.js
+    io = _io;
+    return app;
+};
 
 app.get('/', function(req, res, next) {
    
@@ -381,11 +386,3 @@ app.all('/join', function(req, res) {
 
     res.end();
 });
-
-
-module.exports =  function (_io) {
-    //pass io from app.js
-    io = _io;
-
-    return app;
-};

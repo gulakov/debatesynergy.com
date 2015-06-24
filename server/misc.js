@@ -1,6 +1,6 @@
 var app = require('express').Router(), model = require('./models');
 var Download = model.Download, Visit = model.Visit;
-
+module.exports = app;
 
 //log msword-sidebar downloads
 app.get('/download', function(req, res) {
@@ -71,6 +71,3 @@ app.get('/', function(req, res, next){
 //forever autorefresh
 app.get('/refresh', function(){});
 
-
-
-module.exports = app;

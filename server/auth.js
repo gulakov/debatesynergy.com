@@ -1,4 +1,6 @@
 var app = require('express').Router(), model = require('./models');
+module.exports = app;
+
 var passport = require( 'passport' ),
     GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 

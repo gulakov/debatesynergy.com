@@ -1,5 +1,6 @@
 var app = require('express').Router(), model = require('./models');
 var Doc = model.Doc;
+module.exports = app;
 
 app.get('/read', function(req, res) {
     var fileId = req.query.id;
@@ -99,5 +100,3 @@ app.get('/delete',  function(req, res) {
     });
 });
 
-
-module.exports = app;

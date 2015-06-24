@@ -1,5 +1,6 @@
 var app = require('express').Router(), model = require('./models');
 var User = model.User;
+module.exports = app;
 
 app.all('/', function(req, res, next) {
 
@@ -60,4 +61,3 @@ function auth(req, res, next) {
 
 
 
-module.exports = app;

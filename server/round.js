@@ -9,8 +9,6 @@ var io;
 
 app.get('/', function(req, res, next) {
    
-     if (!req.user)
-        return res.send("no login");
 
     var email = req.user.email;
 
@@ -38,7 +36,6 @@ app.get('/', function(req, res, next) {
 });
 
 app.get('/create', function(req, res) {
-
 
     require("q").all([req.query.aff1, req.query.aff2, req.query.neg1, req.query.neg2, req.query.judge1].map(function(userInfo) {
        return User.findOne({$or:[{email: userInfo}, {name: userInfo}]})
@@ -94,13 +91,7 @@ app.all('/read', function(req, res) {
 app.all('/accept', function(req, res) {
 
 
-    if (!req.user)
-        return res.send("no login");
-
     var userId = req.user._id;
-
-   
-
     var roundId = req.query.roundId;
     var userEmail;
 
@@ -178,19 +169,10 @@ app.all('/accept', function(req, res) {
 
 app.post('/update', function(req, res) {
 
-
-
-    if (!req.user)
-        return res.send("no login");
-
-    var roundId = req.body.roundId;
-
-    var sanitizeHtml = require("sanitize-html");
-
     var userId = req.user._id;
-
     var userEmail = req.user.email;
-
+    var roundId = req.body.roundId;
+    var sanitizeHtml = require("sanitize-html");
 
 
     Round.findOneAndUpdate({_id: roundId}, {
@@ -202,43 +184,41 @@ app.post('/update', function(req, res) {
         speech1AR: sanitizeHtml(req.body.speech1AR),
         speech2NR: sanitizeHtml(req.body.speech2NR),
         speech2AR: sanitizeHtml(req.body.speech2AR)
-    }, function (e, f) {
+    }, function (e, f) {    
+
+        if (!f)
+            return res.end();
 
 
-        Round.findOne({_id: roundId}, function (e, f) {
+        var usersToPing = [];
 
-            var usersToPing = [];
+        //figure out my partner
 
-            //figure out my partner
+        if (userEmail == f.aff1 || userEmail == f.aff2) {
 
-            if (userEmail == f.aff1 || userEmail == f.aff2) {
+            if (f.status_aff1)
+                usersToPing.push(f.aff1);
+            if (f.status_aff2)
+                usersToPing.push(f.aff2);
 
-                if (f.status_aff1)
-                    usersToPing.push(f.aff1);
-                if (f.status_aff2)
-                    usersToPing.push(f.aff2);
+        } else if (userEmail == f.neg1 || userEmail == f.neg2) {
 
-            } else if (userEmail == f.neg1 || userEmail == f.neg2) {
+            if (f.status_neg1)
+                usersToPing.push(f.neg1);
+            if (f.status_neg2)
+                usersToPing.push(f.neg2);
 
-                if (f.status_neg1)
-                    usersToPing.push(f.neg1);
-                if (f.status_neg2)
-                    usersToPing.push(f.neg2);
-
-            }
+        }
 
 
-            for (var i in usersToPing)
-                User.findOne({email: usersToPing[i]}, function (e, f) {
+        for (var i in usersToPing)
+            User.findOne({email: usersToPing[i]}, function (e, f) {
 
-                    if (req.user._id != f._id)
-                         io.sockets.to(f.socket).emit( 'round_newTextForPartner', {roundId: roundId});
+                if (req.user._id != f._id)
+                     io.sockets.to(f.socket).emit('round_newTextForPartner', {roundId: roundId});
 
+            });
 
-                });
-
-
-        });
 
 
     });
@@ -258,8 +238,6 @@ app.get('/updateScroll', function(req, res) {
     var scrollTo = req.query.scrollTo;
 
     
-    if (!req.user)
-        return res.send("no login");
 
     var roundId = req.body.roundId;
 
@@ -404,8 +382,6 @@ app.get('/resend', function(req, res) {
 
 app.all('/join', function(req, res) {
 
-    if(!req.user)
-        return res.send("no login for " +req.query.socket);
   
     User.findOneAndUpdate({_id: req.user._id}, {socket: req.query.socket}, function(){});
 

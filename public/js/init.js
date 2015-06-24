@@ -146,6 +146,10 @@ window.setTimeout(function() {
 
 }, 1000);
 
+// remove # from login
+if (location.href.endsWith('#'))
+  history.replaceState({}, document.title, "/");
+
 
 
 

@@ -512,20 +512,18 @@ socket.on('round_newTextForEnemy', function (r) {
 });
 
 
-socket.on('round_newTextForPartner', function (msg) {
+socket.on('round_newTextForPartner', function (round) {
 
-    $.getJSON("/round/read", {roundId: r._id}, function (r) {
+    
+        $("#speech1AC").html(round.speech1AC);
+        $("#speech1NC").html(round.speech1NC);
+        $("#speech2AC").html(round.speech2AC);
+        $("#speech2NC").html(round.speech2NC);
+        $("#speech1NR").html(round.speech1NR);
+        $("#speech1AR").html(round.speech1AR);
+        $("#speech2NR").html(round.speech2NR);
+        $("#speech2AR").html(round.speech2AR);
 
-        $("#speech1AC").html(r.speech1AC);
-        $("#speech1NC").html(r.speech1NC);
-        $("#speech2AC").html(r.speech2AC);
-        $("#speech2NC").html(r.speech2NC);
-        $("#speech1NR").html(r.speech1NR);
-        $("#speech1AR").html(r.speech1AR);
-        $("#speech2NR").html(r.speech2NR);
-        $("#speech2AR").html(r.speech2AR);
-
-    });
 
 });
 

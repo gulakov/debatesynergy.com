@@ -430,6 +430,9 @@ click: function(e) {
                 ft.selected = r;
                	$("#editor").html(ft.selected.text);
                	ft.update();
+
+
+                location.hash=id;
            	})
 
        }

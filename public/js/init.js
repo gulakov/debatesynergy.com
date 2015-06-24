@@ -99,7 +99,7 @@ $(document).ready(function() {
   
 
 
-
+    //mobile swipe
   
     var touchsurface = document.body,
     swipedir,
@@ -139,15 +139,76 @@ $(document).ready(function() {
         }
           
         if (swipedir=='left')
-          $("#round").toggle();
+          $("#sidebar").show();
        if (swipedir=='right'){
           $("#editor").css("width","100%")
-          $("#sidebar").toggle();
+          $("#sidebar").hide();
        }
 
     }, false)
 
 
+  
+
+  //hash change
+  function loadHash(){
+
+    if ($(location.hash).length)
+      $(location.hash).click();
+    else if (location.hash)
+      $.get("/doc/read", {id: location.hash.replace("#",'')}, function (r) {
+          if (r=="Access denied")
+            alert(r);
+      })
+  }
+
+  $(window).on('hashchange', loadHash);
+  if (location.hash)
+    loadHash();
+     
+
+
+  //file upload
+  document.body.addEventListener("dragover", function (e) {
+    e.preventDefault();
+  }, false);
+
+  document.body.addEventListener("drop", function (e) {
+    e.preventDefault();
+
+    var files = e.dataTransfer.files;
+    console.log(files)
+
+    var reader = new FileReader();
+    
+
+    $.each(files, function(i, j)  {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+          console.log(e.target);
+          fileText = e.target.result;
+          alert(files[i].name + "\n"+ fileText);
+        }
+        reader.readAsDataURL(files[i]);
+       // reader.readAsText(files[i]);
+    });
+
+  }, false);
+
+    
+
+  //upload only when needed
+
+  new MutationObserver(function(mutations) {
+      mutations.forEach(function(i) {
+        console.log(i)
+      })
+  }).observe($("#editor")[0], {childList: true});
+
+
+
+  
 
 
 
@@ -315,7 +376,7 @@ $("#editor").click(function(e){
 
 });
 
-
+//gapi drive load
 
 var apiKey = 'AIzaSyDgdM5CpdzE3dLHD877L8fB3PyxVpV7pY4';
 var authToken;
@@ -332,3 +393,5 @@ function gapiInit() {
       gapi.load('picker', {'callback': function(){}});
   });
 }
+
+

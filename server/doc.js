@@ -6,17 +6,16 @@ app.get('/read', function(req, res) {
     var fileId = req.query.id;
 
     Doc.findOne({_id: fileId}, function (e, f) {
-        if (!f)
-            res.send("File not found");
-        else if (f.userid != req.user._id)
-            res.send("Access denied");
-        else
+        if (f && f.userid == req.user._id)
             res.json({
                 id:f._id,
                 userid:f.userid,
                 title:f.title,
                 text:f.text
             });
+        else
+            res.send("Access denied");
+        
         
     });
 });

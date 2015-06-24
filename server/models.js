@@ -3,7 +3,8 @@ var mongoose = require('mongoose'), Schema = mongoose.Schema;
 exports.User = mongoose.model('User', new Schema({
     email:  String,
     name:  String,
-    google_id: String,
+    custom_css: String,
+    custom_js: String,
     index: String,
     socket: String,
     options: Array,
@@ -54,6 +55,14 @@ exports.Round = mongoose.model('Round', new Schema({
 
 
 exports.Download = mongoose.model('Download', new Schema({
+    ip: String,
+    geo: String,
+    sys: String, 
+    date: {type: Date, default: Date.now}
+}));
+
+
+exports.Visit = mongoose.model('Visit', new Schema({
     ip: String,
     geo: String,
     sys: String, 

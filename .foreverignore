@@ -8,5 +8,5 @@ db/**/*
 node_modules
 node_modules/**/*
 **/node_modules/**/*
-public/server.log
+public/*.txt
 nohup.out

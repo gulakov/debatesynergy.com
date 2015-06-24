@@ -62,9 +62,8 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-app.use( passport.initialize());
-app.use( passport.session());
-
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/auth', passport.authenticate('google',
   { scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive']
@@ -77,16 +76,9 @@ app.get( '/auth/index/callback',
 }));
 
 app.get('/auth/logout', function(req, res){
+  res.clearCookie('debatesynergylogin');
   req.logout();
   res.redirect('/');
 });
-
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/auth');
-}
-
-
 
 module.exports = app;

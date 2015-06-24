@@ -1,34 +1,32 @@
-<!DOCTYPE html><html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
 <!--Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com
 The "debatesynergy.com" website is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the website or the use or other dealings in the website.-->
-<meta charset="utf-8">
-<title>Debate Synergy</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="X-UA-Compatible" content="IE=edge;" />
-<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAABGdBTUEAALGPC/xhBQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98GFhQlO5dZy9YAAAK1SURBVDjLhZFNTFR3FMV/f3jw3jAC8lEYwIERKxgDNUZB/EiLMbELY6oudGHswkXT0E1XsjYV+xFbqk7SDxtTNTZ14co0lcTEhWKkmBgrIaUSBUZ4tIjQYRiZ90aPCwJIaeNJbvK/ufd/7sk5mZJ433Xhp717kYSRBEAGc5BE6sfz+qO6Wh3BoNi9/yKVNd1qfm9IE+m/F/7MwYq3tSl+5QoTsRg3JiZmOSK1JyWJgrJPRVH5Vb3V1Kej38e06C7A4/0H8P7sU/LJExLpNOmmJkP/1q06FQjoeusRJPFrVZWihYWStKC8IPS5MrPWUl5Rw1/Dd6hvXMGRL5fT/lX2rIi52rmvV6/2khYvSOJRe/uifl7k00uXSESjejY8TDI+xXR+Hht6eow10tpK6fYdsjpvkXBdMvQCMgz9sRi/19XD5VBI0VBonvI729bZ9euRxOWbHVj7XNcA1DZ+w1TikUZmZgxAw9vtjMUjMus2fUFfn6NwuBk7IJLTgxz46A28zBJOfFBmrERijXJzCzAGAsE81jVtpHHbpNlTX70QqCSOR+9zsKV/iQ9L8vw3HjY0yBsbI52bSyo/34TajlHxTvP8fJ7g2cAgmQODPI8NKfVbF6l79/DGx/HTPr7n4/senjf7fu77/JNK8TQcxop9chS7q1vem6sZmJxkuOs28dFRfN9H2dlsKS4mIDE6nWQomWTGtsmoqjQf9vbOSjgfieh0ScmSSOfqs6Iifmlp+c/Z5ne/1iIPdh06Ree1F/I8Q3HpCqpXrebw4RFz4WKMcTfJwweerCxDYVkpqeAaVkayjQnXnJDr2jhOOTmBEmzbxnFsnBybQNDGCWaRX2RRWwd1WyapCM/QczfLfLy7CggumPjDz3c5dzZBYspRfMpmWZ5D5UqLb89YpiKn8n9Tem2Mr8NLRNeqIV4A25EAAAAASUVORK5CYII=">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;">
+    <title>Debate Synergy</title>
+    <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAABGdBTUEAALGPC/xhBQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98GFhQlO5dZy9YAAAK1SURBVDjLhZFNTFR3FMV/f3jw3jAC8lEYwIERKxgDNUZB/EiLMbELY6oudGHswkXT0E1XsjYV+xFbqk7SDxtTNTZ14co0lcTEhWKkmBgrIaUSBUZ4tIjQYRiZ90aPCwJIaeNJbvK/ufd/7sk5mZJ433Xhp717kYSRBEAGc5BE6sfz+qO6Wh3BoNi9/yKVNd1qfm9IE+m/F/7MwYq3tSl+5QoTsRg3JiZmOSK1JyWJgrJPRVH5Vb3V1Kej38e06C7A4/0H8P7sU/LJExLpNOmmJkP/1q06FQjoeusRJPFrVZWihYWStKC8IPS5MrPWUl5Rw1/Dd6hvXMGRL5fT/lX2rIi52rmvV6/2khYvSOJRe/uifl7k00uXSESjejY8TDI+xXR+Hht6eow10tpK6fYdsjpvkXBdMvQCMgz9sRi/19XD5VBI0VBonvI729bZ9euRxOWbHVj7XNcA1DZ+w1TikUZmZgxAw9vtjMUjMus2fUFfn6NwuBk7IJLTgxz46A28zBJOfFBmrERijXJzCzAGAsE81jVtpHHbpNlTX70QqCSOR+9zsKV/iQ9L8vw3HjY0yBsbI52bSyo/34TajlHxTvP8fJ7g2cAgmQODPI8NKfVbF6l79/DGx/HTPr7n4/senjf7fu77/JNK8TQcxop9chS7q1vem6sZmJxkuOs28dFRfN9H2dlsKS4mIDE6nWQomWTGtsmoqjQf9vbOSjgfieh0ScmSSOfqs6Iifmlp+c/Z5ne/1iIPdh06Ree1F/I8Q3HpCqpXrebw4RFz4WKMcTfJwweerCxDYVkpqeAaVkayjQnXnJDr2jhOOTmBEmzbxnFsnBybQNDGCWaRX2RRWwd1WyapCM/QczfLfLy7CggumPjDz3c5dzZBYspRfMpmWZ5D5UqLb89YpiKn8n9Tem2Mr8NLRNeqIV4A25EAAAAASUVORK5CYII=">
 
-<link rel="stylesheet" href="/lib/css/bootstrap.min.css" />
-<link rel="stylesheet" href="/css/fileround.css"/>
+    <link rel="stylesheet" href="/lib/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/fileround.css"/>
 
-<script type="text/javascript" src="/lib/js/jquery.min.js"></script>
-<script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/lib/js/socket.io.min.js"></script>
-<script type="text/javascript" src="/lib/js/gapi.js?onload=gapiInit" async defer></script>
+    <script type="text/javascript" src="/lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/js/socket.io.min.js"></script>
+    <script type="text/javascript" src="/lib/js/gapi.js?onload=gapiInit" async></script>
 
-<script type="text/javascript" src="/js/init.js"></script>
-<script type="text/javascript" src="/js/buttons.js"></script>
-<script type="text/javascript" src="/js/filetree.js"></script>
-<script type="text/javascript" src="/js/round.js"></script>
-<script type="text/javascript" src="/js/timer.js"></script>
+    <script type="text/javascript" src="/js/init.js"></script>
+    <script type="text/javascript" src="/js/buttons.js"></script>
+    <script type="text/javascript" src="/js/filetree.js"></script>
+    <script type="text/javascript" src="/js/round.js"></script>
+    <script type="text/javascript" src="/js/timer.js"></script>
 
-<script>$.get("/refresh").error(function(e){if(!e.readyState)location.reload()})</script>
+    <script>$.get("/refresh").error(function(e){if(!e.readyState)location.reload()})</script>
 
 </head>
 <body>
 
 <div id="sidebar">
-
     <div id="controls" class="btn-group btn-group-xs">
         <button id="block" class="btn btn-default glyphicon glyphicon-header" data-toggle="tooltip" data-placement="bottom" title="Heading"></button>
         <button id="read" class="btn btn-default glyphicon glyphicon-bold" data-toggle="tooltip" data-placement="bottom" title="Bold"></button>
@@ -43,7 +41,6 @@ The "debatesynergy.com" website is provided "as is", without warranty of any kin
 	        <input id="searchtext" type="text" class="form-control"/>
 	    </div>
     </div>
-
 
     <div id="info"></div>
 
@@ -98,7 +95,6 @@ The "debatesynergy.com" website is provided "as is", without warranty of any kin
     </div>
 
 
-
     <div class="tab-content">
         <div class="tab-pane active" id="speechmain">
             <input id="judge1" type="text" class="form-control input-xlarge" placeholder="Judge email or name">
@@ -132,7 +128,6 @@ The "debatesynergy.com" website is provided "as is", without warranty of any kin
 </div>
 
 
-
 <div id="settings" class="modal fade" tabindex="2" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -146,6 +141,26 @@ The "debatesynergy.com" website is provided "as is", without warranty of any kin
                 <label class="radio-inline"> <input type="radio" name="debatetype" class="debatetype" value="2"> LD</label>
                 <br>
                 <label>Team name: <input id="teamname" class="form-control"> </label>
+
+
+
+                <br>
+                <label>Custom Plugins: </label>
+                <br>
+                Learn to program:
+                <a target="_blank" href="http://www.codecademy.com/en/tracks/web">HTML&CSS</a>
+                <a target="_blank" href="http://www.codecademy.com/en/tracks/javascript">Javascript</a>
+                <a target="_blank" href="https://learn.jquery.com/about-jquery/">jQuery</a>
+                <a target="_blank" href="http://getbootstrap.com/components/">Bootstrap</a>
+                <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Tutorials">Advanced</a>
+                <a target="_blank" href="https://github.com/gulakov/debatesynergy.com">Source</a>
+
+                <textarea id="custom-js"  class="form-control" rows="7" placeholder="Insert javascript code to load custom plugins" ></textarea>
+                <textarea id="custom-css"  class="form-control"  rows="7" placeholder="Insert CSS to customize default styles" ></textarea>
+                
+
+
+
             </div>
             <div class="modal-footer">
                 <button id="settings_logout" type="button" class="btn btn-default glyphicon glyphicon-off" data-dismiss="modal"> Logout </button>
@@ -154,7 +169,6 @@ The "debatesynergy.com" website is provided "as is", without warranty of any kin
         </div>
     </div>
 </div>
-
 
 
 <div id="file-new-modal" class="modal fade" tabindex="2" role="dialog" aria-hidden="true">
@@ -170,6 +184,7 @@ The "debatesynergy.com" website is provided "as is", without warranty of any kin
                 <label class="radio-inline"> <input type="button" class="btn btn-info" id="import_googledrive" value="Import from Google Drive"> </label>
                 <br>
                 <label>Name: <input id="filename" class="form-control" autofocus> </label>
+
             </div>
             <div class="modal-footer">
                 <button id="file-new-modal-submit" type="submit" class="btn btn-primary">Create</button>

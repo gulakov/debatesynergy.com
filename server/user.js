@@ -9,33 +9,35 @@ app.all('/', function(req, res, next) {
     if (!req.user)
         res.send(false);
     else
-        res.json(req.user);
+        User.findOne({_id: req.user._id},               
+            function(err, u){
+                res.json(u);
+            })
+
+
 
        // User.findById(req.user._id, function(err, u) {
 
 });
 
 
-app.all('/update', function(req, res) {
-
-	if (!req.user)
-            return res.send("No user");
+app.all('/update', auth, function(req, res) {
 
     if (req.body.index)
             User.findOneAndUpdate(
                 {_id: req.user._id},
-                { index: req.body.index},
+                {index: req.body.index},
                 function(err, u){
                     res.json(u);
                 })
-    else
-        res.send("No index")
-
-        /*    User.update({uid: req.session.passport.user}, {
-                debatetype: req.query.debatetype,
-                teamname: req.query.teamname
-            }).exec(function (err, f) {
-            });*/
+    else if (req.body.custom_js)
+          User.findOneAndUpdate(
+                {_id: req.user._id},
+                {custom_js: req.body.custom_js, 
+                 custom_css: req.body.custom_css},
+                function(err, u){
+                    res.json(u);
+                })
 
 
 });
@@ -51,6 +53,13 @@ app.get('/:email?', function(req, res) {
     })
 });
 
+
+function auth(req, res, next) {
+  if (!req.isAuthenticated())
+    res.send("Login required");
+  else
+    return next();
+}
 
 
 

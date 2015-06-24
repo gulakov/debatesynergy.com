@@ -8,12 +8,16 @@ $('button').tooltip();
 
 $("#showsettings").click(function() {
 
-    if (u.debatetype == 1)
+    /*if (u.debatetype == 1)
         $(".debatetype")[0].checked = true;
     if (u.debatetype == 2)
         $(".debatetype")[1].checked = true;
 
     $("#teamname").val(u.teamname);
+    */
+
+    $("#custom-css").val(u.custom_css);
+    $("#custom-js").val(u.custom_js);
 
     $("#settings").modal('show');
 
@@ -22,11 +26,16 @@ $("#showsettings").click(function() {
 $('#settings_save').click(function() {
 
     $.post("/user/update", {
-        debatetype: $(".debatetype:checked").val(),
-        teamname: $("#teamname").val()
+       // debatetype: $(".debatetype:checked").val(),
+       // teamname: $("#teamname").val(),
+        custom_css: $("#custom-css").val(),
+        custom_js: $("#custom-js").val()
+    },function(){
+         location.reload();
     });
 
     $("#settings").modal('hide');
+
 });
 
 $('#settings_logout').click(function() {
@@ -76,34 +85,36 @@ $("#import_googledrive").click(function () {
 
 });
 
+/*
+
 $("#speech1AC, #speech1NC").on("scroll", function() {
 
 
-var list= $("#speech1AC p");
+    var list= $("#speech1AC p");
 
-for(var i =0; i < list.length; i++)
-  if ( list[i].getBoundingClientRect().top > 150 )
-    break;
+    for(var i =0; i < list.length; i++)
+      if ( list[i].getBoundingClientRect().top > 150 )
+        break;
 
-$("#speech1AC .r").css("top", list[i].getBoundingClientRect().top );
-
-
+    $("#speech1AC .r").css("top", list[i].getBoundingClientRect().top );
 
 
-var list= $("#speech1NC p");
 
-for(var i =0; i < list.length; i++)
-  if ( list[i].getBoundingClientRect().top > 150 )
-    break;
 
-$("#speech1NC .r").css("top", list[i].getBoundingClientRect().top );
+    var list= $("#speech1NC p");
+
+    for(var i =0; i < list.length; i++)
+      if ( list[i].getBoundingClientRect().top > 150 )
+        break;
+
+    $("#speech1NC .r").css("top", list[i].getBoundingClientRect().top );
 
 
 
 
 
 })
-
+*/
 
 $("#block").click(function() {
 

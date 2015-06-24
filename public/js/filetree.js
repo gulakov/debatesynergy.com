@@ -455,10 +455,12 @@ dblclick:function() {
       
       var headingList = $("#editor").find("h1, h2, h3");
 
+      var endNode = headingId == headingList.length -1  ? headingList[headingId+1] : $("#editor>p:last");
+
 
       range = document.createRange();
       range.setStart(headingList[headingId], 0);
-      range.setEnd(headingList[headingId+1], 0);
+      range.setEnd(endNode, 0);
       sel = window.getSelection();
       sel.removeAllRanges();
       sel.addRange(range);

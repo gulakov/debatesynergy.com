@@ -115,8 +115,14 @@ $(document).ready(function() {
 
     //hash change to load doc
     function loadHash(){
-      if ($(location.hash).length)
+      if ($(location.hash).length && $('.doc:visible').attr('id').replace('doc-','#') != location.hash){
+        
         $(location.hash).click();
+      } else if (location.hash=="#manual"){ 
+        ft.selected=false;
+        $(".doc").hide();
+        $("#doc-manual").show();
+      } 
       else if (location.hash)
         $.get("/doc/read", {id: location.hash.replace("#",'')}, function (r) {
             if (r=="Access denied")

@@ -21,6 +21,10 @@ $("#showsettings").click(function() {
 
     $("#settings").modal('show');
 
+    setTimeout(function(){
+        $("#filename").focus();
+    }, 20)
+
 });
 
 $('#settings_save').click(function() {

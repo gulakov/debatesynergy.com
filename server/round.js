@@ -1,11 +1,5 @@
-var express = require('express');
-var app = express.Router();
-
-var model = require('./models');
-var User = model.User, Round = model.Round;
-
-var io; 
-
+var app = require('express').Router(), model = require('./models');
+var io, User = model.User, Round = model.Round;
 
 app.get('/', function(req, res, next) {
    
@@ -215,7 +209,7 @@ app.post('/update', function(req, res) {
             User.findOne({email: usersToPing[i]}, function (e, f) {
 
                 if (req.user._id != f._id)
-                     io.sockets.to(f.socket).emit('round_newTextForPartner', {roundId: roundId});
+                     io.sockets.to(f.socket).emit('round_newTextForPartner', {round: f});
 
             });
 

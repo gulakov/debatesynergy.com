@@ -1,7 +1,4 @@
-var express = require('express');
-var app = express.Router();
-
-var model = require('./models');
+var app = require('express').Router(), model = require('./models');
 var User = model.User;
 
 app.all('/', function(req, res, next) {

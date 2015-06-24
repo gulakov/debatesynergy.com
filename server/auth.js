@@ -1,9 +1,7 @@
-var express = require('express');
-var app = express.Router();
+var app = require('express').Router(), model = require('./models');
 var passport = require( 'passport' ),
     GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 
-var model = require('./models');
 var User = model.User, Doc = model.Doc;
 
 passport.serializeUser(function(profile, done) {

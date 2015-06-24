@@ -1,8 +1,5 @@
-var express = require('express');
-var app = express.Router();
-var model = require('./models');
-var Download = model.Download;
-var Visit = model.Visit;
+var app = require('express').Router(), model = require('./models');
+var Download = model.Download, Visit = model.Visit;
 
 
 //log msword-sidebar downloads

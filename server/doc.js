@@ -4,7 +4,7 @@ var Doc = model.Doc;
 app.get('/read', function(req, res) {
     var fileId = req.query.id;
 
-    Doc.findOne({id: fileId}, function (e, f) {
+    Doc.findOne({_id: fileId}, function (e, f) {
         if (!f)
             res.send("File not found");
         else if (f.userid != req.user._id)

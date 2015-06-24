@@ -115,13 +115,13 @@ $(document).ready(function() {
 
     //hash change to load doc
     function loadHash(){
-      if ($(location.hash).length && $('.doc:visible').attr('id').replace('doc-','#') != location.hash){
+      if ($(location.hash).length && ft.selected.id != location.hash.replace('#','')){
         
         $(location.hash).click();
       } else if (location.hash=="#manual"){ 
         ft.selected=false;
-        $(".doc").hide();
-        $("#doc-manual").show();
+        $(".doc").hide('slow');
+        $("#doc-manual").show('slow');
       } 
       else if (location.hash)
         $.get("/doc/read", {id: location.hash.replace("#",'')}, function (r) {

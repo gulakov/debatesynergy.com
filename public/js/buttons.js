@@ -23,7 +23,7 @@ $("#showsettings").click(function() {
 
     setTimeout(function(){
         $("#filename").focus();
-    }, 20)
+    }, 500)
 
 });
 

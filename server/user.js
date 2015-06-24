@@ -8,14 +8,9 @@ app.all('/', function(req, res, next) {
         res.send(false);
     else
         User.findOne({_id: req.user._id},               
-            function(err, u){
-                res.json(u);
-            })
-
-
-
-       // User.findById(req.user._id, function(err, u) {
-
+        function(err, u){
+            res.json(u);
+        })
 });
 
 
@@ -58,6 +53,3 @@ function auth(req, res, next) {
   else
     return next();
 }
-
-
-

@@ -60,9 +60,9 @@ $("#import_googledrive").click(function () {
                 data: {},
                 success: function(fileHtml) {
 
-                    //create new
+                    //create new!!
 
-                    $("#editor").html(fileHtml)
+                    $(".doc:visible").html(fileHtml)
 
                 }
             });
@@ -291,6 +291,102 @@ $("#searchtext").on('keydown', function(e) {
     }
 
 })
+
+
+
+
+        // new file dialog box 
+
+        
+        $("#file-new").click(function() {
+
+            $("#file-new-modal").modal('show');
+            $("#filename").focus();
+
+
+
+        });
+
+
+        $("#file-new-modal-submit").click(function() {
+
+            if ($(".filetype:checked").val() == "file") {
+
+
+                var fileData = {
+                    "type": "file",
+                    "title": $("#filename").val(),
+                    "text": ""
+                }
+
+
+                if (local) {
+                    var id = 100000000000000000 * Math.random()
+
+                    fileData.userid = "local";
+                    fileData.id = id;
+
+
+
+                    localStorage["debate_" + fileid] = JSON.stringify(fileData);
+
+                    u.index.push(fileData);
+
+                    ft.populate(ft.root, u.index);
+
+
+
+                } else {
+                    $.get("/doc/create", fileData, function(id) {
+
+
+                        fileData.id = id;
+
+
+
+                        u.index.push(fileData);
+
+
+
+                        ft.populate(ft.root, u.index);
+
+
+                    })
+                }
+
+
+
+
+                $(".ft-name:last").click();
+
+
+            } else {
+
+                var folderData = {
+                    "type": "folder",
+                    "userid": "local",
+                    "title": $("#filename").val()
+                }
+
+
+                u.index.push(folderData);
+
+                ft.populate(ft.root, u.index);
+
+                $(".ft-name:last").click();
+
+
+            }
+
+
+            $('.ft-name').on('click', ft.click);
+
+            $("#file-new-modal").modal('hide');
+
+
+
+
+        });
 
 
 });

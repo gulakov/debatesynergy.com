@@ -399,11 +399,9 @@ function round_init(){
 
 function startRound() {
 
-    if (!$("#speech").is(":visible")) {
+    if (!$("#round").is(":visible")) {
 
-        $("#speech").show();
-        $("#editor").removeClass("col-xs-10").addClass("col-xs-5");
-
+        $("#showround").click();
     }
 
 

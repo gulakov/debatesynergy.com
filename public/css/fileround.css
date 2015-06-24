@@ -9,10 +9,10 @@ body,html{
     flex-direction: row;
 }
 
-#sidebar, #editor, #round{
+#sidebar, #docs, #round{
     height: 100%;
-    padding: 0px !important;
-    margin: 0px !important;
+    padding: 0px;
+    margin: 0px;
     display: inline-block;
 }
 
@@ -26,13 +26,13 @@ body,html{
     background: rgb(170, 207, 231);
 }
 
-#editor{
+#docs{
   width: 85%;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
-#editor:focus, #round .tab-pane:focus {
+#docs:focus, #round .tab-pane:focus {
   outline: 0px solid transparent;
 }
 

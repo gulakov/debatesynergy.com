@@ -5,8 +5,9 @@ Built with NodeJs and MongoDB, using CRUD requests to store user's files in db a
 
 The source code is open source and free for improvements from the debate community, so that users can make custom plugins and suggest feature improvements under the Issues tab.
 
-Installation:
+Linux Installation:
 ```
+sudo apt-get install -y nodejs npm nodejs-legacy mongodb screen build-essential python git 
 git clone https://github.com/gulakov/debatesynergy.com
 cd debatesynergy.com
 npm install

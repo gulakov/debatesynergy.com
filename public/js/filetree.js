@@ -151,13 +151,11 @@ init: function(el, json) {
         var list = $(".doc:visible").find("h1, h2, h3");
 
         for (var i = 0; i < list.length; i++)
-
-            if (list[i].textContent.length > 2 && list[i].getBoundingClientRect().bottom > 300)
-                break;
-
+          if (list[i].textContent.length > 2 && list[i].getBoundingClientRect().bottom > 300)
+              break;
 
         $(".ft-selected").removeClass("ft-selected");
-        $("#" + ft.selected.id + "_" + (i - 1)).addClass("ft-selected");
+        $("#" + ft.selected.id + "_" +i).parent().prev().find('.ft-name').addClass("ft-selected");
 
     }, true);
 
@@ -265,15 +263,8 @@ update: function() {
 
     //add headings as children of current file
     for (var i in treeJSON)
-        if (ft.selected && treeJSON[i].id == ft.selected.id) {
-
-            //for (var j in treeJSON[i].children)
-
-
+        if (ft.selected && treeJSON[i].id == ft.selected.id && $(".doc:visible").attr("id").substring(4) == ft.selected.id) 
             treeJSON[i].children = headingList;
-
-
-        }
 
 
 

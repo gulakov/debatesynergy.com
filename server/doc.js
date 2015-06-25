@@ -93,7 +93,7 @@ app.get('/delete',  function(req, res) {
     Doc.findOne({_id: fileId},function (e, f) {
 
         if (f && f.userid == req.user._id)
-            Doc.findOneAndRemove({id: fileId}).exec(function(){ });
+            Doc.findOneAndRemove({_id: fileId}).exec(function(){ });
 
         return res.end();
     });

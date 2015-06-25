@@ -176,7 +176,34 @@ $(document).ready(function() {
 
 
 
-  
+  //resizable sidebar
+  var dragStart = 0;
+  $("#sidebar").on('mousemove',function(e){
+      if($(this).width() - e.offsetX < 15)
+          $("body").css('cursor','ew-resize');
+      else if(!dragStart)
+           $("body").css('cursor','');
+  })
+  .on('mouseout',function(e){
+    if(!dragStart)
+        $("body").css('cursor','');
+  })
+  .on('mousedown',function(e){
+      if($(this).width() - e.offsetX < 15)
+          dragStart = e.pageX;
+      
+      $("body").bind('mousemove',function(e){
+         e.preventDefault();
+      })
+  });
+  $("body").on('mouseup',function(e){
+      $("body").unbind('mousemove');
+      if (dragStart){
+          $("#sidebar").css('width',e.pageX+'px');
+          dragStart=0;
+      }
+  })
+
 
 
 

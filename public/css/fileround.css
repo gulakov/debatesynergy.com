@@ -47,8 +47,7 @@ body,html{
 
 #sidebar{
   width: 15%;
-      display:table;
-    height:100%;
+  display:table;
 }
 
 
@@ -73,6 +72,7 @@ body,html{
 #searchtext{
   height: 26px;
   padding-left:26px;
+  width: 100%;
 }
 
 .form-search:before {

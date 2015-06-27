@@ -15,11 +15,11 @@ app.get('/download', function(req, res) {
 
       var r = JSON.parse(body), geo = r.city != null ? r.city + " " + r.country : r.country;
 
-     
+
       Download.findOne({ip: ip}, function (err, f) {
         console.log("New Download: " + geo + " " + sys);
 
-        if (!f)
+        if (!f && !sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi))
             Download.create({ ip: ip, geo: geo, sys: sys}, function(e,f){});
 
         Download.find({}, function (err, f) {
@@ -49,8 +49,9 @@ app.get('/', function(req, res, next){
       Visit.findOne({ip: ip}, function (err, f) {
         console.log("Visit: " + geo + " " + sys);
 
-        if (!f)
+	if (!f && !sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi))
             Visit.create({ ip: ip, geo: geo, sys: sys}, function(e,f){});
+ 
 
 
 
@@ -62,7 +63,7 @@ app.get('/', function(req, res, next){
 
   });
 
-
+	
 
 });
 
@@ -70,4 +71,3 @@ app.get('/', function(req, res, next){
 
 //forever autorefresh
 app.get('/refresh', function(){});
-

@@ -1,4 +1,7 @@
 /* PANELS */
+iframe[src^="https://apis.google.com"] {
+  display: none;
+}
 
 body,html{
     height:100%;
@@ -7,6 +10,7 @@ body,html{
     font-size: 14px;
     display: flex;
     flex-direction: row;
+    overflow-x: hidden;
 }
 
 #sidebar, #docs, #round{
@@ -42,12 +46,59 @@ body,html{
 }
 
 
+/* DOCUMENT STYLES */
+h1{
+  font-size: 24pt;
+}
+.read {
+  font-weight: bold;
+}
+
+.readcard {
+  text-decoration: underline;
+}
+
+.readcardsuper {
+  text-decoration: underline;
+  background-color: yellow;
+}
+
+.size-mode-1 .doc{
+    font-size: 6pt;
+}
+
+.size-mode-1 .read,
+.size-mode-1 .readcard  {
+    font-size: 12pt;
+}
+
+.size-mode-2 .doc{
+    font-size: 6pt;
+}
+
+.size-mode-2 .read,
+.size-mode-2 .readcard  {
+    font-size: 24pt;
+}
+
+
+.size-mode-3 .doc{
+    font-size: 6pt;
+}
+
+.size-mode-3 .read,
+.size-mode-3 .readcardsuper  {
+    font-size: 24pt;
+}
+
+
+
+
 
 /* SIDEBAR */
 
 #sidebar{
   width: 15%;
-  display:table;
 }
 
 
@@ -82,26 +133,15 @@ body,html{
     content: "\e003";
     font-family: 'Glyphicons Halflings';
     opacity: .5;
-   
+
 }
 
 
 
 /* FILETREE */
 
-#filetree-container {
-    display:table-row;
-    height:100%%;
-}
-
-#filetree-container-scroll {
-    position: relative;
-    height: 88%;
-}
 #filetree {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 0; right: 0;
+    height:90%;
     overflow: auto;
 }
 

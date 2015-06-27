@@ -18,7 +18,7 @@ socket.on('connect', function(){
             '<button  class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
             'You have been invited into a round with ' + msg.people + '. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
             .find(".btn-primary").click(function () {
-                
+
                 r = {id : msg.roundId};
 
                 $.get("/round/accept", {roundId: msg.roundId}, startRound);
@@ -40,7 +40,7 @@ socket.on('connect', function(){
 
 })
 
-    
+
 $(window).on('beforeunload', function(){
     socket.close();
 });
@@ -49,7 +49,7 @@ $(window).on('beforeunload', function(){
 $(document).ready(function () {
 
 
-    
+
 
 
 
@@ -512,7 +512,7 @@ socket.on('round_newTextForEnemy', function (r) {
 
 socket.on('round_newTextForPartner', function (round) {
 
-    
+
         $("#speech1AC").html(round.speech1AC);
         $("#speech1NC").html(round.speech1NC);
         $("#speech2AC").html(round.speech2AC);
@@ -524,6 +524,3 @@ socket.on('round_newTextForPartner', function (round) {
 
 
 });
-
-
-

@@ -2,13 +2,31 @@ var ft = {
 init: function(el, json) {
 
     ft.root = $(el);
-    ft.json = json;
-
     ft.populate(el, json);
-
 
     ft.dragging = false;
     ft.selected = {};
+
+
+    //update filetree and save every 10s
+    setInterval(function() {
+        ft.update();
+    }, 10000);
+
+    //update triggered only when needed
+    ft.uploadNeeded = false;
+
+    new MutationObserver(function(mutations) {
+      ft.uploadNeeded = true;
+    }).observe($("#docs")[0], {childList: true, subtree: true});
+
+    //click selected on init
+    window.setTimeout(function() {
+        if ($('.ft-selected').length)
+            $('.ft-selected').click();
+      //  else
+        //    $('.ft-name:first').click();
+    }, 500);
 
     //drag and rearrange file order
     $(document).on("dragstart", function(e) {
@@ -117,6 +135,14 @@ init: function(el, json) {
 
     });
 
+      $(".ft-name").on('touchstart', function(e){
+        window.touchTimer = setTimeout(
+          ft.doubleclick.call(e.target),
+          500); })
+          .on('touchend', function() {
+              clearTimeout(window.touchTimer);
+          });
+
     //long touch
     setTimeout(function(){
       $('.ft-name')
@@ -157,6 +183,12 @@ init: function(el, json) {
         $(".ft-selected").removeClass("ft-selected");
         $("#" + ft.selected.id + "_" +i).parent().prev().find('.ft-name').addClass("ft-selected");
 
+        if (i==list.length)
+            $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
+
+        if ($(".ft-selected")[0] && document.body.scrollIntoViewIfNeeded)
+            $(".ft-selected")[0].scrollIntoViewIfNeeded();
+
     }, true);
 
 
@@ -178,7 +210,7 @@ populate: function(div, json) {
 
     for (var i in json) {
 
-        var item = $('<div class="ft-item" draggable="true"><div  id="' + json[i].id + '" class="ft-name ' + 
+        var item = $('<div class="ft-item" draggable="true"><div  id="' + json[i].id + '" class="ft-name ' +
           json[i].type + '" tooltip="'+json[i].title+'">' + json[i].title + '</div> </div>');
         item.appendTo(div)
 
@@ -234,39 +266,41 @@ update: function() {
 
 
     //find the headings
-    var headingList = [],
-        i = 0,
-        selectedId = -1;
+    if (ft.uploadNeeded){
+        var headingList = [],
+            i = 0,
+            selectedId = -1;
 
 
-    if ($(".ft-selected").hasClass("heading"))
-        selectedId = parseInt($(".ft-selected").attr("id").substring($(".ft-selected").attr("id").indexOf("_") + 1))
+        if ($(".ft-selected").hasClass("heading"))
+            selectedId = parseInt($(".ft-selected").attr("id").substring($(".ft-selected").attr("id").indexOf("_") + 1))
 
 
-    $(".doc:visible").find("h1, h2, h3").each(function() {
+        $(".doc:visible").find("h1, h2, h3").each(function() {
 
-        if ($(this).text().length > 2) {
-            headingList.push({
-                'id': ft.selected.id + "_" + i.toString(),
-                'title': $(this).text().substring(0, 50),
-                'type': 'heading ' + 'heading-' + $(this).prop("tagName").toLowerCase() + (selectedId == i ? " ft-selected" : "")
-            });
+            if ($(this).text().length > 2) {
+                headingList.push({
+                    'id': ft.selected.id + "_" + i.toString(),
+                    'title': $(this).text().substring(0, 50),
+                    'type': 'heading ' + 'heading-' + $(this).prop("tagName").toLowerCase() + (selectedId == i ? " ft-selected" : "")
+                });
 
-        }
+            }
 
-        i++;
+            i++;
 
-    });
-
-
+        });
 
 
-    //add headings as children of current file
-    for (var i in treeJSON)
-        if (ft.selected && treeJSON[i].id == ft.selected.id && $(".doc:visible").attr("id").substring(4) == ft.selected.id) 
-            treeJSON[i].children = headingList;
 
 
+        //add headings as children of current file
+        for (var i in treeJSON)
+            if (ft.selected && treeJSON[i].id == ft.selected.id
+                && $(".doc:visible").attr("id").substring(4) == ft.selected.id)
+                treeJSON[i].children = headingList;
+
+    }
 
     u.index = treeJSON;
 
@@ -284,11 +318,16 @@ update: function() {
               index: JSON.stringify(u.index)
           });
 
-        if (ft.selected)
+          if (ft.selected && ft.uploadNeeded &&
+            ft.selected.id == location.hash.replace("#",'')
+            && ft.selected.id == $(".doc:visible").attr('id').replace("doc-",'')){
+            ft.uploadNeeded = false;
+
             $.post('/doc/update', {
                 text: encodeURI($(".doc:visible").html().replace(/\'/g, '&#39;')),
                 id: ft.selected.id
             });
+          }
     }
 
 
@@ -320,15 +359,21 @@ click: function(e) {
 
         if (ft.selected.id == id) {
             $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
-        } else { // load heading if it's on non-selected file
+        } else {
+
 
             $.getJSON("/doc/read", {
                 id: id
-            }, function(r) {  
-                ft.selected = r;
+            }, function(r) {
+                ft.selected = r;// load heading if it's on non-selected file
 
-                $(".doc").hide();
-                $("<div>").addClass("doc").attr("id",r.id).appendTo("#docs").html(ft.selected.text)
+
+                if (!$("#doc-"+id).length)
+                  $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
+                    .appendTo("#docs").html(ft.selected.text).hide().show("slow");
+
+                ft.update();
+                location.hash = id;
 
                 $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
             })
@@ -340,43 +385,63 @@ click: function(e) {
         if (!u.name) { //welcome screen
 
             ft.selected = u.index.filter(function(i){return id == i.id;})[0];
-            $(".doc").hide();
-            $("#doc-"+id).show();
 
+            console.log(id);
+
+            if (!$("#doc-"+id).length)
+              $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
+                .appendTo("#docs").html(ft.selected.text).hide().show("slow");
+
+            ft.update();
             location.hash = id;
 
         } else if (local) {
 
             ft.selected = JSON.parse(localStorage["debate_" + id]);
-            
+
 
               // show for local
 
         } else {
 
 
-          $(".doc:visible").hide("slow");
+          $(".doc:visible").slideUp() //"slow");
 
           if ($("#doc-"+id).length){
-             ft.selected = false;
-               $("#doc-"+id).show("slow");
+             //ft.selected = false;
+               $("#doc-"+id).slideDown()//"slow");
           }
-        
 
-            $.getJSON("/doc/read", {
-                id: id
-            }, function(r) {
-                ft.selected = r;
-               
-               
-                if (!$("#doc-"+id).length)
-                  $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
-                    .appendTo("#docs").html(ft.selected.text).hide().show("slow");
-                
+          $.ajax({
+            xhr: function() {
+               var xhr = new window.XMLHttpRequest();
 
-                ft.update();
-                location.hash = id;
-            })
+               xhr.addEventListener("progress", function(evt) {
+                   if (evt.lengthComputable) {
+                       var percentComplete = Math.floor(evt.loaded / evt.total * 100);
+
+                       $("#info").html( percentComplete + "%" );
+                   }
+               }, false);
+
+               return xhr;
+            },
+            url: "/doc/read",
+            data: {id : id},
+            success: function(r){
+              ft.selected = r;
+
+              if (!$("#doc-"+r.id).length)
+                $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
+                  .appendTo("#docs").html(ft.selected.text).hide().slideDown()//"slow");
+
+              ft.update();
+              location.hash = id;
+            }
+        });
+
+
+
 
         }
 
@@ -384,8 +449,8 @@ click: function(e) {
 
     } else if (e.hasClass("folder")) {
 
-       
-        $(".doc").hide();
+
+      //  $(".doc").hide();
         ft.selected = {};
 
     }
@@ -425,10 +490,9 @@ dblclick: function() {
         'class="form-control" placeholder="File name: "><span class="input-group-btn"><button id="aboutfile-delete" ' +
         'class="btn btn-default glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title=""></button></span></div>';
 
-    $(this).after(editHtml);
+    $("#info").html(editHtml);
 
     $("#aboutfile-delete").click(function() {
-
 
         if (!confirm("Are you sure you want to delete the file \"" + ft.selected.title + "\"?"))
             return;
@@ -449,16 +513,11 @@ dblclick: function() {
 
 
 
-    $("#aboutfile-title-edit").blur(function() {
-        setTimeout(function() {
-            $(".aboutfile-title-edit-container").remove();
-        }, 500);
-    })
 
 
 
 
-    $("#aboutfile-title-edit")[0].placeholder = 'New name: ' + ft.selected.title;
+    $("#aboutfile-title-edit")[0].placeholder = 'Rename: ' + ft.selected.title;
 
     $("#aboutfile-title-edit").focus();
     $("#aboutfile-title-edit")[0].focus()

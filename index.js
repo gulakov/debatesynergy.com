@@ -9,12 +9,12 @@ server = require('http').createServer(app).listen(80, function(){
 io = require('socket.io')(server);
 
 //database
-mongoose.connect('mongodb://localhost/debatedata', {server: { poolSize: 1 }});
+mongoose.connect('mongodb://localhost/debatedata', {server: { poolSize: 5 }});
 
 //middleware
 app.use(cookieParser());
-app.use(bodyParser.json({limit: '100mb'}));
-app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
+app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use(session({
     secret: 'cookie_secret',
     resave: true,

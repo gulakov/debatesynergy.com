@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-  
+
 //SIDEBAR BUTTONS
 
 $('button').tooltip();
@@ -53,8 +53,7 @@ $("#import_googledrive").click(function () {
 
         if (pickedFilesData.action!="picked") return;
 
-        gapi.client.drive.files.get({ 'fileId': pickedFilesData.docs[0].id   })
-          .execute(function(resp) {
+        gapi.client.drive.files.get({'fileId': pickedFilesData.docs[0].id}).execute(function(resp){
             $.ajax({
                 url: resp.exportLinks["text/html"],
                 type: 'GET',
@@ -67,6 +66,36 @@ $("#import_googledrive").click(function () {
                     //create new!!
 
                     $(".doc:visible").html(fileHtml)
+
+
+                    setTimeout( function(){
+
+                    $(".doc:visible *").each(function(){
+
+                      if( $(this).css('font-weight')=='bold' )
+                        $(this).addClass('read');
+
+                      if( $(this).css('text-decoration')=='underline' )
+                        $(this).addClass('readcard');
+
+                      if( $(this).css('background-color')!='rgba(0, 0, 0, 0)' )
+                          $(this).addClass('readcardsuper');
+
+                      if( $(this).css('text-align')=='center' )
+                        $(this).addClass('h1');
+
+
+
+                    })
+
+                    $(".doc:visible style").remove()
+
+                  }, 500);
+
+
+
+
+
 
                 }
             });
@@ -179,6 +208,46 @@ $("#normal").click(function() {
 })
 
 
+
+$('.dropdown-toggle').dropdown()
+
+
+$(".dropdown-menu").on("click", "li", function(e){
+
+
+  $(".doc:visible *").each(function(){
+
+    if( $(this).css('font-weight')=='bold' )
+      $(this).addClass('read');
+
+    if( $(this).css('text-decoration')=='underline' )
+      $(this).addClass('readcard');
+
+    if( $(this).css('background-color')!='rgba(0, 0, 0, 0)' )
+        $(this).addClass('readcardsuper');
+
+    if( $(this).css('text-align')=='center' )
+      $(this).addClass('h1');
+
+
+
+  })
+
+
+  $(".doc:visible style").remove()
+
+
+
+
+
+  var sm =  parseInt($(e.target).attr('class').substring(2));
+
+  $('body').attr('class','');
+  $('body').addClass("size-mode-"+sm);
+
+})
+
+
 $("#big").click(function() {
 
     u.big = !u.big ? 1 : u.big==2 ? 0 : 2;
@@ -198,19 +267,19 @@ for(var i =0; i < list.length; i++)
 
     if (u.big == 0){
 
-      $("#editor, .speech").find("*[style]").filter(function(){
+      $(".doc:visible, .speech").find("*[style]").filter(function(){
         return $(this).css('background-color') != "rgba(0, 0, 0, 0)";
-    }).css("font-size", "").css("line-height", "")
-        $("#editor, .speech").find("*[style*='yellow'], b, u, h1").css("font-size", "").css("line-height", "")
-      $("#editor, .speech").css("font-size","100%")
+        }).css("font-size", "").css("line-height", "")
+      $("#editor, .speech").find("*[style*='yellow'], b, u, h1").css("font-size", "").css("line-height", "")
+      $(".doc:visible, .speech").css("font-size","100%")
     }else if (u.big == 1){
-      $("#editor, .speech").find("*[style]").filter(function(){
+      $(".doc:visible, .speech").find("*[style]").filter(function(){
         return $(this).css('background-color') != "rgba(0, 0, 0, 0)";
-    }).css("font-size", "30pt").css("line-height", "100%");
-        $("#editor, .speech").find("*[style*='yellow'], b, u, h1").css("font-size", "30pt").css("line-height", "100%");
-        $("#editor, .speech").css("font-size","30%");
+        }).css("font-size", "30pt").css("line-height", "100%");
+      $(".doc:visible, .speech").find("*[style*='yellow'], b, u, h1").css("font-size", "30pt").css("line-height", "100%");
+      $(".doc:visible, .speech").css("font-size","30%");
     }else if (u.big == 2){
-        $("#editor, .speech").find("u").css("font-size", "").css("line-height", "")
+        $(".doc:visible, .speech").find("u").css("font-size", "").css("line-height", "")
 
     }
 
@@ -259,7 +328,7 @@ $("#searchtext").on('keydown', function(e) {
         var resp = "";
 
         if (u.name) {
-            $.post('/doc/search', {
+            $.getJSON('/doc/search', {
                 data: val
             }, function(resp) {
 
@@ -299,9 +368,9 @@ $("#searchtext").on('keydown', function(e) {
 
 
 
-        // new file dialog box 
+        // new file dialog box
 
-        
+
         $("#file-new").click(function() {
 
             $("#file-new-modal").modal('show');
@@ -394,5 +463,3 @@ $("#searchtext").on('keydown', function(e) {
 
 
 });
-
-

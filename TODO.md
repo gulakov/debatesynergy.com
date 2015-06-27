@@ -1,6 +1,7 @@
 
 rooms for socket
-update only when needed
+reeding mode - split pages flip option
+pdate only when needed
 
 style customization - obviously needed
 one button to cotntrol all views

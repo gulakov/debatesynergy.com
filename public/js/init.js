@@ -1,96 +1,133 @@
-
-
-
-var u = {};
-
-var local = !navigator.onLine;
-
-
-
-
-if (local){
-
-  u = true;
-
-  if (!localStorage.debate) {
-      localStorage.debate_local0 = '{"userid":"local","title":"First","text":"First file","id":"local0"}';
-      localStorage.debate = '[{"id":"local0","title":"First","type":"file","children":[]}]';
-  }
-
-  u.index = JSON.parse(localStorage.debate);
-
-  //init filetree
-  ft.init($('#filetree'), u.index);
-
-}else{
-
-  $.getJSON("/user", function (userJSON) {
-
-      u = userJSON || { };
-
-
-      if (u.index) { //user logged in
-           console.log(u.index);
-           u.index = JSON.parse(u.index);
-
-          
-
-           var customCSS = $("<style>").appendTo('head');
-           customCSS.html(u.custom_css)
-
-           var customJS = $("<script id='custom_script'>");
-           customJS.html(u.custom_js)
-           customJS.appendTo('body');
-
-
-          //remember to reauth
-          document.cookie='debatesynergylogin=true; expires=Mon, 1 Jan 2020 20:20:20 UTC; path=/';
-
-           //if (u.debatetype == 2) {
-
-            //   $("#aff2, #neg2").hide();
-          //     $("a[href='#speech2AC'], a[href='#speech2NC']").parent().hide();
-
-
-
-
-
-        } else if (document.cookie.indexOf("debatesynergylogin=")>-1){ //force login re-auth          
-            document.location.pathname = '/auth';
-
-        } else {  //give login button
-
-             $("#showround").click();
-
-            $("#sidebar").prepend($("<div>").addClass(" btn btn-danger btn-google-oauth"))
-            .find('.btn-google-oauth').click(function () {
-                document.location.pathname = '/auth';
-            });
-
-           u.index = [{"id": "home", "title": "Welcome","type":"file"}, {"id": "manual", "title": "Manual", "type":"file"}];
-          
-        };
-
-
-        //init filetree
-        ft.init($('#filetree'), u.index);
-
-    });
-
-
-}
-
-
+var u = {}, local = !navigator.onLine;
 //$.ajax({type:"GET", cache: false, url: "http://debatesynergy.com/?1", error: function(){ local = true;}});
 
-
 $(document).ready(function() {
-  
-  $(".ft-name").on('touchstart', function(e){  window.touchTimer = setTimeout(function(){ alert()} , 500); })
 
-            .on('touchend', function() {
-                clearTimeout(window.touchTimer);
-            });
+
+  //recognize speech
+
+  $(window).keydown(function(e){
+      if(e.keyCode == 192){
+
+
+
+
+
+          var recognition = new webkitSpeechRecognition();
+           recognition.continuous = true;
+           recognition.interimResults = true;
+
+         recognition.onresult = function(event) {
+             var final_transcript='',interim_transcript = '';
+
+             for (var i = event.resultIndex; i < event.results.length; ++i) {
+               if (event.results[i].isFinal) {
+                 final_transcript += event.results[i][0].transcript;
+               } else {
+                 interim_transcript += event.results[i][0].transcript;
+               }
+             }
+
+
+             var range = window.getSelection().getRangeAt(0);
+             var node = range.createContextualFragment(final_transcript);
+             range.insertNode(node);
+
+
+
+
+
+         };
+         recognition.start();
+
+
+
+
+      }
+
+  })
+
+
+
+
+
+
+
+  // init file trree
+  if (local){
+
+    u = true;
+
+    if (!localStorage.debate) {
+        localStorage.debate_local0 = '{"userid":"local","title":"First","text":"First file","id":"local0"}';
+        localStorage.debate = '[{"id":"local0","title":"First","type":"file","children":[]}]';
+    }
+
+    u.index = JSON.parse(localStorage.debate);
+
+    //init filetree
+    ft.init($('#filetree'), u.index);
+
+  }else{
+
+    $.getJSON("/user", function (userJSON) {
+
+        u = userJSON || { };
+
+
+        if (u.index) { //user logged in
+             console.log(u.index);
+             u.index = JSON.parse(u.index);
+
+
+
+             var customCSS = $("<style>").appendTo('head');
+             customCSS.html(u.custom_css)
+
+             var customJS = $("<script id='custom_script'>");
+             customJS.html(u.custom_js)
+             customJS.appendTo('body');
+
+
+            //remember to reauth
+  //          document.cookie='debatesynergylogin=true; expires=Mon, 1 Jan 2020 20:20:20 UTC; path=/';
+
+             //if (u.debatetype == 2) {
+
+              //   $("#aff2, #neg2").hide();
+            //     $("a[href='#speech2AC'], a[href='#speech2NC']").parent().hide();
+
+
+
+
+
+          } else if (document.cookie.indexOf("debatesynergylogin=")>-1){ //force login re-auth
+              document.location.pathname = '/auth';
+
+          } else {  //give login button
+
+               $("#showround").click();
+
+              $("#sidebar").prepend($("<div>").addClass(" btn btn-danger btn-google-oauth"))
+              .find('.btn-google-oauth').click(function () {
+                  document.location.pathname = '/auth';
+              });
+
+             u.index = [{"id":"home","title":"Home Page","type":"file ft-selected","children":[{"id":"home_0","title":" Welcome to Debate Synergy","type":"heading heading-h1"},{"id":"home_1","title":"  Debate Sidebar Word AddIn ","type":"heading heading-h1"},{"id":"home_2","title":" Manual ","type":"heading heading-h1"}]}];
+
+          };
+
+
+          //init filetree
+          ft.init($('#filetree'), u.index);
+
+      });
+
+
+  }
+
+
+
 
     //mobile swipe to toggle sidebar
     var touchStart;
@@ -101,7 +138,7 @@ $(document).ready(function() {
 
     $('body').on('touchend', function(e){
         dist =  e.originalEvent.changedTouches[0].pageX - touchStart;
-      
+
         if (Math.abs(dist) >= 100)
           if (dist < 0){
             $("#docs").css("width","100%");
@@ -114,15 +151,17 @@ $(document).ready(function() {
 
 
     //hash change to load doc
+    /*
     function loadHash(){
+      //return;
       if ($(location.hash).length && ft.selected.id != location.hash.replace('#','')){
-        
+
         $(location.hash).click();
-      } else if (location.hash=="#manual"){ 
+      } else if (location.hash=="#home"){
         ft.selected=false;
         $(".doc").hide('slow');
-        $("#doc-manual").show('slow');
-      } 
+        $("#doc-home").show('slow');
+      }
       else if (location.hash)
         $.get("/doc/read", {id: location.hash.replace("#",'')}, function (r) {
             if (r=="Access denied")
@@ -133,46 +172,176 @@ $(document).ready(function() {
     $(window).on('hashchange', loadHash);
     if (location.hash)
       loadHash();
-     
+      */
+
 
 
   //file upload
-  document.body.addEventListener("dragover", function (e) {
-    e.preventDefault();
-  }, false);
 
-  document.body.addEventListener("drop", function (e) {
-    e.preventDefault();
 
-    var files = e.dataTransfer.files;
-    console.log(files)
 
-    var reader = new FileReader();
-    
+document.body.addEventListener("dragover", function (e) {
+  //e.preventDefault();
+}, false);
 
-    $.each(files, function(i, j)  {
-        var reader = new FileReader();
-        
-        reader.onload = function(e) {
-          console.log(e.target);
-          fileText = e.target.result;
-          alert(files[i].name + "\n"+ fileText);
-        }
-        reader.readAsDataURL(files[i]);
-       // reader.readAsText(files[i]);
-    });
+$("#docs, #sidebar").on("drop", function (e) {
 
-  }, false);
+  var files = e.dataTransfer.files;
+  if (! e.dataTransfer.files)
+    return;
 
-    
+  e.preventDefault();
 
-  //upload only when needed
+      var reader = new FileReader();
 
-  new MutationObserver(function(mutations) {
-      mutations.forEach(function(i) {
-        console.log(i)
-      })
-  }).observe($(".doc")[0], {childList: true});
+      reader.onload = function(e) {
+        console.log(e.target);
+        fileText = e.target.result;
+
+        fileText = fileText.replace("data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,","")
+
+        var result = {}, zip = new JSZip(), zipTime, processTime, docProps, word, content;
+        var zip = new JSZip();
+
+        zip.load(fileText, {base64:true});
+
+
+
+
+
+
+        var output, inputDoc, i, j, k, id, doc, inNode, inNodeChild, outNode, outNodeChild, styleAttrNode, pCount = 0, tempStr, tempNode, val;
+
+
+
+        str2 = zip.files['word/styles.xml'].asText();
+
+    //    console.log(str2);
+
+        styleDom = $(new DOMParser().parseFromString(str2.replace(/<w:/g, '<').replace(/<\/w:/g, '</'), 'text/xml'));
+
+
+
+        /*
+        if (inNodeChild.getElementsByTagName('i').length)
+          val = '<i>' + val + '</i>';
+        if (inNodeChild.getElementsByTagName('u').length)
+          val = '<u>' + val + '</u>';
+        if (inNodeChild.getElementsByTagName('sz').length)
+          val = '<span style="font-size:' + (inNodeChild.getElementsByTagName('sz')[0]).getAttribute('w:val') / 2) + 'pt">' + val + '</span>';
+        if (inNodeChild.getElementsByTagName('highlight').length)
+          val = '<span style="background-color:' + inNodeChild.getElementsByTagName('highlight')[0]).getAttribute('w:val') + '">' + val + '</span>';
+*/
+
+
+
+
+
+          str = zip.files['word/document.xml'].asText();
+
+        //  console.log(str);
+
+          inputDoc = new DOMParser().parseFromString(str.replace(/<[a-zA-Z]*?:/g, '<').replace(/<\/[a-zA-Z]*?:/g, '</'), 'text/xml').firstChild.getElementsByTagName('body')[0];
+
+          output = document.createElement('p');
+
+    //      console.log(str);
+
+
+          for (i = 0; inNode = inputDoc.childNodes[i]; i++) {
+
+            tempStr = '';
+
+              outNode = document.createElement('P');
+            for (j = 0; j < inNode.childNodes.length ; j++) {
+
+              inNodeChild = inNode.childNodes[j];
+
+              if (inNodeChild.nodeName === 'pPr') {
+                  /*
+                styleAttrNode = inNodeChild.getElementsByTagName("rStyle")[0] || inNodeChild.getElementsByTagName("pStyle")[0];
+                if ( styleAttrNode){
+                  var styleName = styleAttrNode.getAttribute('w:val');
+
+                  var styleCustom = styleDom.find("*[w\\:styleId='"+styleName+"']")[0];
+
+                  if (styleCustom)
+                  inNodeChild.appendChild(styleCustom.cloneNode(true));
+
+                }
+
+                if (inNodeChild.getElementsByTagName('b').length)
+                  val = '<b>' + val + '</b>';
+                if (inNodeChild.getElementsByTagName('i').length)
+                  val = '<i>' + val + '</i>';
+                if (inNodeChild.getElementsByTagName('u').length)
+                  val = '<u>' + val + '</u>';
+                if (inNodeChild.getElementsByTagName('sz').length)
+                  val = '<span style="font-size:' + (inNodeChild.getElementsByTagName('sz')[0].getAttribute('w:val') / 2) + 'pt">' + val + '</span>';
+                if (inNodeChild.getElementsByTagName('highlight').length)
+                  val = '<span style="background-color:' + inNodeChild.getElementsByTagName('highlight')[0].getAttribute('w:val') + '">' + val + '</span>';
+
+                tempStr += '<p>'+val+'</p>';
+                */
+
+              }
+              if (inNodeChild.nodeName === 'r') {
+                val = $(inNodeChild).text();
+
+
+                styleAttrNode = inNodeChild.getElementsByTagName("rStyle")[0] || inNodeChild.getElementsByTagName("pStyle")[0];
+                if ( styleAttrNode){
+                  var styleName = styleAttrNode.getAttribute('w:val');
+
+                  var styleCustom = styleDom.find("*[w\\:styleId='"+styleName+"']")[0];
+
+                  if (styleCustom)
+                  inNodeChild.appendChild(styleCustom.cloneNode(true));
+
+            //      console.log(styleCustom)
+                }
+
+
+                if (inNodeChild.getElementsByTagName('b').length)
+                  val = '<b>' + val + '</b>';
+                if (inNodeChild.getElementsByTagName('i').length)
+                  val = '<i>' + val + '</i>';
+                if (inNodeChild.getElementsByTagName('u').length)
+                  val = '<u>' + val + '</u>';
+                if (inNodeChild.getElementsByTagName('sz').length)
+                  val = '<span style="font-size:' + (inNodeChild.getElementsByTagName('sz')[0].getAttribute('w:val') / 2) + 'pt">' + val + '</span>';
+                if (inNodeChild.getElementsByTagName('highlight').length)
+                  val = '<span style="background-color:' + inNodeChild.getElementsByTagName('highlight')[0].getAttribute('w:val') + '">' + val + '</span>';
+
+            //  console.log(val)
+
+                tempStr += val;
+              }
+
+            //  console.log(tempStr)
+
+            }
+              outNode.innerHTML = tempStr;
+
+              output.appendChild(outNode);
+          }
+
+
+
+    //    console.log(output)
+        $(".doc:visible").html( output.innerHTML)
+
+
+      }
+      reader.readAsDataURL(files[0]);
+
+
+});
+
+
+
+
+
 
 
 
@@ -191,18 +360,20 @@ $(document).ready(function() {
   .on('mousedown',function(e){
       if($(this).width() - e.offsetX < 15)
           dragStart = e.pageX;
-      
+
       $("body").bind('mousemove',function(e){
          e.preventDefault();
       })
-  });
-  $("body").on('mouseup',function(e){
-      $("body").unbind('mousemove');
-      if (dragStart){
-          $("#sidebar").css('width',e.pageX+'px');
-          dragStart=0;
+      .on('mouseup',function(e){
+        $("body").unbind('mousemove');
+        $("body").unbind('mouseup');
+        if (dragStart){
+            $("#sidebar").css('width',e.pageX+'px');
+            dragStart=0;
       }
   })
+  });
+
 
 
 
@@ -245,20 +416,6 @@ if ($(document).width() < 700) {
 
 
 
-setInterval(function() {
-    ft.update();
-}, 3000);
-
-window.setTimeout(function() {
-
-	if ($('.ft-selected').length)
-		$('.ft-selected').click();
-	else
-	    $('.ft-name:first').click();
-
-
-}, 1000);
-
 // remove # from login
 if (location.href.endsWith('#'))
   history.replaceState({}, document.title, "/");
@@ -285,6 +442,8 @@ $("#docs")[0].addEventListener("paste", function(e) {
     range = window.getSelection().getRangeAt(0);
     node = range.createContextualFragment(data);
     range.insertNode(node);
+
+    $("#docs style")
 
 
     if (data.indexOf("<meta") ){
@@ -336,8 +495,8 @@ $("#docs").click(function(e){
     return 2;
     else if (b == 1 && a < 4 )
     return 1;
-   
-    
+
+
   }
 
   start = p;

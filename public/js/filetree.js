@@ -386,11 +386,9 @@ click: function(e) {
 
             ft.selected = u.index.filter(function(i){return id == i.id;})[0];
 
-            console.log(id);
 
-            if (!$("#doc-"+id).length)
-              $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
-                .appendTo("#docs").html(ft.selected.text).hide().show("slow");
+            if ($("#doc-"+id).length)
+              $("#doc-"+id).slideDown()
 
             ft.update();
             location.hash = id;

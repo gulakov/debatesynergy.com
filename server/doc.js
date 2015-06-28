@@ -39,16 +39,13 @@ app.post('/update', function(req, res) {
     var title = req.body.title;
     var fileId = req.body.id;
 
-    if (text)
-        text = decodeURI(text);
-
 
    Doc.findOne({ _id: fileId}, function (e, f) {
 
         if (f && f.userid == req.user._id) {
 
             if (text)
-                Doc.findOneAndUpdate({_id: fileId}, {text: text}, function (e, i) {
+                Doc.findOneAndUpdate({_id: fileId}, {text: decodeURIComponent(text)}, function (e, i) {
                 });
             if (title)
                 Doc.findOneAndUpdate({_id: fileId}, {title: title}, function (e, i) {
@@ -87,15 +84,8 @@ app.get('/search', function(req, res) {
 });
 
 
-app.get('/delete',  function(req, res) {
-    var fileId = req.query.id;
+app.get('/delete', function(req, res){
+    Doc.remove({_id: req.query.id, userid: req.user._id}).exec();
 
-    Doc.findOne({_id: fileId},function (e, f) {
-
-        if (f && f.userid == req.user._id)
-            Doc.findOneAndRemove({_id: fileId}).exec(function(){ });
-
-        return res.end();
-    });
+    res.end();
 });
-

@@ -43,6 +43,7 @@ body,html{
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
+  line-height: 100%;
 }
 
 

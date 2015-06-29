@@ -1,3 +1,5 @@
+tablets use styulus just swipe over text to underline  it, maybe also disable keyboard cause its slow and annoying
+
 
 rooms for socket
 reeding mode - split pages flip option

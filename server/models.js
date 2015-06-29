@@ -5,18 +5,18 @@ exports.User = mongoose.model('User', new Schema({
     name:  String,
     custom_css: String,
     custom_js: String,
-    index: String,
+    index: Object,
     socket: String,
     options: Array,
     date_created: {type: Date, default: Date.now}
-}));
+}, { versionKey: false }));
 
 exports.Doc = mongoose.model('Doc', new Schema({
     userid: String,
     title: String,
     text: String,
     date: {type: Date, default: Date.now}
-}));
+}, { versionKey: false }));
 
 exports.Round = mongoose.model('Round', new Schema({
     aff1: String,
@@ -50,21 +50,21 @@ exports.Round = mongoose.model('Round', new Schema({
     scroll_2AR: {type: Number, default: 0},
 
     date_created: {type: Date, default: Date.now}
-}));
+}, { versionKey: false }));
 
 
 
 exports.Download = mongoose.model('Download', new Schema({
     ip: String,
     geo: String,
-    sys: String, 
+    sys: String,
     date: {type: Date, default: Date.now}
-}));
+}, { versionKey: false }));
 
 
 exports.Visit = mongoose.model('Visit', new Schema({
     ip: String,
     geo: String,
-    sys: String, 
+    sys: String,
     date: {type: Date, default: Date.now}
-}));
+}, { versionKey: false }));

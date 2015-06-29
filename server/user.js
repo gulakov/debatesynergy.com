@@ -7,8 +7,9 @@ app.all('/', function(req, res, next) {
     if (!req.user)
         res.send(false);
     else
-        User.findOne({_id: req.user._id},               
+        User.findOne({_id: req.user._id},
         function(err, u){
+          
             res.json(u);
         })
 });
@@ -16,25 +17,15 @@ app.all('/', function(req, res, next) {
 
 app.all('/update', auth, function(req, res) {
 
-    if (req.body.index)
-            User.findOneAndUpdate(
-                {_id: req.user._id},
-                {index: req.body.index},
-                function(err, u){
-                    res.json(u);
-                })
-    else if (req.body.custom_js)
-          User.findOneAndUpdate(
-                {_id: req.user._id},
-                {custom_js: req.body.custom_js, 
-                 custom_css: req.body.custom_css},
-                function(err, u){
-                    res.json(u);
-                })
+  User.update({_id: req.user._id},
+      (req.body.custom_js) ?
+        {custom_js: decodeURIComponent(req.body.custom_js),
+        custom_css: decodeURIComponent(req.body.custom_css)} :
+      (req.body.index) ? {index: JSON.parse(req.body.index) } : null
+      ).exec();
 
-
+  res.end();
 });
-
 
 
 app.get('/:email?', function(req, res) {

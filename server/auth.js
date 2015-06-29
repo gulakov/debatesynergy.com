@@ -39,8 +39,7 @@ passport.use(new GoogleStrategy({
                 text: "First file"
               }, function(err, firstDoc){
 
-                newAppUser.index= '[{"id":"' +
-                  firstDoc._id +'","title":"First","type":"file"}]';
+                newAppUser.index=[{id: firstDoc._id, title:"First", type:"file"}];
 
                 newAppUser.save(function(e){
 

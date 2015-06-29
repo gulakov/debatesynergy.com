@@ -32,8 +32,8 @@ $('#settings_save').click(function() {
     $.post("/user/update", {
        // debatetype: $(".debatetype:checked").val(),
        // teamname: $("#teamname").val(),
-        custom_css: $("#custom-css").val(),
-        custom_js: $("#custom-js").val()
+        custom_css: encodeURIComponent($("#custom-css").val()),
+        custom_js: encodeURIComponent($("#custom-js").val())
     },function(){
          location.reload();
     });
@@ -88,7 +88,7 @@ $("#import_googledrive").click(function () {
 
                     })
 
-                    $(".doc:visible style").remove()
+                    $(".doc style").remove()
 
                   }, 500);
 
@@ -234,7 +234,8 @@ $(".dropdown-menu").on("click", "li", function(e){
   })
 
 
-  $(".doc:visible style").remove()
+  $(".doc:visible style").remove();
+  
 
 
 

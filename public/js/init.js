@@ -77,7 +77,7 @@ $(document).ready(function() {
 
         if (u.index) { //user logged in
              console.log(u.index);
-             u.index = JSON.parse(u.index);
+            // u.index = uJSON.parse(u.index);
 
 
 
@@ -108,7 +108,7 @@ $(document).ready(function() {
 
                $("#showround").click();
 
-              $("#sidebar").prepend($("<div>").addClass(" btn btn-danger btn-google-oauth"))
+              $("#sidebar").prepend($("<a>").addClass(" btn btn-danger btn-google-oauth").attr("href","/auth"))
               .find('.btn-google-oauth').click(function () {
                   document.location.pathname = '/auth';
               });
@@ -151,7 +151,7 @@ $(document).ready(function() {
 
 
     //hash change to load doc
-    /*
+
     function loadHash(){
       //return;
       if ($(location.hash).length && ft.selected.id != location.hash.replace('#','')){
@@ -159,8 +159,8 @@ $(document).ready(function() {
         $(location.hash).click();
       } else if (location.hash=="#home"){
         ft.selected=false;
-        $(".doc").hide('slow');
-        $("#doc-home").show('slow');
+        $(".doc").slideUp();
+        $("#doc-home").slideDown()
       }
       else if (location.hash)
         $.get("/doc/read", {id: location.hash.replace("#",'')}, function (r) {
@@ -172,12 +172,9 @@ $(document).ready(function() {
     $(window).on('hashchange', loadHash);
     if (location.hash)
       loadHash();
-      */
-
 
 
   //file upload
-
 
 
 document.body.addEventListener("dragover", function (e) {
@@ -417,8 +414,8 @@ if ($(document).width() < 700) {
 
 
 // remove # from login
-if (location.href.endsWith('#'))
-  history.replaceState({}, document.title, "/");
+//if (location.href.endsWith('#'))
+//  history.replaceState({}, document.title, "/");
 
 
 

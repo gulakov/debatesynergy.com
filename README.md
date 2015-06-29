@@ -21,8 +21,6 @@ sudo npm start
 
 
 ### License
-Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com. 
-
-DebateSynergy.com website is provided "as is" without warranty.
+Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com. DebateSynergy.com is provided "as is" without warranty.
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RPK6PTFJ6ZJFC)

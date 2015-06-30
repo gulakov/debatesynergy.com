@@ -1,0 +1,7 @@
+2015-06-30T08:28:31.270+0000 [initandlisten] MongoDB starting : pid=1187 port=27017 dbpath=db 64-bit host=ip-172-31-49-118
+2015-06-30T08:28:31.270+0000 [initandlisten] db version v2.6.9
+2015-06-30T08:28:31.270+0000 [initandlisten] git version: df313bc75aa94d192330cb92756fc486ea604e64
+2015-06-30T08:28:31.270+0000 [initandlisten] build info: Linux build20.nj1.10gen.cc 2.6.32-431.3.1.el6.x86_64 #1 SMP Fri Jan 3 21:39:27 UTC 2014 x86_64 BOOST_LIB_VERSION=1_49
+2015-06-30T08:28:31.271+0000 [initandlisten] allocator: tcmalloc
+2015-06-30T08:28:31.271+0000 [initandlisten] options: { net: { bindIp: "127.0.0.1" }, storage: { dbPath: "db", journal: { enabled: false }, smallFiles: true }, systemLog: { quiet: true } }
+2015-06-30T08:28:31.384+0000 [initandlisten] waiting for connections on port 27017

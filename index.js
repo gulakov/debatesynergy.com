@@ -4,7 +4,7 @@ cookieParser = require('cookie-parser'),
 session = require('express-session'),
 mongoose = require('mongoose'),
 server = require('http').createServer(app).listen(80, function(){
-	console.log("SERVER STARTED " + (new Date().toLocaleString()));
+	console.log("SERVER STARTED " + new Date().toLocaleString());
 }),
 io = require('socket.io')(server);
 

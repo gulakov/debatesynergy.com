@@ -47,11 +47,14 @@ app.get('/', function(req, res, next){
       var r = JSON.parse(body), geo = r.city != null ? r.city + " " + r.country : r.country;
 
       Visit.findOne({ip: ip}, function (err, f) {
-        console.log("Visit: " + geo + " " + sys);
 
-	if (!f && !sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi))
-            Visit.create({ ip: ip, geo: geo, sys: sys}, function(e,f){});
 
+	       if (!sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi)){
+           console.log("Visit: " + geo + " " + sys + " " + new Date().toLocaleString());
+
+           if (!f)
+              Visit.create({ ip: ip, geo: geo, sys: sys});
+         }
 
 
 

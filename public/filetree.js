@@ -317,9 +317,9 @@ update: function() {
           $.post('/user/update', {
               index: JSON.stringify(u.index)
           });
+          //  ft.selected.id == location.hash.replace("#",'')
 
-          if (ft.selected && ft.uploadNeeded &&
-            ft.selected.id == location.hash.replace("#",'')
+          if (ft.selected && ft.uploadNeeded 
             && ft.selected.id == $(".doc:visible").attr('id').replace("doc-",'')){
             ft.uploadNeeded = false;
 
@@ -373,7 +373,7 @@ click: function(e) {
                     .appendTo("#docs").html(ft.selected.text).hide().show("slow");
 
                 ft.update();
-                location.hash = id;
+                lhistory.pushState(null, "", ft.selected.id);
 
                 $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
             })
@@ -434,7 +434,12 @@ click: function(e) {
                   .appendTo("#docs").html(ft.selected.text).hide().slideDown()//"slow");
 
               ft.update();
-              location.hash = id;
+
+
+              history.pushState(null, "", ft.selected.id);
+
+
+//              location.hash = id;
             }
         });
 

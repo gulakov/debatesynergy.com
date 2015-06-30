@@ -5,3 +5,5 @@
 2015-06-30T08:28:31.271+0000 [initandlisten] allocator: tcmalloc
 2015-06-30T08:28:31.271+0000 [initandlisten] options: { net: { bindIp: "127.0.0.1" }, storage: { dbPath: "db", journal: { enabled: false }, smallFiles: true }, systemLog: { quiet: true } }
 2015-06-30T08:28:31.384+0000 [initandlisten] waiting for connections on port 27017
+2015-06-30T09:58:47.584+0000 [conn1] command debatedata.$cmd command: dbStats { dbStats: null } keyUpdates:0 numYields:0 locks(micros) r:335286 reslen:298 335ms
+2015-06-30T10:26:26.418+0000 [conn1] command debatedata.$cmd command: dbStats { dbStats: null } keyUpdates:0 numYields:0 locks(micros) r:271423 reslen:298 271ms

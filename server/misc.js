@@ -51,7 +51,7 @@ app.get('/', function(req, res, next){
 
 	if (!f && !sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi))
             Visit.create({ ip: ip, geo: geo, sys: sys}, function(e,f){});
- 
+
 
 
 
@@ -63,10 +63,18 @@ app.get('/', function(req, res, next){
 
   });
 
-	
+
 
 });
 
+
+app.get(/[a-z0-9]{24}/, function(req, res){
+  //res.send('hi');
+
+  res.sendFile('public/index.html', { root: __dirname.replace("/server","") });
+  //  res.sendfile(__dirname + '/../public/index.html');
+
+});
 
 
 //forever autorefresh

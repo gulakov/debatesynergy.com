@@ -153,24 +153,24 @@ $(document).ready(function() {
     //hash change to load doc
 
     function loadHash(){
-      //return;
-      if ($(location.hash).length && ft.selected.id != location.hash.replace('#','')){
+      var id = location.pathname.substr(1);
 
-        $(location.hash).click();
-      } else if (location.hash=="#home"){
+      if ($('#'+id).length && ft.selected.id != id){
+        $('#'+id).click();
+      } else if (id=="home"){
         ft.selected=false;
         $(".doc").slideUp();
         $("#doc-home").slideDown()
       }
-      else if (location.hash)
-        $.get("/doc/read", {id: location.hash.replace("#",'')}, function (r) {
+      else if (id)
+        $.get("/doc/read", {id: id}, function (r) {
             if (r=="Access denied")
               alert(r);
         })
     }
 
-    $(window).on('hashchange', loadHash);
-    if (location.hash)
+    $(window).on('popstate', loadHash);
+    if (location.pathname)
       loadHash();
 
 

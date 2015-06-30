@@ -235,7 +235,7 @@ $(".dropdown-menu").on("click", "li", function(e){
 
 
   $(".doc:visible style").remove();
-  
+  $(".readcard, .read, .readcardsuper").css("line-height", "100%" )
 
 
 

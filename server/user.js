@@ -1,5 +1,5 @@
 var app = require('express').Router(), model = require('./models');
-var User = model.User;
+var User = model.User, Doc = model.Doc;
 module.exports = app;
 
 app.all('/', function(req, res, next) {
@@ -14,6 +14,23 @@ app.all('/', function(req, res, next) {
         })
 });
 
+app.all('/recover', auth, function(req, res, next) {
+
+  Doc.find({userid: req.user._id}, function(e, docs) {
+
+    var index = [];
+
+    for(var i in docs)
+      index.push({id: docs[i]._id, title: docs[i].title, type: "file"});
+
+
+    User.update({_id: req.user._id}, {index: index }).exec();
+
+    res.json(index);
+
+  });
+
+});
 
 app.all('/update', auth, function(req, res) {
 
@@ -21,7 +38,8 @@ app.all('/update', auth, function(req, res) {
       (req.body.custom_js) ?
         {custom_js: decodeURIComponent(req.body.custom_js),
         custom_css: decodeURIComponent(req.body.custom_css)} :
-      (req.body.index) ? {index: JSON.parse(req.body.index) } : null
+      (req.body.index) ? 
+        {index: JSON.parse(req.body.index) } : null
       ).exec();
 
   res.end();

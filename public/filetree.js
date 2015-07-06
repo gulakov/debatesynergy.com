@@ -1,3 +1,7 @@
+//TODO create parenting -- when you're dragging the headings and have an icon for it
+//collapsible headign levels and auto load which level
+//dragging headigns into another documents
+
 var ft = {
 init: function(el, json) {
 
@@ -10,15 +14,21 @@ init: function(el, json) {
 
     //update filetree and save every 10s
     setInterval(function() {
-        ft.update();
+      if(typeof(MutationObserver)=="undefined")
+        ft.uploadNeeded = true;
+
+      ft.update();
     }, 10000);
 
     //update triggered only when needed
-    ft.uploadNeeded = false;
+      ft.uploadNeeded = false;
 
-    new MutationObserver(function(mutations) {
-      ft.uploadNeeded = true;
-    }).observe($("#docs")[0], {childList: true, subtree: true});
+      if(typeof(MutationObserver)!="undefined")
+        new MutationObserver(function(m) {
+        console.log(m);
+        ft.uploadNeeded = true;
+      }).observe($("#docs")[0], {childList: true, subtree: true});
+
 
     //click selected on init
     window.setTimeout(function() {
@@ -28,122 +38,109 @@ init: function(el, json) {
         //    $('.ft-name:first').click();
     }, 500);
 
+
+
     //drag and rearrange file order
-    $(document).on("dragstart", function(e) {
+    $('#filetree').on("dragstart", function(e) {
         ft.dragging = $(e.target).closest('.ft-item');
 
         $(e.target).addClass("ft-being-dragged");
-
+    })
+    .on("dragend", function(e) {
+       // $(e.target).removeClass("ft-being-dragged");
     });
-
-    $(document).on("dragend", function(e) {
-        $(e.target).removeClass("ft-being-dragged");
-    });
-
     $(document).on("dragover", function(e) {
         e.preventDefault();
-    });
-
-    $(document).on("dragenter", function(e) {
-
+    })
+    .on("dragenter", function(e) {
         e = $(e.target).closest('.ft-item');
-
         if (e)
             e.addClass("ft-dragged-over")
-
-    });
-
-    $(document).on("dragleave", function(e) {
+    })
+    .on("dragleave", function(e) {
         e = $(e.target).closest('.ft-item');
         if (e)
             e.removeClass("ft-dragged-over")
-    });
-
-
-    $("#filetree").on("drop", function(e) {
-        // prevent default action (open as link for some elements)
+    })
+    .on("drop", function(e) {
+        // prevent default action
         e.preventDefault();
+        //ft-name receiving the drop
+        var dropItem = $(e.target).closest('.ft-name');
+
+        //remove drop item's highlite
+        $(e.target).css("color", "none");
+        ft.dragging.removeClass("ft-being-dragged");
+
+        console.log(ft.dragging);
+        console.log(dropItem);
+
+        //dropped outside the tree (no drop item)
+        if(!dropItem.length){
+            $('#filetree > .ft-list > .ft-item:last').after(ft.dragging);
+        
+        //folder/file: dropped onto: folders (next, child),  files (next)
+        } else if (ft.dragging.find(".ft-name").hasClass("folder") 
+          || ft.dragging.find(".ft-name").hasClass("file")) {
+
+            if(dropItem.hasClass("folder") && e.originalEvent.clientX > 150){ //child margin
+              if (!dropItem.find('.ft-list').length)
+                    dropItem.append("<div class='ft-list'>")
+
+                dropItem.find('.ft-list').append(ft.dragging);
+
+            }else if(dropItem.hasClass("folder") || dropItem.hasClass("file")){
+
+              dropItem.after(ft.dragging);
+            } else //don't allow others
+              return; 
 
 
-        if (e.originalEvent.clientX > 100) {
-            //subchild
-            e = $(e.target).closest('.ft-item');
-            if (e.length) {
-                if (!e.find('.ft-list').length)
-                    e.append("<div class='ft-list'>")
+        //headings: dropped onto files (child) or headings (next)
+        } else if (ft.dragging.find(".ft-name").hasClass("heading")) {
 
-                e.find('.ft-list').append(ft.dragging);
+            if(dropItem.hasClass("files")){ 
+              if (!dropItem.find('.ft-list').length)
+                    dropItem.append("<div class='ft-list'>")
 
+                dropItem.find('.ft-list').append(ft.dragging);
 
+            }else if(dropItem.hasClass("heading")){
 
+              dropItem.after(ft.dragging);
+            } else //don't allow others
+              return; 
 
-            } else {
-                $('#filetree > .ft-list > .ft-item:last').after(ft.dragging);
-
-            }
-            e.css("color", "none");
-
-        } else {
-
-            e = $(e.target).closest('.ft-item');
-
-            e.after(ft.dragging);
-
-
-        }
-
-
-        if (ft.dragging.hasClass("heading")) {
-
-
+            //TODO headings in other files
+            //move text block under the drag heading to the dropped heading location
             var dragId = ft.dragging.find(".ft-name").attr("id");
             dragId = parseInt(dragId.substring(dragId.indexOf("_") + 1));
-            var dropId = e.find(".ft-name").attr("id");
-            dropId = parseInt(dropId.substring(dropId.indexOf("_") + 1));
-
-
-            var headList = $("#editor h1, #editor h2, #editor h3");
-
+            var dropId = parseInt(dropItem.attr("id").substring(dropItem.attr("id").indexOf("_") + 1));
+            var headList = $(".doc:visible").find("h1,h2,h3");
             var dropHead = headList.eq(dropId + 1);
-
-
-
-
             var dragHead = headList.eq(dragId)[0];
-            var end = headList.eq(1 + dragId).prev()[0];
-
+            var dragEnd = headList.eq(1 + dragId).prev()[0];
 
             var range = document.createRange();
             range.selectNodeContents(dragHead);
-            range.setEnd(end, end.childNodes.length);
+            range.setEnd(dragEnd, dragEnd.childNodes.length);
 
-            var div = $("<span>");
+            var blockToMove = $("<span>");
+            blockToMove.append(range.extractContents());
 
-            div.append(range.extractContents());
-
-            // alert( div.html() )
-
-
-
-            dropHead.before(div)
-
-
+            console.log(blockToMove.html());
+            dropHead.before(blockToMove);
         }
 
+        //remove original item if got to this point
+        $(".ft-being-dragged:first").closest('.ft-item').remove();
 
-
-
+        ft.uploadNeeded=true;
+        ft.update();
     });
 
-      $(".ft-name").on('touchstart', function(e){
-        window.touchTimer = setTimeout(
-          ft.doubleclick.call(e.target),
-          500); })
-          .on('touchend', function() {
-              clearTimeout(window.touchTimer);
-          });
 
-    //long touch
+    //long touch on mobile
     setTimeout(function(){
       $('.ft-name')
         .on('click', ft.click)
@@ -165,6 +162,15 @@ init: function(el, json) {
 
 
     }, 500);
+
+
+      $(".ft-name").on('touchstart', function(e){
+        window.touchTimer = setTimeout(
+          ft.doubleclick.call(e.target),
+          500); })
+          .on('touchend', function() {
+              clearTimeout(window.touchTimer);
+          });
 
     $('.ft-name')
         .on('click', ft.click)
@@ -319,7 +325,7 @@ update: function() {
           });
           //  ft.selected.id == location.hash.replace("#",'')
 
-          if (ft.selected && ft.uploadNeeded 
+          if (ft.selected && ft.uploadNeeded
             && ft.selected.id == $(".doc:visible").attr('id').replace("doc-",'')){
             ft.uploadNeeded = false;
 
@@ -339,13 +345,189 @@ update: function() {
 
 },
 
+loadFile: function (id, headingId){
+
+         //allow only one fileLoad at a time, break older if newer is started
+        ft.ongoingXhrId = id;
+
+		//hide current doc
+        $(".doc:visible").slideUp() ;
+
+        //show selected doc if it's
+        if ($("#doc-"+id).length){
+            ft.selected = {};
+             $("#doc-"+id).slideDown()
+        }
+
+
+        $.ajax({
+          xhr: function() {
+          	//download percentage as the download is in progress
+			var xhr = new window.XMLHttpRequest();
+			xhr.addEventListener("progress", function(evt) {
+			 if (evt.lengthComputable) {
+			     var percentComplete = Math.floor(evt.loaded / evt.total * 100);
+
+			     if(ft.ongoingXhrId == id)
+			     	$("#info").html( percentComplete + "% " );
+			     else
+			     	xhr.abort();
+
+			 }
+			}, false);
+
+			return xhr;
+          },
+          url: "/doc/read",
+          data: {id : id},
+          success: function(r){
+
+            if (r=="Not found" && confirm("File id " + id + " is not found. Remove from file tree?")){
+              $(".ft-selected").closest('.ft-item').remove();
+              ft.selected = {};
+              return;
+            }
+
+
+            ft.selected = r;
+
+            //*** CREATE INFO PANEL
+            $("#info").html("<span style='display:inline-block' id='file-current-title'>"+ft.selected.title+"</span>")
+
+            // update title: allowed for owner, share; disabled for public
+            if( u._id == ft.selected.userid || ft.selected.share.indexOf(u.email)>-1){
+
+              $("#file-current-title").attr('contenteditable', true);
+
+              $("#file-current-title").on('keydown',function(e) {
+
+                if (e.keyCode!=13) return;
+                e.preventDefault();
+
+                  var fileTitle = $(this).text();
+
+                  $("#"+ft.selected.id).html(fileTitle);
+
+                  if (local) {
+                      ft.selected.title = fileTitle;
+                      localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
+                  } else {
+                      $.post('/doc/update', {
+                          title: fileTitle,
+                          id: ft.selected.id
+                      });
+                  }
+
+                  ft.updateNeeded=true; ft.update();
+
+                });
+
+              }
+
+
+            //delete button: for owner deletes file, for share & public removes from tree
+
+            $("#info").append('<button id="aboutfile-delete" style="float:right;margin-top: -20px; display:inline-block" class="btn  btn-xs  btn-default glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title=""></button>')
+
+            $("#aboutfile-delete").click(function() {
+                if( u._id == ft.selected.userid){ //if owner of this doc
+                if (!confirm("Are you sure you want to delete the file \"" + ft.selected.title + "\"?"))
+                    return;
+
+                if (local)
+                    localStorage.removeItem("debate_" + ft.selected.id);
+                else
+                    $.get("/doc/delete", {id: ft.selected.id});
+
+
+                } else{ // shared user of this doc
+                  if (!confirm("The original file owner will retain this file. Are you sure you want to remove \"" + ft.selected.title + "\" from your file tree?"))
+                      return;
+
+                  //remove user from Doc.share
+                }
+
+                $("#"+ft.selected.id).closest('.ft-item').remove();
+
+                ft.updateNeeded=true;
+                ft.update();
+
+
+            });
+
+
+            //update share user, only for owner
+            if( u._id == ft.selected.userid){
+
+                $("#info").append("<div id='file-share-container'>Share:</span><span style='display: initial; width:100%;' id='file-sharing' contenteditable='true'>[emails], public, public edit</span></div>");
+
+                  if (ft.selected.share.length)
+                    $("#file-sharing").val(ft.selected.share.join(", "))
+
+
+                  $("#file-sharing")
+                  .on('focus', function(){
+                    if ('[emails], public, public edit'==$("#file-sharing").text())
+                      $("#file-sharing").empty();
+                  })
+                  .on('keydown',function(e) {
+
+                    if (e.keyCode!=13) return;
+                    e.preventDefault();
+
+                    var shareList =   $("#file-sharing").text().split(',').map(function(i){return i.trim();});
+                    $.post('/doc/update', {
+                        id: ft.selected.id,
+                        share: $("#file-sharing").val()
+                    }, function(r){
+                      $("#file-sharing").val(r.join(", "));
+                      $("#file-sharing").addClass('btn-info');
+                      setTimeout(function(){
+                          $("#file-sharing").removeClass('btn-info');
+                      }, 1000)
+
+                    });
+
+
+                  })
+
+            }
+
+
+
+
+
+            //show doc
+            if (!$("#doc-"+r.id).length)
+              $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
+                .appendTo("#docs").html(ft.selected.text).hide().slideDown();
+
+
+            ft.updateNeeded = true;
+            ft.update();
+
+
+            history.pushState(null, "", ft.selected.id);
+
+             $(".doc").attr('contenteditable', true);
+            if(headingId)
+              $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
+
+
+      } });
+
+
+},
+
+
 click: function(e) {
     e = typeof e == "string" ? $("#" + e) : $(e.target);
 
     var id = e.attr('id');
+    var headingId = false;
 
 
-
+    //TODO loading file inderectly or always showign the file name selected even as headers change
     $('.ft-selected').removeClass('ft-selected');
     e.closest('.ft-name').addClass('ft-selected');
 
@@ -354,38 +536,21 @@ click: function(e) {
 
     if (e.hasClass("heading")) {
 
-        var headingId = id.substring(id.indexOf("_") + 1);
+        headingId = parseInt(id.substring(id.indexOf("_") + 1));
         id = id.substring(0, id.indexOf("_"));
 
-        if (ft.selected.id == id) {
+        if (ft.selected.id == id &&   $(".doc:visible").attr('id').replace("doc-",'') == id)
             $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
-        } else {
+        else  //if clicked on header in unopened file, load that file, then go to header
+          ft.loadFile(id, headingId);
 
 
-            $.getJSON("/doc/read", {
-                id: id
-            }, function(r) {
-                ft.selected = r;// load heading if it's on non-selected file
-
-
-                if (!$("#doc-"+id).length)
-                  $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
-                    .appendTo("#docs").html(ft.selected.text).hide().show("slow");
-
-                ft.update();
-                lhistory.pushState(null, "", ft.selected.id);
-
-                $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
-            })
-
-        }
 
     } else if (e.hasClass("file")) {
 
-        if (!u.name) { //welcome screen
+        if (!u.name) { //SPECIAL PAGE: guest user welcome screen
 
             ft.selected = u.index.filter(function(i){return id == i.id;})[0];
-
 
             if ($("#doc-"+id).length)
               $("#doc-"+id).slideDown()
@@ -393,68 +558,18 @@ click: function(e) {
             ft.update();
             location.hash = id;
 
-        } else if (local) {
+        } else if (local) {//  ft.selected = JSON.parse(localStorage["debate_" + id]);
+          //TODO
 
-            ft.selected = JSON.parse(localStorage["debate_" + id]);
+        } else //load file when clicked on filetitle
+          ft.loadFile(id);
 
-
-              // show for local
-
-        } else {
-
-
-          $(".doc:visible").slideUp() //"slow");
-
-          if ($("#doc-"+id).length){
-             //ft.selected = false;
-               $("#doc-"+id).slideDown()//"slow");
-          }
-
-          $.ajax({
-            xhr: function() {
-               var xhr = new window.XMLHttpRequest();
-
-               xhr.addEventListener("progress", function(evt) {
-                   if (evt.lengthComputable) {
-                       var percentComplete = Math.floor(evt.loaded / evt.total * 100);
-
-                       $("#info").html( percentComplete + "%" );
-                   }
-               }, false);
-
-               return xhr;
-            },
-            url: "/doc/read",
-            data: {id : id},
-            success: function(r){
-              ft.selected = r;
-
-              if (!$("#doc-"+r.id).length)
-                $("<div>").addClass("doc").attr("id","doc-"+ft.selected.id).attr("contenteditable",true)
-                  .appendTo("#docs").html(ft.selected.text).hide().slideDown()//"slow");
-
-              ft.update();
-
-
-              history.pushState(null, "", ft.selected.id);
-
-
-//              location.hash = id;
-            }
-        });
-
-
-
-
-        }
-
-         $(".doc").attr('contenteditable', true);
 
     } else if (e.hasClass("folder")) {
 
-
+      //TODO
       //  $(".doc").hide();
-        ft.selected = {};
+        //ft.selected = {};
 
     }
 
@@ -486,70 +601,9 @@ dblclick: function() {
 
     if (!$(this).hasClass("file") && !$(this).hasClass("folder"))
         return;
-
-
-
-    var editHtml = '<div class="aboutfile-title-edit-container input-group input-group-sm"><input id="aboutfile-title-edit" type="text" ' +
-        'class="form-control" placeholder="File name: "><span class="input-group-btn"><button id="aboutfile-delete" ' +
-        'class="btn btn-default glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title=""></button></span></div>';
-
-    $("#info").html(editHtml);
-
-    $("#aboutfile-delete").click(function() {
-
-        if (!confirm("Are you sure you want to delete the file \"" + ft.selected.title + "\"?"))
-            return;
-
-        if (local)
-            localStorage.removeItem("debate_" + ft.selected.id);
-        else
-            $.get("/doc/delete", {
-                id: ft.selected.id
-            });
-
-
-        $(".selected").closest(".ft-item").remove();
-
-        ft.update();
-
-    });
-
-
-
-
-
-
-
-    $("#aboutfile-title-edit")[0].placeholder = 'Rename: ' + ft.selected.title;
-
-    $("#aboutfile-title-edit").focus();
-    $("#aboutfile-title-edit")[0].focus()
-
-    $("#aboutfile-title-edit").change(function() {
-
-        var fileTitle = $(this).val();
-
-        $(".ft-selected").html(fileTitle);
-        $(".aboutfile-title-edit-container").remove();
-
-        if (local) {
-            ft.selected.title = fileTitle;
-            localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
-        } else {
-            $.post('/doc/update', {
-                title: fileTitle,
-                id: ft.selected.id
-            });
-        }
-
-
-    });
+    //TODO what should dblclick/ longtouch on file titles do?
 
 },
 
 
-
-
 };
-
-//fix parenting

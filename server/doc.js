@@ -1,26 +1,33 @@
 var app = require('express').Router(), model = require('./models');
-var Doc = model.Doc;
+var Doc = model.Doc, User = model.User;
 module.exports = app;
 
+// return doc of given ID only if user is owner, share, or public doc
 app.get('/read', function(req, res) {
     var fileId = req.query.id;
+    res.header("Content-Type", "application/json; charset=utf-8");
 
     Doc.findOne({_id: fileId}, function (e, f) {
-        if (f && f.userid == req.user._id)
+        if (!f)
+          return  res.json("Not found");
+
+         if(f.userid == req.user._id || f.share.indexOf(req.user.email)>-1
+            || f.share.indexOf("public")>-1 || f.share.indexOf("public edit")>-1)
             res.json({
                 id:f._id,
                 userid:f.userid,
                 title:f.title,
-                text:f.text
+                text:f.text,
+                share: f.share
             });
         else
             res.send("Access denied");
-        
-        
-    });
+
+
+    })
 });
 
-
+//create a blank doc with a given title and return ID
 app.get('/create', function(req, res) {
 
     Doc.create({
@@ -32,37 +39,80 @@ app.get('/create', function(req, res) {
     });
 });
 
-
+//for given doc id, update text, title, or shared
 app.post('/update', function(req, res) {
 
-    var text = req.body.text;
-    var title = req.body.title;
-    var fileId = req.body.id;
+  var fileId = req.body.id;
+  var text = req.body.text;
+  var title = req.body.title;
+  var share = req.body.share;
 
+  Doc.findOne({ _id: fileId}, function (e, f) {
 
-   Doc.findOne({ _id: fileId}, function (e, f) {
+      if (!f)  return res.end();
 
-        if (f && f.userid == req.user._id) {
-
-            if (text)
-                Doc.findOneAndUpdate({_id: fileId}, {text: decodeURIComponent(text)}, function (e, i) {
-                });
-            if (title)
-                Doc.findOneAndUpdate({_id: fileId}, {title: title}, function (e, i) {
-                });
-
+      //update text body -- allowed for owner, collaborators, and "public edit"
+      if (text && (f.userid == req.user._id || f.share.indexOf(req.user.email)>-1
+       || f.share.indexOf("public edit")>-1) ){
+          Doc.update({_id: fileId}, {text: decodeURIComponent(text)}).exec();
+          return res.end();
         }
 
-        return res.end();
+      //update doc title -- allowed for owner
+      if (title  && f.userid == req.user._id){
+          Doc.update({_id: fileId}, {title: title}).exec();
+          return res.end();
+        }
+
+      //udpate whom to share with -- allowed for owner
+      if (share && f.userid == req.user._id){
+
+          share = share.split(',').map(function(i){return i.trim();});
+          Doc.update({_id: fileId}, {share: []}).exec();
+
+          for (var i in share)
+            if (share[i]=="public"||share[i]=="public edit")
+              Doc.update({_id: fileId}, {$push: {share: share[i]}},  {safe: true, upsert: true}).exec();
+            else
+              User.findOne({$or:[{email: share[i]}, {name: share[i]}]}, function (e, u) {
+                //find the users to share with by email
+                if (u){
+                  console.log(req.user.email + " shared " + fileId + " with " + u.email)
+
+                  Doc.update({_id: fileId}, {$push: {share: u.email}},  {safe: true, upsert: true}).exec();
+
+                  //and append file to share user's index if not existing
+                  if(JSON.stringify(u.index).indexOf(f._id)==-1)
+                    User.update({_id: u._id},
+                      {$push: {index: {"id": f._id, "title": f.title, "type": "file"} }},  {safe: true, upsert: true}).exec();
+
+                  //TODO: authorize sharing with users, and updtae their tree refresh so their sessions update doesnt overrite
+
+                } else  //if user doesnt exist for that email, delete them and decrease index
+                   share.splice(i--,1);
+
+
+               //after looping thru all, return valid users
+               if (i==share.length-1)
+                 return res.json(share)
+
+
+
+            });
+          }
+
+
+
+
 
     });
 });
 
-
+//takes a search string, search all user's docs text content
 app.get('/search', function(req, res) {
 
     var data = req.query.data;
-    
+
     Doc.find()
         .where({userid: req.user._id})
         .sort('title')
@@ -83,9 +133,9 @@ app.get('/search', function(req, res) {
 
 });
 
-
+//delete doc id by removing ownership
 app.get('/delete', function(req, res){
-    Doc.remove({_id: req.query.id, userid: req.user._id}).exec();
+    Doc.update({_id: req.query.id, userid: req.user._id}, {userid: "trash"}).exec();
 
     res.end();
 });

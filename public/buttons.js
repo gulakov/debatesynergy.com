@@ -78,7 +78,7 @@ $("#import_googledrive").click(function () {
                       if( $(this).css('text-decoration')=='underline' )
                         $(this).addClass('readcard');
 
-                      if( $(this).css('background-color')!='rgba(0, 0, 0, 0)' )
+                      if( $(this).css('background-color')!='rgba(0, 0, 0, 0)' && $(this).css('background-color')!='transparent')
                           $(this).addClass('readcardsuper');
 
                       if( $(this).css('text-align')=='center' )
@@ -152,14 +152,14 @@ $("#speech1AC, #speech1NC").on("scroll", function() {
 $("#block").click(function() {
 
 
-
       var headingToUse =  "h1";
       var parentHeading =  $(  window.getSelection().anchorNode.parentNode ).closest("h1");
 
       if ( parentHeading.length > 0 )
         parentHeading[0].outerHTML =  parentHeading.html();
       else
-        document.execCommand('formatBlock', false, headingToUse);
+        if (!document.execCommand('formatBlock', false, headingToUse)); //CH/FF
+          document.execCommand('formatBlock', false, "<"+headingToUse+">"); //IE
 
 
 
@@ -291,21 +291,21 @@ for(var i =0; i < list.length; i++)
 
 $("#showround").click(function() {
     if ($("#round").is(":visible")) {
-        $("#round").hide();
+        $("#round, #timer").hide();
 
         if ($(document).width() < 700)
-          $("#editor").css("width", "65%");
+          $("#docs").css("width", "65%");
         else
-          $("#editor").css("width", "85%");
+          $("#docs").css("width", "85%");
 
     } else {
-        $("#round").show();
+        $("#round, #timer").show();
 
         if ($(document).width() < 700) {
           $("#round").css("width", "65%");
-          $("#editor").css("width", "0%");
+          $("#docs").css("width", "0%");
         }else{
-          $("#editor").css("width", "40%");
+          $("#docs").css("width", "40%");
           $("#round").css("width", "45%");
 
         }

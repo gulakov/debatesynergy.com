@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -v -w . > public/server.txt &",
     "start-out": "forever --minUptime=10 --spinSleepTime=2000 -v -w .",
-    "mongo": "nohup service mongodb stop &&  rm -f db/mongod.lock &&  mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1 --quiet > public/server.txt&",
+    "mongo": "nohup service mongodb stop &&  rm -f db/mongod.lock &&  mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1 --quiet &",
     "admin": "nohup node node_modules/mongo-express/app.js &",
     "setup": " npm install forever -g && mkdir db && mv node_modules/mongo-express/config.default.js node_modules/mongo-express/config.js"
   },

@@ -15,7 +15,9 @@ exports.Doc = mongoose.model('Doc', new Schema({
     userid: String,
     title: String,
     text: String,
-    date: {type: Date, default: Date.now}
+    share: Array,
+    date_created: {type: Date, default: Date.now},
+    date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));
 
 exports.Round = mongoose.model('Round', new Schema({
@@ -49,7 +51,8 @@ exports.Round = mongoose.model('Round', new Schema({
     scroll_2NR: {type: Number, default: 0},
     scroll_2AR: {type: Number, default: 0},
 
-    date_created: {type: Date, default: Date.now}
+    date_created: {type: Date, default: Date.now},
+    date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));
 
 

@@ -11,6 +11,7 @@ body,html{
     display: flex;
     flex-direction: row;
     overflow-x: hidden;
+    font-family: 'Lato', sans-serif;
 }
 
 #sidebar, #docs, #round{
@@ -18,6 +19,7 @@ body,html{
     padding: 0px;
     margin: 0px;
     display: inline-block;
+    float: left;
 }
 
 ::-webkit-scrollbar {
@@ -43,13 +45,15 @@ body,html{
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  line-height: 100%;
+  line-height: 120%;
 }
 
 
 /* DOCUMENT STYLES */
 h1{
   font-size: 24pt;
+  text-align: center;
+  text-decoration: underline;
 }
 .read {
   font-weight: bold;
@@ -136,7 +140,10 @@ h1{
     opacity: .5;
 
 }
+#file-share-container{
 
+    font-size: 70%;
+}
 
 
 /* FILETREE */
@@ -197,19 +204,24 @@ h1{
 
 .folder:before{
   content: "\e117";
-}
-
-.file:before {
-  content: "\e022";
-
-   position: relative;
+  position: relative;
   top: 1px;
   display: inline-block;
   font-family: 'Glyphicons Halflings', 'Tahoma';
   font-style: normal;
   font-weight: 400;
   line-height: 1;
-  -webkit-font-smoothing: antialiased;
+}
+
+.file:before {
+  content: "\e022";
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings', 'Tahoma';
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
 }
 
 
@@ -358,7 +370,7 @@ h1{
 	vertical-align: middle;
 	background-color: transparent;
 	text-shadow: 1px 1px 2px black, 0 0 1em white, 0 0 0.2em white;
- 
+
 }
 
 

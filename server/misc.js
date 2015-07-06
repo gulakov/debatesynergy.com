@@ -48,7 +48,6 @@ app.get('/', function(req, res, next){
 
       Visit.findOne({ip: ip}, function (err, f) {
 
-
 	       if (!sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi)){
            console.log("Visit: " + geo + " " + sys + " " + new Date().toLocaleString());
 
@@ -56,10 +55,7 @@ app.get('/', function(req, res, next){
               Visit.create({ ip: ip, geo: geo, sys: sys});
          }
 
-
-
-
-        return next();
+         return next();
 
       });
 

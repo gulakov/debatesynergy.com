@@ -3,6 +3,15 @@ var r = {};
 
 
 var socket = io();
+socket.on('error', function() {
+    setTimeout(function(){
+
+      if (navigator.userAgent.indexOf("Chrome")==-1)
+        document.cookie =  'debatesynergylogin=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      else //TODO dev mode -- server auto refresh only on Chrome
+        location.reload(); 
+    }, 100);
+});
 socket.on('connect', function(){
 
    $.get("/round/join", {socket: socket.id});

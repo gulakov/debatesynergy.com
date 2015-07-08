@@ -1,0 +1,17 @@
+CACHE MANIFEST
+lib/bootstrap.min.css
+lib/bootstrap.min.js
+lib/jquery.min.js
+lib/select2.min.css
+lib/select2.full.min.js
+buttons.js
+filetree.js
+index.html
+init.js
+round.js
+debatestyle.css
+timer.js
+
+
+NETWORK:
+*

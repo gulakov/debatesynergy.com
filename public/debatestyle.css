@@ -8,8 +8,10 @@ html,body{
     -webkit-touch-callout: none;
 }
 
-*[contenteditable] {
-    -webkit-user-select: auto !important;
+@media only screen and (mid-device-width: 600px) {
+  *[contenteditable] {
+      -webkit-user-select: auto !important;
+  }
 }
 
 body, html {
@@ -20,7 +22,7 @@ body, html {
   font-size: 14px;
   display: flex;
   flex-direction: row;
-  overflow-x: hidden;
+  overflow: hidden;
   font-family: 'Lato', sans-serif;
 }
 #sidebar, #docs, #round {
@@ -108,19 +110,22 @@ h1 {
   overflow: hidden;
   display: table-row;
 }
+
 #searchtext {
   height: 26px;
-  padding-left: 26px;
+  padding-left: 20px;
   width: 100%;
 }
 .form-search:before {
-  display: block;
+  position: absolute;
   width: 14px;
   height: 14px;
+  padding: 3px;
   content: "\e003";
   font-family: 'Glyphicons Halflings';
   opacity: .5;
 }
+
 #file-share-container {
   font-size: 70%;
 }
@@ -129,7 +134,6 @@ h1 {
 
 #filetree {
   height: calc(100% - 110px);
-  ;
   overflow: auto;
 }
 .ft-list {
@@ -210,6 +214,32 @@ h1 {
   display: none;
 }
 
+
+.glyphicon-spin {
+    -webkit-animation: spin 2000ms infinite linear;
+    animation: spin 2000ms infinite linear;
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
 /* ROUND */
 
 #round {
@@ -245,6 +275,13 @@ h1 {
 #speechmain {
   padding: 2%;
 }
+
+#speechmain .select2{
+  width: 100% !important;
+    margin: 10px 0px;
+}
+.select2-search__field{width: 100% !important;}
+
 #roundcreate {
   width: 80%;
   margin-left: 10%;

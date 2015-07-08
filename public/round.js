@@ -1,9 +1,11 @@
 var r = {};
 
+var socket;
 
-
-var socket = io();
-socket.on('error', function() {
+if (typeof(io)!="undefined")
+   socket = io();
+if (socket)
+  socket.on('error', function() {
   setTimeout(function() {
 
     if (navigator.userAgent.indexOf("Chrome") == -1)
@@ -11,14 +13,36 @@ socket.on('error', function() {
     else //TODO dev mode -- server auto refresh only on Chrome
       location.reload();
   }, 100);
-});
-socket.on('connect', function() {
+})
+.on('connect', function() {
 
   $.get("/round/join", {
     socket: socket.id
   });
 
 
+
+  socket.on('round_newTextForEnemy', function(r) {
+
+    $("#" + r.speechName).html(r.speechPartial);
+
+  });
+
+
+  socket.on('round_newTextForPartner', function(round) {
+
+
+    $("#speech1AC").html(round.speech1AC);
+    $("#speech1NC").html(round.speech1NC);
+    $("#speech2AC").html(round.speech2AC);
+    $("#speech2NC").html(round.speech2NC);
+    $("#speech1NR").html(round.speech1NR);
+    $("#speech1AR").html(round.speech1AR);
+    $("#speech2NR").html(round.speech2NR);
+    $("#speech2AR").html(round.speech2AR);
+
+
+  });
 
 
 
@@ -62,6 +86,32 @@ $(window).on('beforeunload', function() {
 
 
 $(document).ready(function() {
+
+  //autofill usernames
+  $("#judge1, #aff1, #aff2, #neg1, #neg2").select2({
+    ajax: {
+      url: "/user/search",
+      dataType: 'json',
+      delay: 50,
+      data: function (params) {
+      return {userinfo: params.term};
+      },
+      processResults: function (data, params) {
+        return {results: data.splice(0,5)};
+      },
+      cache: true
+      },
+      minimumInputLength: 4,
+      escapeMarkup: function (markup) { return markup; },
+
+      maximumSelectionLength: 9,
+      templateResult: function  (sel) {
+
+      return sel.email ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : sel.text;
+      }
+      //data: finalList,
+
+  })
 
 
 
@@ -512,34 +562,3 @@ function startRound() {
 
 
 }
-
-
-
-
-
-//SOCKET LISTENERS
-
-
-
-
-socket.on('round_newTextForEnemy', function(r) {
-
-  $("#" + r.speechName).html(r.speechPartial);
-
-});
-
-
-socket.on('round_newTextForPartner', function(round) {
-
-
-  $("#speech1AC").html(round.speech1AC);
-  $("#speech1NC").html(round.speech1NC);
-  $("#speech2AC").html(round.speech2AC);
-  $("#speech2NC").html(round.speech2NC);
-  $("#speech1NR").html(round.speech1NR);
-  $("#speech1AR").html(round.speech1AR);
-  $("#speech2NR").html(round.speech2NR);
-  $("#speech2AR").html(round.speech2AR);
-
-
-});

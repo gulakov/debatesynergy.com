@@ -1,11 +1,11 @@
 var express = require('express'), app = express(),
+server = require('http').createServer(app).listen(80, function(){
+	console.log("START: " + new Date().toLocaleString());
+}),
 bodyParser = require('body-parser'),
 cookieParser = require('cookie-parser'),
 session = require('express-session'),
 mongoose = require('mongoose'),
-server = require('http').createServer(app).listen(80, function(){
-	console.log("SERVER STARTED " + new Date().toLocaleString());
-}),
 io = require('socket.io')(server);
 
 //database

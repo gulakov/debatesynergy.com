@@ -400,9 +400,7 @@ $(document).ready(function() {
         fileData.userid = "local";
         fileData.id = id;
 
-
-
-        localStorage["debate_" + fileid] = JSON.stringify(fileData);
+        localStorage["debate_" + id] = JSON.stringify(fileData);
 
         u.index.push(fileData);
 

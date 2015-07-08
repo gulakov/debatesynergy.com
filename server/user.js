@@ -9,7 +9,7 @@ app.all('/', function(req, res, next) {
     else
         User.findOne({_id: req.user._id},
         function(err, u){
-          
+
             res.json(u);
         })
 });
@@ -38,7 +38,7 @@ app.all('/update', auth, function(req, res) {
       (req.body.custom_js) ?
         {custom_js: decodeURIComponent(req.body.custom_js),
         custom_css: decodeURIComponent(req.body.custom_css)} :
-      (req.body.index) ? 
+      (req.body.index) ?
         {index: JSON.parse(req.body.index) } : null
       ).exec();
 
@@ -46,14 +46,27 @@ app.all('/update', auth, function(req, res) {
 });
 
 
-app.get('/:email?', function(req, res) {
-    User.findOne({email: req.query.email}, function(error, user) {
-        if(user)
-        	res.json(user);
-        else
-        	res.send("No user with email "+req.query.email)
+
+app.get('/search', function(req, res) {
+    var userinfo = { "$regex": req.query.userinfo, "$options": "i" } ;
+
+    User.find({$or:[{email:userinfo}, {name: userinfo}]}, function(error, users){
+        	res.json( users ? users.map(function(user){ return {id:user._id, email: user.email, text: user.name};}) : [] );
     })
 });
+
+
+app.get('/:email?', function(req, res) {
+    User.findOne({email: req.params.email}, function(error, user) {
+        if(user)
+        	res.json({id:user._id, email: user.email, name: user.name, text: user.email, socket: user.socket});
+        else
+        	res.send("No user with email "+req.params.email)
+    })
+});
+
+
+
 
 
 function auth(req, res, next) {

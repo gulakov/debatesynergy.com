@@ -68,11 +68,14 @@ init: function(el, json) {
     .on("drop", function(e) {
       // prevent default action
       e.preventDefault();
-      //ft-name receiving the drop
-      var dropItem = $(e.target).closest('.ft-name');
+      //ft-item receiving the drop
+      var dropItem = $(e.target).closest(".ft-item");
+      var dropClass = dropItem.find(".ft-name").attr('class').match(/(file|folder|heading)/gi);
+      dropClass = dropClass.length ? dropClass[0] : false;
+
 
       //remove drop item's highlite
-      $(e.target).css("color", "none");
+      dropItem.removeClass("ft-dragged-over").css("color", "none");
       ft.dragging.removeClass("ft-being-dragged");
 
       console.log(ft.dragging);
@@ -85,29 +88,29 @@ init: function(el, json) {
         //folder/file: dropped onto: folders (next, child),  files (next)
       } else if (ft.dragging.find(".ft-name").hasClass("folder") || ft.dragging.find(".ft-name").hasClass("file")) {
 
-        if (dropItem.hasClass("folder") && e.originalEvent.clientX > 150) { //child margin
+        if (dropClass=="folder" && e.originalEvent.clientX > 150) { //child margin
           if (!dropItem.find('.ft-list').length)
             dropItem.append("<div class='ft-list'>")
 
           dropItem.find('.ft-list').append(ft.dragging);
 
-        } else if (dropItem.hasClass("folder") || dropItem.hasClass("file")) {
+        } else if (dropClass=="folder" || dropClass=="file") {
 
           dropItem.after(ft.dragging);
         } else //don't allow others
           return;
 
 
-        //headings: dropped onto files (child) or headings (next)
+      //headings: dropped onto files (child) or headings (next)
       } else if (ft.dragging.find(".ft-name").hasClass("heading")) {
 
-        if (dropItem.hasClass("files")) {
+        if (dropClass=="file") {
           if (!dropItem.find('.ft-list').length)
             dropItem.append("<div class='ft-list'>")
 
           dropItem.find('.ft-list').append(ft.dragging);
 
-        } else if (dropItem.hasClass("heading")) {
+        } else if (dropClass=="heading") {
 
           dropItem.after(ft.dragging);
         } else //don't allow others
@@ -117,11 +120,12 @@ init: function(el, json) {
         //move text block under the drag heading to the dropped heading location
         var dragId = ft.dragging.find(".ft-name").attr("id");
         dragId = parseInt(dragId.substring(dragId.indexOf("_") + 1));
-        var dropId = parseInt(dropItem.attr("id").substring(dropItem.attr("id").indexOf("_") + 1));
+        var dropId = parseInt(dropItem.find(".ft-name").attr("id").substring(dropItem.attr("id").indexOf("_") + 1));
         var headList = $(".doc:visible").find("h1,h2,h3");
         var dropHead = headList.eq(dropId + 1);
         var dragHead = headList.eq(dragId)[0];
         var dragEnd = headList.eq(1 + dragId).prev()[0];
+
 
         var range = document.createRange();
         range.selectNodeContents(dragHead);
@@ -272,7 +276,7 @@ toJSON: function(startLevel) {
 
 update: function() {
   //if is editting a name
-  if ($(".aboutfile-title-edit-container").length)
+  if (!$(".doc:visible").length)
     return;
 
   var treeJSON = ft.toJSON();
@@ -370,11 +374,28 @@ loadFile: function(id, headingId) {
       //download percentage as the download is in progress
       var xhr = new window.XMLHttpRequest();
       xhr.addEventListener("progress", function(evt) {
+
+
+
+
         if (evt.lengthComputable) {
           var percentComplete = Math.floor(evt.loaded / evt.total * 100);
 
+          if (percentComplete > 5 && percentComplete < 30){
+          //  var x = evt.target.response;
+          //  x = x.substring(x.indexOf('"text"')+8);
+
+            //  console.log(x)
+            //  $(".doc:visible").html(x);
+
+            //  xhr.abort();
+          }
+
+          if (!$(".loading-doc").length)
+            $("#info").html('<span class="loading-doc"></span> <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>');
+
           if (ft.ongoingXhrId == id)
-            $("#info").html(percentComplete + "% ");
+            $(".loading-doc").html(percentComplete + "%");
           else
             xhr.abort();
 
@@ -521,7 +542,6 @@ loadFile: function(id, headingId) {
 
       history.pushState(null, "", ft.selected.id);
 
-      $(".doc").attr('contenteditable', true);
       if (headingId)
         $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
 
@@ -573,7 +593,34 @@ click: function(e) {
       ft.update();
       location.hash = id;
 
-    } else if (local) { //  ft.selected = JSON.parse(localStorage["debate_" + id]);
+    } else if (local) {
+
+        ft.selected = JSON.parse(localStorage["debate_" + id]);
+
+
+        //hide current doc
+        $(".doc:visible").slideUp();
+
+        //show selected doc if it's
+        if ($("#doc-" + id).length) {
+          ft.selected = {};
+          $("#doc-" + id).slideDown()
+        }
+
+        //show doc
+        if (!$("#doc-" + r.id).length)
+          $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true)
+          .appendTo("#docs").html(ft.selected.text).hide().slideDown();
+
+
+        ft.updateNeeded = true;
+        ft.update();
+
+
+        history.pushState(null, "", ft.selected.id);
+
+
+        location.hash = id;
       //TODO
 
     } else //load file when clicked on filetitle

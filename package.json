@@ -4,7 +4,7 @@
   "version": "2.1.0",
   "scripts": {
     "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -v -w . > public/server.txt &",
-    "start-out": "forever --minUptime=10 --spinSleepTime=2000 -v -w .",
+    "start-out": "forever --minUptime=10 --spinSleepTime=2000 -o public/server.txt -v -w .",
     "mongo": "nohup service mongodb stop && mkdir -p db && rm -f db/mongod.lock &&  mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1 --quiet &",
     "admin": "nohup node node_modules/mongo-express/app.js &",
     "setup": " npm install forever -g && mv node_modules/mongo-express/config.default.js node_modules/mongo-express/config.js"

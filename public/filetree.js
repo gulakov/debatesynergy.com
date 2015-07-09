@@ -70,12 +70,14 @@ init: function(el, json) {
       e.preventDefault();
       //ft-item receiving the drop
       var dropItem = $(e.target).closest(".ft-item");
-      var dropClass = dropItem.find(".ft-name").attr('class').match(/(file|folder|heading)/gi);
-      dropClass = dropClass.length ? dropClass[0] : false;
 
-
-      //remove drop item's highlite
-      dropItem.removeClass("ft-dragged-over").css("color", "none");
+      if (dropItem.length){
+        var dropClass = dropItem.find(".ft-name").attr('class').match(/(file|folder|heading)/gi);
+        dropClass = dropClass.length ? dropClass[0] : false;
+        //remove drop item's highlite
+        dropItem.removeClass("ft-dragged-over").css("color", "none");
+      }
+      //TODO is this a copy?
       ft.dragging.removeClass("ft-being-dragged");
 
       console.log(ft.dragging);
@@ -120,7 +122,7 @@ init: function(el, json) {
         //move text block under the drag heading to the dropped heading location
         var dragId = ft.dragging.find(".ft-name").attr("id");
         dragId = parseInt(dragId.substring(dragId.indexOf("_") + 1));
-        var dropId = parseInt(dropItem.find(".ft-name").attr("id").substring(dropItem.attr("id").indexOf("_") + 1));
+        var dropId = parseInt(dropItem.find(".ft-name").attr("id").substring(dropItem.find(".ft-name").attr("id").indexOf("_") + 1));
         var headList = $(".doc:visible").find("h1,h2,h3");
         var dropHead = headList.eq(dropId + 1);
         var dragHead = headList.eq(dragId)[0];
@@ -326,7 +328,7 @@ update: function() {
   if (local) {
     localStorage.debate = JSON.stringify(u.index);
 
-    ft.selected.text = encodeURI($(".doc:visible").html().replace(/\'/g, '&#39;'));
+    ft.selected.text = $(".doc:visible").html().replace(/\'/g, '&#39;');
     localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
   } else {
     if (u.index.length)
@@ -339,7 +341,7 @@ update: function() {
       ft.uploadNeeded = false;
 
       $.post('/doc/update', {
-        text: encodeURI($(".doc:visible").html().replace(/\'/g, '&#39;')),
+        text: encodeURIComponent($(".doc:visible").html().replace(/\'/g, '&#39;')),
         id: ft.selected.id
       });
     }
@@ -530,17 +532,19 @@ loadFile: function(id, headingId) {
 
 
 
-      //show doc
-      if (!$("#doc-" + r.id).length)
+      //show doc if not already loaded by the "show previously opened" check
+      if (!$("#doc-" + r.id).length){
         $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true)
-        .appendTo("#docs").html(ft.selected.text).hide().slideDown();
+        .appendTo("#docs").html(ft.selected.text).slideDown();
 
 
-      ft.updateNeeded = true;
-      ft.update();
+        ft.updateNeeded = true;
+        ft.update();
 
 
-      history.pushState(null, "", ft.selected.id);
+
+        history.pushState(null, "", ft.selected.id);
+      }
 
       if (headingId)
         $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
@@ -620,8 +624,6 @@ click: function(e) {
         history.pushState(null, "", ft.selected.id);
 
 
-        location.hash = id;
-      //TODO
 
     } else //load file when clicked on filetitle
       ft.loadFile(id);

@@ -81,13 +81,15 @@ if (socket)
 
 
 $(window).on('beforeunload', function() {
-  socket.close();
+  if (socket)
+    socket.close();
 });
 
 
 $(document).ready(function() {
 
   //autofill usernames
+
   $("#judge1, #aff1, #aff2, #neg1, #neg2").select2({
     ajax: {
       url: "/user/search",
@@ -97,7 +99,7 @@ $(document).ready(function() {
       return {userinfo: params.term};
       },
       processResults: function (data, params) {
-        return {results: data.splice(0,5)};
+        return {results: data.splice(0, u.name ? 5 : 0)}; //Login required to invite users
       },
       cache: true
       },
@@ -106,8 +108,7 @@ $(document).ready(function() {
 
       maximumSelectionLength: 9,
       templateResult: function  (sel) {
-
-      return sel.email ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : sel.text;
+        return sel.email ? u.name ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : "Login required" : sel.text;
       }
       //data: finalList,
 

@@ -1,3 +1,9 @@
+WEB WORKERS! to parse the document in a background thread. also bind a mutation observer to heading names!!
+speeches should be paginated with a slideshow slideout
+detect cards and on hover literally have them cardable
+http://materializecss.com/
+www.muicss.com/
+
 tablets use styulus just swipe over text to underline  it, maybe also disable keyboard cause its slow and annoying
 
 
@@ -25,6 +31,8 @@ sync flowing
 anchor links in flowing
 flow in their speech in blue /red
 
+overlay 4 audio imputs from users mic  ont oa single video file and have soudncloud like annotations for each audiostream point in time
+
 one button for big text read model
 
 custom plugins -- js embed
@@ -37,8 +45,13 @@ mobile swipe and underline
 improve search by title and text
 
 gauth cors error? maybe server-rize
-
+read/super read mode as buttons on hover of card in speech to indicate what was read
 
 ctrl+click select par, shift for block, 2speech
 
 caselist intergration, ld pfd
+'send to debate' bookmarklet for pages,googlebooks=>send text to file
+
+future: team management and reddit style forums. paid files. best cards rank board. mind mapping mode for files and flows/speeches  
+future: spectate on going rounds. record video from one source and audio from 4 debaters, sync that and even slow down. livestream a/v alongside text. 
+future: ai that predicts what to read on topics based on past speech linkages, or a crowd-sourced mind map of all args/cards how to answer them

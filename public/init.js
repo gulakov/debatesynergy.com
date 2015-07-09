@@ -1,75 +1,19 @@
 var u = {}, local;
-
 $(document).ready(function() {
 
-  window.scrollTo(0, 1);
-
-  //recognize speech
-
-  $(window).keydown(function(e) {
-    if (e.keyCode == 192) {
-
-
-
-
-
-      var recognition = new webkitSpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-
-      recognition.onresult = function(event) {
-        var final_transcript = '',
-          interim_transcript = '';
-
-        for (var i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            final_transcript += event.results[i][0].transcript;
-          } else {
-            interim_transcript += event.results[i][0].transcript;
-          }
-        }
-
-
-        var range = window.getSelection().getRangeAt(0);
-        var node = range.createContextualFragment(final_transcript);
-        range.insertNode(node);
-
-
-
-
-
-      };
-      recognition.start();
-
-
-
-
-    }
-
-  })
-
-
-
-
-  // init file trree
-
-
-    $.getJSON("/user", function(userJSON) {
+  // init file tree
+  $.getJSON("/user", function(userJSON) {
 
       u = userJSON || {};
 
 
       if (u.index) { //user logged in
         console.log(u.index);
-        // u.index = uJSON.parse(u.index);
-
-
 
         var customCSS = $("<style>").appendTo('head');
         customCSS.html(u.custom_css)
 
-        var customJS = $("<script id='custom_script'>");
-        customJS.html(u.custom_js)
+        var customJS = $("<script id='custom_script'>").html(u.custom_js);
         customJS.appendTo('body');
 
 
@@ -82,58 +26,11 @@ $(document).ready(function() {
         //     $("a[href='#speech2AC'], a[href='#speech2NC']").parent().hide();
 
 
-        //init search
 
-
-        $("#searchtext").select2({
-
-          ajax: {
-    url: "/user/search",
-    dataType: 'json',
-    delay: 250,
-    data: function (params) {
-      return {userinfo: params.term};
-    },
-    processResults: function (data, params) {
-      if (!params.term)
-        return data;
-
-      var terms = params.term.split(" ");
-
-      var finalList = u.index,  flatList =  u.index.map(function(f){ return f.children || [];})
-
-      for (var i in flatList)
-        finalList = finalList.concat( flatList[i] );
-
-      finalList = finalList.map(function(f){ return {id: f.id, text: f.title}; });
-
-
-        //filter data to only searched words
-        for (var i in terms)
-          finalList = finalList.filter(function(d){ return d.text.indexOf(terms[i])>-1; })
-
-        data = finalList.concat(data);
-      return {results: data};
-
-    },
-    cache: true
-  },
-   minimumInputLength: 1,
-   escapeMarkup: function (markup) { return markup; },
-   templateResult: function  (sel) {
-
-      return "<span><b>" +sel.text + "</b> " + sel.email + "</span>";
-    }
-    //data: finalList,
-
-        })
-
-
-
-      } else if (document.cookie.indexOf("debatesynergylogin=") > -1) { //force login re-auth
+      } else if (document.cookie.indexOf("debatesynergylogin=") > -1) { //logged out, but can force login re-auth
         document.location.pathname = '/auth';
 
-      } else { //give login button
+      } else { //*** user not logged in
 
         $("#showround").click();
 
@@ -168,7 +65,7 @@ $(document).ready(function() {
       ft.init($('#filetree'), u.index);
 
     })
-    .error(function(e) { //no internet -- offline mode
+    .error(function(e) { //****no internet -- offline mode
       if (e.readyState)
         return;
 
@@ -186,7 +83,55 @@ $(document).ready(function() {
         //init filetree
         ft.init($('#filetree'), u.index);
 
-    });
+    })
+    .then(function(){
+
+
+              //init search
+
+              $("#searchtext").select2({
+                ajax: {
+                      url: "/user/search",
+                      dataType: 'json',
+                      delay: 250,
+                      data: function (params) {
+                        return {userinfo: params.term};
+                      },
+                      processResults: function (data, params) {
+                        if (!params.term)
+                          return data;
+
+                        var terms = params.term.split(" ");
+
+                        var finalList = u.index,  flatList =  u.index.map(function(f){ return f.children || [];})
+
+                        for (var i in flatList)
+                          finalList = finalList.concat( flatList[i] );
+
+                        finalList = finalList.map(function(f){ return {id: f.id, text: f.title}; });
+
+
+                          //filter data to only searched words
+                          for (var i in terms)
+                            finalList = finalList.filter(function(d){ return d.text.indexOf(terms[i])>-1; })
+
+                          data = finalList.concat(data);
+                        return {results: data};
+
+                      },
+                      cache: true
+                    },
+                     minimumInputLength: 1,
+                     escapeMarkup: function (markup) { return markup; },
+                     templateResult: function  (sel) {
+
+                        return "<span><b>" +sel.text + "</b> " + sel.email + "</span>";
+                      }
+              })
+
+
+
+    })
 
 
 
@@ -246,9 +191,9 @@ $(document).ready(function() {
   $(window).on('popstate', loadHash);
   if (location.pathname)
     loadHash();
+//TODO back fwd overrites hisory non sequential because of push state on back button
 
-
-  //file upload
+  //docx upload
 
 
   $("#sidebar, #docs").on("drop", function(e) {
@@ -683,3 +628,49 @@ function gapiInit() {
 ga('create', 'UA-34608293-1', 'debatesynergy.com');
 ga('send', 'pageview');
 */
+
+
+
+  //recognize speech
+
+  $(window).keydown(function(e) {
+    if (e.keyCode == 192) {
+
+
+
+
+
+      var recognition = new webkitSpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onresult = function(event) {
+        var final_transcript = '',
+          interim_transcript = '';
+
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final_transcript += event.results[i][0].transcript;
+          } else {
+            interim_transcript += event.results[i][0].transcript;
+          }
+        }
+
+
+        var range = window.getSelection().getRangeAt(0);
+        var node = range.createContextualFragment(final_transcript);
+        range.insertNode(node);
+
+
+
+
+
+      };
+      recognition.start();
+
+
+
+
+    }
+
+  })

@@ -1,17 +1,17 @@
 /* PANELS */
 
+@media only screen and (mid-device-width: 600px) {
 iframe[src^="https://apis.google.com"] {
   display: none;
 }
+}
+
 html,body{
     -webkit-user-select: none;
     -webkit-touch-callout: none;
 }
-
-@media only screen and (mid-device-width: 600px) {
-  *[contenteditable] {
-      -webkit-user-select: auto !important;
-  }
+*[contenteditable] {
+    -webkit-user-select: auto !important;
 }
 
 body, html {
@@ -289,7 +289,7 @@ h1 {
 #pastrounds {
   margin-top: 30px;
   max-height: 300px;
-  overflow: scroll;
+  overflow: auto;
 }
 .flow-text {
   color: blue;

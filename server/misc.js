@@ -7,7 +7,8 @@ app.get('/download', function(req, res) {
 
 
   var ip = req.connection.remoteAddress.toString();
-  var sys = req.headers['user-agent'].match(/\([^)]+\)/gi)[0].replace(/[\(\)]/gi, '');
+  var sys = req.headers['user-agent'].match(/\([^)]+\)/gi) ?
+    req.headers['user-agent'].match(/\([^)]+\)/gi)[0].replace(/[\(\)]/gi, '') : req.headers['user-agent'];
 
   var request = require('request');
   request("http://ipinfo.io/" + ip + "/json", function (error, response, body) {
@@ -38,7 +39,8 @@ app.get('/download', function(req, res) {
 app.get('/', function(req, res, next){
 
   var ip = req.connection.remoteAddress.toString();
-  var sys = req.headers['user-agent'].match(/\([^)]+\)/gi)[0].replace(/[\(\)]/gi, '');
+  var sys = req.headers['user-agent'] && req.headers['user-agent'].match(/\([^)]+\)/gi) ?
+    req.headers['user-agent'].match(/\([^)]+\)/gi)[0].replace(/[\(\)]/gi, '') : req.headers['user-agent'];
 
   var request = require('request');
   request("http://ipinfo.io/" + ip + "/json", function (error, response, body) {

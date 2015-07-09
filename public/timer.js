@@ -1,46 +1,47 @@
 function Timer() {
-  
-  var count = 8 * 60, type, options = {
+
+  var count = 8 * 60, superThis = this, type, options = {
     "times_r": 5,
     "times_c": 8,
     "times_x": 3,
     "times_p": 8
   };
-  
-  setInterval(function() {
-    if ($("#btn-play").hasClass("play"))
-      return;
 
-    if (count <= 0)
-      return;
+  Timer.setInterval = function () {
+      superThis.interval = setInterval(function() {
+        if ($("#btn-play").hasClass("play"))
+          return;
 
-    count--;
-    console.log(count)
-    if (!count) {
-      $("audio")[1].play();
+        if (count <= 0)
+          return;
 
-      $("body").append('<div id="timeup" style="position: absolute; height: 100%; width: 100%;top: 0;left: 0;z-index: 9999;background-color: red;"></div>')
-        
-      setTimeout(function() {
-        $("#timeup").remove();
-      }, 2000)
-    }
+        count--;
+        if (!count) {
+          $("audio")[1].play();
 
+          $("body").append('<div id="timeup" style="position: absolute; height: 100%; width: 100%;top: 0;left: 0;z-index: 9999;background-color: red;"></div>')
 
-    $("#count").val(toTime(count));
-
-    if (type == "btn-timer-aff" || type == "btn-timer-neg")
-      $("#" + type).html($("#count").val())
+          setTimeout(function() {
+            $("#timeup").remove();
+          }, 2000)
+        }
 
 
+        $("#count").val(toTime(count));
 
-  }, 1000)
+        if (type == "btn-timer-aff" || type == "btn-timer-neg")
+          $("#" + type).html($("#count").val())
 
-  var toTime = function(n) {
+
+
+    }, 1000)
+  };
+
+  function toTime(n) {
     return Math.floor(n / 60) + ":" + (n % 60 < 10 ? "0" : "") + n % 60;
   }
 
-  var toNumber = function(s) {
+  function toNumber(s) {
     //M:SS MM:SS M SS MSS MMSS
     return (parseInt(s.substring(0, s.indexOf(":") > -1 ? s.indexOf(":") : s.length > 1 ? s.length - 2 : 1)) || 0) * 60 +
       (parseInt(s.substring(s.indexOf(":") > -1 ? s.indexOf(":") + 1 : s.length > 1 ? s.length - 2 : 1)) || 0);
@@ -54,13 +55,19 @@ function Timer() {
   $("#btn-timer-constructive").html(options.times_c);
   $("#btn-timer-rebuttal").html(options.times_r);
 
-  
+
   $("#count").val(toTime(count));
 
 
   $("#btn-play-container").click(function() {
-    
+
     $("#btn-play").toggleClass("play").toggleClass("pause");
+
+    if ($("#btn-play").hasClass("play"))
+      clearInterval(superThis.interval);
+    else
+      Timer.setInterval();
+      
     $("audio")[0].play();
 
   })
@@ -90,4 +97,3 @@ function Timer() {
   })
 
 }
-

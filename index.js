@@ -1,6 +1,6 @@
 var express = require('express'), app = express(),
 server = require('http').createServer(app).listen(80, function(){
-	console.log("START: " + new Date().toLocaleString());
+	console.log("START: " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString());
 }),
 bodyParser = require('body-parser'),
 cookieParser = require('cookie-parser'),
@@ -13,23 +13,21 @@ mongoose.connect('mongodb://localhost/debatedata', {server: { poolSize: 5 }});
 
 //middleware
 app.use(cookieParser());
-app.use(bodyParser.json({limit: '10mb'}));
-app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
-app.use(session({secret: 'cookie', resave: true, saveUninitialized: true}));
-
-//auth
-app.use(require('./server/auth'));
-function auth(req, res, next) {
-  if (!req.isAuthenticated())
-    return res.send("Login required");
-  return next();
-}
+app.use(bodyParser.json({limit: '30mb'}));
+app.use(bodyParser.urlencoded({limit: '30mb', extended: true}));
+app.use(session({secret: 'cookie', 	resave: true, saveUninitialized: true, cookie: {maxAge: 100000000000} }));
 
 //routes
+
+app.use(require('./server/auth'));
+
 app.use('/user', require('./server/user'));
-app.use('/doc', auth, require('./server/doc'));
-app.use('/round', auth, require('./server/round')(io));
+app.use('/doc', require('./server/doc'));
+app.use('/round', require('./server/round')(io));
 app.use('/', require('./server/misc'));
 
-//static routes
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public', {setHeaders: function (res, path, stat) {
+    res.set('Cache-Control', 'max-age=3600000000000000');
+  }
+
+}));

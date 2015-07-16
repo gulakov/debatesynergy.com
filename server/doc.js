@@ -2,7 +2,15 @@ var app = require('express').Router(), model = require('./models');
 var Doc = model.Doc, User = model.User;
 module.exports = app;
 
-// return doc of given ID only if user is owner, share, or public doc
+//auth
+function auth(req, res, next) {
+  if (!req.isAuthenticated())
+    return res.send("Login required");
+  return next();
+}
+
+
+//takes doc ID, return doc text -- allowed if user is owner, share, or public doc
 app.get('/read', function(req, res) {
     var fileId = req.query.id;
     res.header("Content-Type", "application/json; charset=utf-8");
@@ -11,8 +19,8 @@ app.get('/read', function(req, res) {
         if (!f)
           return  res.json("Not found");
 
-         if(f.userid == req.user._id || f.share.indexOf(req.user.email)>-1
-            || f.share.indexOf("public")>-1 || f.share.indexOf("public edit")>-1)
+         if(f.share.indexOf("public")>-1 || f.share.indexOf("public edit")>-1 ||
+            req.isAuthenticated() && (f.userid == req.user._id || f.share.indexOf(req.user.email)>-1 ) )
             res.json({
                 id:f._id,
                 userid:f.userid,
@@ -27,11 +35,11 @@ app.get('/read', function(req, res) {
     })
 });
 
-//create a blank doc with a given title and return ID
-app.get('/create', function(req, res) {
+//takes optional doc title, create a blank doc and return its ID
+app.get('/create', auth, function(req, res) {
 
     Doc.create({
-        title: req.query.title,
+        title: req.query.title || "New File",
         userid: req.user._id,
         text: ""
     }, function (e, f) {
@@ -39,8 +47,8 @@ app.get('/create', function(req, res) {
     });
 });
 
-//for given doc id, update text, title, or shared
-app.post('/update', function(req, res) {
+//takes doc id and updated text, title, or shared, performs needed update
+app.post('/update', auth, function(req, res) {
 
   var fileId = req.body.id;
   var text = req.body.text;
@@ -54,21 +62,21 @@ app.post('/update', function(req, res) {
       //update text body -- allowed for owner, collaborators, and "public edit"
       if (text && (f.userid == req.user._id || f.share.indexOf(req.user.email)>-1
        || f.share.indexOf("public edit")>-1) ){
-          Doc.update({_id: fileId}, {text: decodeURIComponent(text)}).exec();
+          Doc.update({_id: fileId}, {text: decodeURIComponent(text), date_updated: Date.now() }).exec();
           return res.end();
         }
 
       //update doc title -- allowed for owner
       if (title  && f.userid == req.user._id){
-          Doc.update({_id: fileId}, {title: title}).exec();
+          Doc.update({_id: fileId}, {title: title, date_updated: Date.now() }).exec();
           return res.end();
         }
 
-      //udpate whom to share with -- allowed for owner
+      //update whom to share with -- allowed for owner
       if (share && f.userid == req.user._id){
 
           share = share.split(',').map(function(i){return i.trim();});
-          Doc.update({_id: fileId}, {share: []}).exec();
+          Doc.update({_id: fileId}, {share: [], date_updated: Date.now() }).exec();
 
           for (var i in share)
             if (share[i]=="public"||share[i]=="public edit")
@@ -86,7 +94,7 @@ app.post('/update', function(req, res) {
                     User.update({_id: u._id},
                       {$push: {index: {"id": f._id, "title": f.title, "type": "file"} }},  {safe: true, upsert: true}).exec();
 
-                  //TODO: authorize sharing with users, and updtae their tree refresh so their sessions update doesnt overrite
+                  //TODO: authorize sharing with users, and update their tree refresh so their sessions update doesnt overrite
 
                 } else  //if user doesnt exist for that email, delete them and decrease index
                    share.splice(i--,1);
@@ -109,32 +117,37 @@ app.post('/update', function(req, res) {
 });
 
 //takes a search string, search all user's docs text content
-app.get('/search', function(req, res) {
+app.get('/search', auth, function(req, res) {
 
-    var data = req.query.data;
+    var data = req.query.q;
 
     Doc.find()
         .where({userid: req.user._id})
         .sort('title')
         .exec(function (err, files) {
 
+            if (!files.length || !data)
+                return res.json([]);
 
-            if (!files.length)
-                res.end();
+            var matchedFiles = [], text, matchedString, matchedPosition;
 
-            var fileTitles = [];
+            for (var i in files){
+              text = files[i].text.replace(/(<([^>]+)>)/ig, "");
+              if (new RegExp(data, "gi").test(text)){
+                  matchedPosition = text.toLowerCase().indexOf(data.toLowerCase());
+                  matchedString = text.substring(text.lastIndexOf(" ", matchedPosition-40), matchedPosition)
+                    + "<b>"+data+"</b>" + text.substring(matchedPosition+data.length, text.indexOf(" ", matchedPosition+data.length + 40) );
+                  matchedFiles.push({id: files[i]._id, text: files[i].title, matchedString: matchedString });
+              }
+            }
 
-            for (var i in files)
-                if (files[i].text.indexOf(data) > -1)
-                    fileTitles.push(files[i].title);
-
-            return res.json(fileTitles);
+            return res.json(matchedFiles);
         });
 
 });
 
-//delete doc id by removing ownership
-app.get('/delete', function(req, res){
+//takes doc id, delete doc by removing ownership
+app.get('/delete',  auth, function(req, res){
     Doc.update({_id: req.query.id, userid: req.user._id}, {userid: "trash"}).exec();
 
     res.end();

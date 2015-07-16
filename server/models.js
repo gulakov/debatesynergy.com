@@ -8,7 +8,9 @@ exports.User = mongoose.model('User', new Schema({
     index: Object,
     socket: String,
     options: Array,
-    date_created: {type: Date, default: Date.now}
+    pending: Array,
+    date_created: {type: Date, default: Date.now},
+    date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));
 
 exports.Doc = mongoose.model('Doc', new Schema({

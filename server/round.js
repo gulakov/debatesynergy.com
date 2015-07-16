@@ -6,8 +6,15 @@ module.exports = function (_io) {
     return app;
 };
 
-app.get('/', function(req, res, next) {
-   
+//auth
+function auth(req, res, next) {
+  if (!req.isAuthenticated())
+    return res.send("Login required");
+  return next();
+}
+
+app.get('/', auth, function(req, res, next) {
+
 
     var email = req.user.email;
 
@@ -34,7 +41,8 @@ app.get('/', function(req, res, next) {
 
 });
 
-app.get('/create', function(req, res) {
+
+app.get('/create', auth, function(req, res) {
 
     require("q").all([req.query.aff1, req.query.aff2, req.query.neg1, req.query.neg2, req.query.judge1].map(function(userInfo) {
        return User.findOne({$or:[{email: userInfo}, {name: userInfo}]})
@@ -73,12 +81,12 @@ app.get('/create', function(req, res) {
 
             return res.json({roundId: newRoundJson._id, people: people  });
 
-        });        
+        });
     });
 });
 
 
-app.all('/read', function(req, res) {
+app.all('/read', auth, function(req, res) {
 
     Round.findOne({_id: req.query.id}, function (e, f) {
         return res.json(f);
@@ -87,7 +95,7 @@ app.all('/read', function(req, res) {
 });
 
 
-app.all('/accept', function(req, res) {
+app.all('/accept', auth, function(req, res) {
 
 
     var userId = req.user._id;
@@ -163,10 +171,7 @@ app.all('/accept', function(req, res) {
 });
 
 
-
-
-
-app.post('/update', function(req, res) {
+app.post('/update', auth, function(req, res) {
 
     var userId = req.user._id;
     var userEmail = req.user.email;
@@ -183,7 +188,7 @@ app.post('/update', function(req, res) {
         speech1AR: sanitizeHtml(req.body.speech1AR),
         speech2NR: sanitizeHtml(req.body.speech2NR),
         speech2AR: sanitizeHtml(req.body.speech2AR)
-    }, function (e, f) {    
+    }, function (e, f) {
 
         if (!f)
             return res.end();
@@ -228,15 +233,14 @@ app.post('/update', function(req, res) {
 });
 
 
-
-app.get('/updateScroll', function(req, res) {
+app.get('/updateScroll', auth, function(req, res) {
 
 
     var roundId = req.query.roundId;
     var speechName = req.query.speechName;
     var scrollTo = req.query.scrollTo;
 
-    
+
 
     var roundId = req.body.roundId;
 
@@ -340,7 +344,7 @@ app.get('/updateScroll', function(req, res) {
 });
 
 
-app.get('/resend', function(req, res) {
+app.get('/resend', auth, function(req, res) {
 
 
     var roundId = req.query.roundId;
@@ -378,10 +382,9 @@ app.get('/resend', function(req, res) {
 });
 
 
+app.all('/join', auth, function(req, res) {
 
-app.all('/join', function(req, res) {
 
-  
     User.findOneAndUpdate({_id: req.user._id}, {socket: req.query.socket}, function(){});
 
     res.end();

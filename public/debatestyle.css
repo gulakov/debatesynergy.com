@@ -23,7 +23,7 @@ body, html {
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Verdana', sans-serif;
 }
 #sidebar, #docs, #round {
   height: 100%;
@@ -44,10 +44,10 @@ body, html {
 #docs {
   width: 85%;
 }
-.doc:focus, #round .tab-pane:focus {
+.doc:focus, #round .tab-pane:focus, .ft-name:focus {
   outline: 0px solid transparent;
 }
-.doc {
+.doc, #round .speech-tabs {
   height: 100%;
   width: 100%;
   overflow-y: scroll;
@@ -62,32 +62,36 @@ h1 {
   text-align: center;
   text-decoration: underline;
 }
-.read {
+b {
   font-weight: bold;
 }
-.readcard {
+u {
   text-decoration: underline;
 }
 .readcardsuper {
   text-decoration: underline;
   background-color: yellow;
 }
-.size-mode-1 .doc {
+.size-mode-1  {
   font-size: 6pt;
+
 }
-.size-mode-1 .read, .size-mode-1 .readcard {
+.size-mode-1 b, .size-mode-1 u {
   font-size: 12pt;
+  height: auto !important;
+min-height: 100%;
+
 }
-.size-mode-2 .doc {
+.size-mode-2  {
   font-size: 6pt;
 }
-.size-mode-2 .read, .size-mode-2 .readcard {
+.size-mode-2 b, .size-mode-2 u {
   font-size: 24pt;
 }
-.size-mode-3 .doc {
+.size-mode-3  {
   font-size: 6pt;
 }
-.size-mode-3 .read, .size-mode-3 .readcardsuper {
+.size-mode-3 b, .size-mode-3 .readcardsuper {
   font-size: 24pt;
 }
 
@@ -142,7 +146,7 @@ h1 {
   margin: 0;
   padding: 0;
 }
-.ft-list .ft-list .ft-name {
+.ft-list .ft-item {
   padding-left: 20px;
 }
 .ft-item {
@@ -152,51 +156,60 @@ h1 {
   padding: 0;
   font-size: 13px;
   line-height: 100%;
+  cursor: row-resize;
 }
 .ft-name {
-  display: inline-block;
-  width: 100%;
+  cursor: text;
+  display: inline; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width:80px
 }
-.ft-name:hover {
+.ft-icon{
+  cursor: pointer;
+}
+
+.ft-item:hover .ft-name:first{
   background: rgb(170, 207, 231);
 }
+
 .ft-dragged-over {
+
+}
+
+.ft-dragged-over::before{
+  content: '\27a5';
+  position: absolute;
+  font-size: 200%;
+  font-weight: bold;
   color: rgb(170, 207, 231);
+  top:8px;
+
 }
 .ft-being-dragged .ft-name {
   opacity: .5;
   box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .8);
 }
-.ft-selected {
-  background: rgb(170, 207, 231);
+.ft-selected{
+  background-color: rgb(170, 207, 231);
 }
-.ft-name>input {
-  height: 15px;
-  width: 15px;
-  padding: 0px;
-  background-color: #AFDFE7;
-  border: 0px;
-  cursor: pointer;
+.ft-selected .ft-list{
+  background-color: white !important;
 }
-.folder:before {
-  content: "\e117";
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  font-family: 'Glyphicons Halflings', 'Tahoma';
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1;
+
+.ft-list:has(>.ft-selected){
+  background-color: #ccc !important;
 }
-.file:before {
-  content: "\e022";
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  font-family: 'Glyphicons Halflings', 'Tahoma';
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1;
+.ft-icon, .ft-name {
+  display: inline;
+}
+.ft-item:hover .ft-delete{
+  display: inline;
+}
+.ft-delete{
+  position: absolute;
+  right: 0px;
+  display:none;
+}
+.ft-public{
+  color: orange;
 }
 #filetree .heading-h1 {
   padding-left: 10px;
@@ -210,7 +223,7 @@ h1 {
   font-size: 85%;
   color: #222;
 }
-.ft-name.collapsed+.ft-list {
+.ft-name.collapsed+.ft-delete+.ft-list {
   display: none;
 }
 
@@ -341,8 +354,15 @@ h1 {
 }
 #btn-timer-aff, #btn-timer-neg {
   font-size: 15pt;
+  letter-spacing: -2px;
   height: 50%;
   font-weight: bold;
+}
+.btn-timer-aff {
+  color: #0044C0;
+}
+.btn-timer-neg {
+  color: #C00000;
 }
 #btn-timer-aff {
   background-color: #0044C0;
@@ -370,7 +390,7 @@ h1 {
   border-bottom: 25px solid transparent;
   border-right: 0px;
   box-sizing: border-box;
-  margin-left: 5px;
+  margin: 5px;
 }
 .pause {
   background: red;

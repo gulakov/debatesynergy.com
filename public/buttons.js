@@ -214,7 +214,7 @@ $(document).ready(function() {
 
   $(".dropdown-menu").on("click", "li", function(e) {
 
-
+    /*
     $(".doc:visible *").each(function() {
 
       if ($(this).css('font-weight') == 'bold')
@@ -232,19 +232,16 @@ $(document).ready(function() {
 
 
     })
+*/
 
-
-    $(".doc:visible style").remove();
+    $(".doc:visible style, #round style").remove();
     $(".readcard, .read, .readcardsuper").css("line-height", "100%")
-
-
 
 
 
     var sm = parseInt($(e.target).attr('class').substring(2));
 
-    $('body').attr('class', '');
-    $('body').addClass("size-mode-" + sm);
+    $('#docs, #round').attr('class', '').addClass("size-mode-" + sm);
 
   })
 
@@ -271,7 +268,7 @@ $(document).ready(function() {
       $(".doc:visible, .speech").find("*[style]").filter(function() {
         return $(this).css('background-color') != "rgba(0, 0, 0, 0)";
       }).css("font-size", "").css("line-height", "")
-      $("#editor, .speech").find("*[style*='yellow'], b, u, h1").css("font-size", "").css("line-height", "")
+      $("#docs, .speech").find("*[style*='yellow'], b, u, h1").css("font-size", "").css("line-height", "")
       $(".doc:visible, .speech").css("font-size", "100%")
     } else if (u.big == 1) {
       $(".doc:visible, .speech").find("*[style]").filter(function() {
@@ -375,7 +372,16 @@ $(document).ready(function() {
   $("#file-new").click(function() {
 
     $("#file-new-modal").modal('show');
-    $("#filename").focus();
+
+
+    $("#file-new-modal").on('shown.bs.modal', function () {
+      $("#filename").focus().keydown(function(e){
+        if(e.keyCode==13)
+          $("#file-new-modal-submit").click();
+      })
+    });
+
+
 
 
 
@@ -388,17 +394,16 @@ $(document).ready(function() {
 
 
       var fileData = {
-        "type": "file",
+        "type": "file ft-selected",
         "title": $("#filename").val(),
         "text": ""
       }
 
 
       if (local) {
-        var id = 100000000000000000 * Math.random()
+        var id = "local"+Math.floor((10000 * Math.random()));
 
-        fileData.userid = "local";
-        fileData.id = id;
+        fileData.id=id;
 
         localStorage["debate_" + id] = JSON.stringify(fileData);
 
@@ -432,7 +437,7 @@ $(document).ready(function() {
       $(".ft-name:last").click();
 
 
-    } else {
+    } else { //new folder
 
       var folderData = {
         "type": "folder",
@@ -451,7 +456,7 @@ $(document).ready(function() {
     }
 
 
-    $('.ft-name').on('click', ft.click);
+  //  $('.ft-name').click(ft.click);
 
     $("#file-new-modal").modal('hide');
 

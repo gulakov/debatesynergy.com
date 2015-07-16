@@ -1,22 +1,30 @@
 function Timer() {
 
-  var count = 8 * 60, superThis = this, type, options = {
+  //configure initial time values
+  var count = 8 * 60, options = {
     "times_r": 5,
     "times_c": 8,
     "times_x": 3,
     "times_p": 8
   };
 
-  Timer.setInterval = function () {
-      superThis.interval = setInterval(function() {
-        if ($("#btn-play").hasClass("play"))
-          return;
+  $("#btn-timer-aff, #btn-timer-neg").html(options.times_p);
+  $("#btn-timer-crossx").html(options.times_x);
+  $("#btn-timer-constructive").html(options.times_c);
+  $("#btn-timer-rebuttal").html(options.times_r);
+  $("#count").val(toTime(count));
 
+
+  //sets to Timer.interval a function that checks every second if timer is running, displays decreased second count, and flashes red with sound on complete
+  Timer.setInterval = function () {
+      Timer.interval = setInterval(function() {
         if (count <= 0)
           return;
 
         count--;
         if (!count) {
+          $("#btn-play-container").click();
+
           $("audio")[1].play();
 
           $("body").append('<div id="timeup" style="position: absolute; height: 100%; width: 100%;top: 0;left: 0;z-index: 9999;background-color: red;"></div>')
@@ -29,6 +37,7 @@ function Timer() {
 
         $("#count").val(toTime(count));
 
+        var type =   $("#count").attr("class");
         if (type == "btn-timer-aff" || type == "btn-timer-neg")
           $("#" + type).html($("#count").val())
 
@@ -37,62 +46,51 @@ function Timer() {
     }, 1000)
   };
 
+  //seconds interger to M:SS string
   function toTime(n) {
     return Math.floor(n / 60) + ":" + (n % 60 < 10 ? "0" : "") + n % 60;
   }
 
+  //time string to seconds interger these formats M:SS MM:SS M SS MSS MMSS
   function toNumber(s) {
-    //M:SS MM:SS M SS MSS MMSS
     return (parseInt(s.substring(0, s.indexOf(":") > -1 ? s.indexOf(":") : s.length > 1 ? s.length - 2 : 1)) || 0) * 60 +
       (parseInt(s.substring(s.indexOf(":") > -1 ? s.indexOf(":") + 1 : s.length > 1 ? s.length - 2 : 1)) || 0);
-
   }
 
 
-
-  $("#btn-timer-aff, #btn-timer-neg").html(options.times_p);
-  $("#btn-timer-crossx").html(options.times_x);
-  $("#btn-timer-constructive").html(options.times_c);
-  $("#btn-timer-rebuttal").html(options.times_r);
-
-
-  $("#count").val(toTime(count));
-
-
+  //play/pause button sets interval function and tick sound
   $("#btn-play-container").click(function() {
 
     $("#btn-play").toggleClass("play").toggleClass("pause");
 
     if ($("#btn-play").hasClass("play"))
-      clearInterval(superThis.interval);
+      clearInterval(Timer.interval);
     else
       Timer.setInterval();
-      
+
     $("audio")[0].play();
 
   })
 
+  //prep buttons set new time and class of time display as button's id
   $("#btn-timer-aff, #btn-timer-neg, #btn-times-container > div").click(function() {
-    type = this.id;
-    count = (parseInt($(this).html()) || 0) * 60;
-    $("#count").val(toTime(count));
+    count = toNumber($(this).html()) || 0;
+    $("#count").val(toTime(count)).attr("class", this.id);
   })
 
+  //clicking into the text displaying time enables changing it, converts to allowed time string on enter
   $("#count").mousedown(function(e) {
     if ($("#btn-play").hasClass("pause"))
       $("#btn-play-container").click();
-  })
-
-  $("#count").keypress(function(e) {
-    if (e.keyCode == 13)
+  }).keypress(function(e) {
+    if (e.keyCode == 13){
+      e.preventDefault();
+      $(this).blur();
       $("#btn-play-container").click();
-
+    }
     return (e.keyCode >= 48 && e.keyCode <= 58);
-  })
-
-  $("#count").change(function(e) {
+  }).change(function(e) {
     count = toNumber($(e.target).val());
-
     $("#count").val(toTime(count));
   })
 

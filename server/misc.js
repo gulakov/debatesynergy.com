@@ -1,16 +1,17 @@
 var app = require('express').Router(), model = require('./models');
+var request = require('request');
 var Download = model.Download, Visit = model.Visit;
 module.exports = app;
 
-//log msword-sidebar downloads
+//log msword-sidebar unqiue downloads exclude bots
 app.get('/download', function(req, res) {
 
 
   var ip = req.connection.remoteAddress.toString();
-  var sys = req.headers['user-agent'].match(/\([^)]+\)/gi) ?
+  var sys = req.headers['user-agent'] && req.headers['user-agent'].match(/\([^)]+\)/gi) ?
     req.headers['user-agent'].match(/\([^)]+\)/gi)[0].replace(/[\(\)]/gi, '') : req.headers['user-agent'];
 
-  var request = require('request');
+
   request("http://ipinfo.io/" + ip + "/json", function (error, response, body) {
 
 
@@ -18,7 +19,7 @@ app.get('/download', function(req, res) {
 
 
       Download.findOne({ip: ip}, function (err, f) {
-        console.log("New Download: " + geo + " " + sys);
+        console.log("New Download: " + geo + " " + sys + " " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString());
 
         if (!f && !sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi))
             Download.create({ ip: ip, geo: geo, sys: sys}, function(e,f){});
@@ -35,14 +36,13 @@ app.get('/download', function(req, res) {
 
 });
 
-//log visitors
+//log unique visitors exclude bots
 app.get('/', function(req, res, next){
 
   var ip = req.connection.remoteAddress.toString();
   var sys = req.headers['user-agent'] && req.headers['user-agent'].match(/\([^)]+\)/gi) ?
     req.headers['user-agent'].match(/\([^)]+\)/gi)[0].replace(/[\(\)]/gi, '') : req.headers['user-agent'];
 
-  var request = require('request');
   request("http://ipinfo.io/" + ip + "/json", function (error, response, body) {
 
 
@@ -51,7 +51,7 @@ app.get('/', function(req, res, next){
       Visit.findOne({ip: ip}, function (err, f) {
 
 	       if (!sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi)){
-           console.log("Visit: " + geo + " " + sys + " " + new Date().toLocaleString());
+           console.log("Visit: " + geo + " " + sys + " " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString());
 
            if (!f)
               Visit.create({ ip: ip, geo: geo, sys: sys});
@@ -68,15 +68,13 @@ app.get('/', function(req, res, next){
 
 });
 
-
-app.get(/[a-z0-9]{24}/, function(req, res){
-  //res.send('hi');
-
-  res.sendFile('public/index.html', { root: __dirname.replace("/server","") });
-  //  res.sendfile(__dirname + '/../public/index.html');
-
+app.get('/debatestyle.css', function(req, res){
+  res.header('Cache-Control', 'max-age=3600000000000000');
+  res.sendFile('public/debatestyle.css', {root: __dirname.replace("/server","")});
 });
 
 
-//forever autorefresh
-app.get('/refresh', function(){});
+//route forwards debatesynergy.com/fileId 24-character database uid to home
+app.get(/[a-z0-9]{24}/, function(req, res){
+  res.sendFile('public/index.html', {root: __dirname.replace("/server","")});
+});

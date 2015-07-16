@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="cache.appcache">
+<html lang="en">
 <head>
   <!--Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com. The "debatesynergy.com" website is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. -->
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -9,55 +9,43 @@
   <title>Debate Synergy</title>
   <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAABGdBTUEAALGPC/xhBQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98GFhQlO5dZy9YAAAK1SURBVDjLhZFNTFR3FMV/f3jw3jAC8lEYwIERKxgDNUZB/EiLMbELY6oudGHswkXT0E1XsjYV+xFbqk7SDxtTNTZ14co0lcTEhWKkmBgrIaUSBUZ4tIjQYRiZ90aPCwJIaeNJbvK/ufd/7sk5mZJ433Xhp717kYSRBEAGc5BE6sfz+qO6Wh3BoNi9/yKVNd1qfm9IE+m/F/7MwYq3tSl+5QoTsRg3JiZmOSK1JyWJgrJPRVH5Vb3V1Kej38e06C7A4/0H8P7sU/LJExLpNOmmJkP/1q06FQjoeusRJPFrVZWihYWStKC8IPS5MrPWUl5Rw1/Dd6hvXMGRL5fT/lX2rIi52rmvV6/2khYvSOJRe/uifl7k00uXSESjejY8TDI+xXR+Hht6eow10tpK6fYdsjpvkXBdMvQCMgz9sRi/19XD5VBI0VBonvI729bZ9euRxOWbHVj7XNcA1DZ+w1TikUZmZgxAw9vtjMUjMus2fUFfn6NwuBk7IJLTgxz46A28zBJOfFBmrERijXJzCzAGAsE81jVtpHHbpNlTX70QqCSOR+9zsKV/iQ9L8vw3HjY0yBsbI52bSyo/34TajlHxTvP8fJ7g2cAgmQODPI8NKfVbF6l79/DGx/HTPr7n4/senjf7fu77/JNK8TQcxop9chS7q1vem6sZmJxkuOs28dFRfN9H2dlsKS4mIDE6nWQomWTGtsmoqjQf9vbOSjgfieh0ScmSSOfqs6Iifmlp+c/Z5ne/1iIPdh06Ree1F/I8Q3HpCqpXrebw4RFz4WKMcTfJwweerCxDYVkpqeAaVkayjQnXnJDr2jhOOTmBEmzbxnFsnBybQNDGCWaRX2RRWwd1WyapCM/QczfLfLy7CggumPjDz3c5dzZBYspRfMpmWZ5D5UqLb89YpiKn8n9Tem2Mr8NLRNeqIV4A25EAAAAASUVORK5CYII=">
 
-  <link rel="stylesheet" href="/debatestyle.css" />
   <!--[if lte IE 8]><script>window.onload = function(){  document.getElementById('head').innerHTML=''; document.body.innerHTML = "Outdated browser not supported. Latest versions of Chrome, Firefox, Safari, IE 11  on Windows, Linux, OSX, Android, and iOS are supported."; } </script>  <![endif]-->
-<!--   <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
- <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js" async defer></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"  async defer></script>
-  <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=gapiInit" async defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
--->
+  <link href="lib/bootstrap.min.css" rel="stylesheet" >
+  <link href="lib/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="debatestyle.css" />
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/bootstrap.min.js"></script>
+  <script src="lib/select2.full.min.js"></script>
 
-<link rel="stylesheet" href="/lib/bootstrap.min.css" />
-<script type="text/javascript" src="/lib/jquery.min.js" ></script>
-<script type="text/javascript" src="/lib/bootstrap.min.js" ></script>
-<link rel="stylesheet" href="/lib/select2.min.css" />
-<script type="text/javascript" src="/lib/select2.full.min.js" ></script>
 
-  <script type="text/javascript" src="/buttons.js" async defer></script>
-  <script type="text/javascript" src="/filetree.js" ></script>
-  <script type="text/javascript" src="/round.js" async defer></script>
-  <script type="text/javascript" src="/timer.js" ></script>
-  <script type="text/javascript" src="/init.js" ></script>
+  <script type="text/javascript" src="buttons.js"></script>
+  <script type="text/javascript" src="round.js" ></script>
+  <script type="text/javascript" src="timer.js"></script>
+  <script type="text/javascript" src="filetree.js"></script>
+  <script type="text/javascript" src="init.js"></script>
   <script> //if (typeof(u)=="undefined") location.pathname+="/"; //offline.html redirect when scripts are not loaded</script>
 </head>
 <body>
+
   <div id="sidebar">
     <div id="controls" class="btn-group btn-group-xs">
 
       <div class="form-search form-inline form-group-sm">
-        <select id="searchtext" type="text" ></select>
+        <select id="searchtext" type="text"></select>
       </div>
-      <button id="block" class="btn btn-default glyphicon glyphicon-header" data-toggle="tooltip" data-placement="bottom" title="Heading"></button>
-      <button id="read" class="btn btn-default glyphicon glyphicon-bold" data-toggle="tooltip" data-placement="bottom" title="Bold"></button>
-      <button id="readcard" class="btn btn-default glyphicon glyphicon-star-empty" data-toggle="tooltip" data-placement="bottom" title="Read text"></button>
-      <button id="superreadcard" class="btn btn-default glyphicon glyphicon-star" data-toggle="tooltip" data-placement="bottom" title="Super read text"></button>
-      <button id="normal" class="btn btn-default glyphicon glyphicon-align-justify" data-toggle="tooltip" data-placement="bottom" title="Clear formatting"></button>
-      <button id="file-new" class="btn btn-default glyphicon glyphicon-plus" data-toggle="tooltip" data-placement="bottom" title="New File"></button>
-      <button id="showround" class="btn btn-default glyphicon glyphicon-transfer" data-toggle="tooltip" data-placement="bottom" title="Round"></button>
-      <button id="showsettings" class="btn btn-default glyphicon glyphicon-cog" data-toggle="tooltip" data-placement="bottom" title="Settings"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-header" id="block" title="Heading"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-bold" id="read" title="Bold"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-star-empty" id="readcard" title="Read text"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-star" id="superreadcard" title="Super read text"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-align-justify" id="normal" title="Clear formatting"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-plus" id="file-new" title="New File"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-transfer" id="showround" title="Round"></button>
+      <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-cog" id="showsettings" title="Settings"></button>
 
 
       <div class="btn-group btn-group-xs">
-        <button type="button" class="btn ">Size Mode</button>
-        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="caret"></span>
-          <span class="sr-only">Size Mode</span>
-        </button>
+        <button type="button" class="btn btn-default dropdown-toggle glyphicon glyphicon-zoom-in" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
         <ul class="dropdown-menu">
           <li><a class="sm0">Default</a></li>
           <li><a class="sm1">Minimize Unread</a></li>
@@ -76,8 +64,8 @@
     <div id="doc-home" class="doc" style="display: none">
 
       <h1> Welcome to Debate Synergy</h1>
-      <p>Debate Synergy is a web app for high school and college policy &amp; LD debate teams to store online research, discuss debate in the forums, and livestream debate rounds.
-        <br>
+      <p>
+        Debatesynergy.com web app allows high school and college debate teams to store online research and stream debate rounds<br>
         <a href="http://www.wired.com/2012/01/ff_debateteam/" target="_blank">Featured in Wired magazine</a>. </p>
 
 
@@ -117,6 +105,8 @@
       <br> Make round panel full screen, or show speeches side-by-side with prior after the 1NC, so you can be creating your response speech while watching your opponents cards being live streamed.
       <br> Toggle font sizes, to show either: normal font sizes, bold and underlined text larger, and bold and highlighted text larger.
       <br> The timer keeps track of prep and can be manually set.
+      <br> Offline: File are auto-cached for offline use and site is still accessible by clicking bookmark, or for manual caching you can save this page: <a href="lib/offline.html" download>Offline Debate Synergy</a>.
+      <br> Refreshing offline gives error page in Chrome, so go to chrome://flags and set Enable Show Saved Copy Button to Enable:Primary
       <br> Works well on Chrome / Firefox on laptop &amp; mobile. Mobile swipe to show/hide sidebar.
       <br> Contact bugs &amp; features: contact@debatesynergy.com
 

@@ -1,5 +1,6 @@
 var r = {};
 
+function initSockets(){
 var socket;
 
 if (typeof(io)!="undefined")
@@ -85,8 +86,13 @@ $(window).on('beforeunload', function() {
     socket.close();
 });
 
+}
+
 
 $(document).ready(function() {
+
+  //init sockets for rounds
+  initSockets();
 
   //autofill usernames
 
@@ -246,7 +252,7 @@ $(document).ready(function() {
   });
 
   // allow only "flowing input" for enemy's speeches
-  $(".speech").on("mousedown", function() {
+  $(".speech").on("mousedown click", function() {
 
 
     if (r.aff1 == u.email || r.aff2 == u.email)
@@ -314,7 +320,7 @@ $(document).ready(function() {
 
   //drag from editor into speech
 
-  $('#editor').bind('dragstart', function(e) {
+  $('#docs').on('dragstart', function(e) {
 
     var range = window.getSelection().getRangeAt(0);
     var dragCopy = $("#drag-copy");
@@ -332,7 +338,7 @@ $(document).ready(function() {
 
   });
 
-  $('#editor').bind('dragend', function(e) {
+  $('#docs').bind('dragend', function(e) {
     //alert(1)
     $("#drag-copy").empty();
   })
@@ -385,12 +391,12 @@ $(document).ready(function() {
     if ($('#sidebar').is(":visible")) {
 
       $('#round').css("width", "100%");
-      $('#sidebar, #editor').hide();
+      $('#sidebar, #docs').hide();
 
     } else {
 
       $('#round').css("width", "40%");
-      $('#sidebar, #editor').show();
+      $('#sidebar, #docs').show();
 
     }
 

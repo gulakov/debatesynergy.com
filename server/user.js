@@ -2,6 +2,7 @@ var app = require('express').Router(), model = require('./models');
 var User = model.User, Doc = model.Doc;
 module.exports = app;
 
+//return the entire user object including file index for logged in user, or false if guest
 app.all('/', function(req, res, next) {
 
     if (!req.user)
@@ -9,11 +10,11 @@ app.all('/', function(req, res, next) {
     else
         User.findOne({_id: req.user._id},
         function(err, u){
-
             res.json(u);
         })
 });
 
+//repopulate current user's index with all files in database belonging to that user
 app.all('/recover', auth, function(req, res, next) {
 
   Doc.find({userid: req.user._id}, function(e, docs) {
@@ -32,21 +33,26 @@ app.all('/recover', auth, function(req, res, next) {
 
 });
 
+//POST takes index or custom_js, custom_css as URIComponents, updates them for user
 app.all('/update', auth, function(req, res) {
+  if (req.body.index && req.body._id != req.user._id)
+    return res.end(); //two users in browser tabs error fix
 
   User.update({_id: req.user._id},
-      (req.body.custom_js) ?
+      (typeof req.body.index != "undefined") ?
+        {index: req.body.index , date_updated: Date.now()} :
+      (req.body.sidebar) ?
+        {options: [req.body.sidebar] , date_updated: Date.now()} :
+      (typeof req.body.custom_js != "undefined") ?
         {custom_js: decodeURIComponent(req.body.custom_js),
-        custom_css: decodeURIComponent(req.body.custom_css)} :
-      (req.body.index) ?
-        {index: JSON.parse(req.body.index) } : null
+          custom_css: decodeURIComponent(req.body.custom_css), date_updated: Date.now()} : null
       ).exec();
 
   res.end();
 });
 
 
-
+//takes userinfo either email or name, returns list of users mathing either of those with publically friendly user objects
 app.get('/search', function(req, res) {
     var userinfo = { "$regex": req.query.userinfo, "$options": "i" } ;
 
@@ -55,7 +61,7 @@ app.get('/search', function(req, res) {
     })
 });
 
-
+//URL takes /user/sample@email.com, returns data for that user
 app.get('/:email?', function(req, res) {
     User.findOne({email: req.params.email}, function(error, user) {
         if(user)
@@ -65,10 +71,7 @@ app.get('/:email?', function(req, res) {
     })
 });
 
-
-
-
-
+//ensures user is logged in
 function auth(req, res, next) {
   if (!req.isAuthenticated())
     res.send("Login required");

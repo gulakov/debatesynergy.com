@@ -623,7 +623,7 @@ function gapiInit() {
   gapi.client.setApiKey(apiKey);
   gapi.auth.authorize({
     client_id: '675454780693-7n34ikba11h972dgfc0kgib0id9gudo8.apps.googleusercontent.com',
-    scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive'],
+    scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive.install'],
     immediate: true
   }, function(res) {
     authToken = res.access_token;

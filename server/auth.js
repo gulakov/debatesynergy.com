@@ -65,7 +65,7 @@ app.use(passport.session());
 
 //scope of which permissions to ask user for email, name, and drive file read/write
 app.get('/auth', passport.authenticate('google',
-  { scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive']
+  { scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive.install']
 }));
 
 app.get( '/auth/index/callback',

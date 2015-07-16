@@ -83,48 +83,41 @@ init: function(el, json) {
   })
 
 
-  /*
-
-        //update share user, only for owner
-        if (u._id == ft.selected.userid) {
-
-          $("#info").append("<div id='file-share-container'>Share:</span><span style='display: initial; width:100%;' id='file-sharing' contenteditable='true'>[emails], public, public edit</span></div>");
-
-          if (ft.selected.share.length)
-            $("#file-sharing").val(ft.selected.share.join(", "))
 
 
-          $("#file-sharing")
-            .on('focus', function() {
-              if ('[emails], public, public edit' == $("#file-sharing").text())
-                $("#file-sharing").empty();
-            })
-            .on('keydown', function(e) {
-
-              if (e.keyCode != 13) return;
-              e.preventDefault();
-
-              var shareList = $("#file-sharing").text().split(',').map(function(i) {
-                return i.trim();
-              });
-              $.post('/doc/update', {
-                id: ft.selected.id,
-                share: $("#file-sharing").val()
-              }, function(r) {
-                $("#file-sharing").val(r.join(", "));
-                $("#file-sharing").addClass('btn-info');
-                setTimeout(function() {
-                  $("#file-sharing").removeClass('btn-info');
-                }, 1000)
-
-              });
+  //update share user, only for owner
+  //if (u._id == ft.selected.userid) {
 
 
-            })
+    $(".ft-share")
+      .on('focus', function() {
+        if ('[emails], public, public edit' == $("#file-sharing").text())
+          $("#file-sharing").empty();
+      })
+      .on('keydown', function(e) {
 
-        }
+        if (e.keyCode != 13) return;
+        e.preventDefault();
 
-*/
+        var shareList = $("#file-sharing").text().split(',').map(function(i) {
+          return i.trim();
+        });
+        $.post('/doc/update', {
+          id: ft.selected.id,
+          share: $("#file-sharing").val()
+        }, function(r) {
+          $("#file-sharing").val(r.join(", "));
+          $("#file-sharing").addClass('btn-info');
+          setTimeout(function() {
+            $("#file-sharing").removeClass('btn-info');
+          }, 1000)
+
+        });
+
+
+      })
+
+
 
 
 
@@ -311,6 +304,160 @@ init: function(el, json) {
 
 },
 
+loadFile: function(id, headingId) {
+
+  //allow only one fileLoad at a time, break older if newer is started
+  ft.ongoingXhrId = id;
+
+  //don't reload same file
+  if ( $(".doc:visible").length && $(".doc:visible").attr("id").substring(4) == id && ft.selected.id == id )
+    return;
+
+  //hide current doc
+  $(".doc:visible").slideUp();
+
+  //show selected doc if it's
+  if ($("#doc-" + id).length)
+    $("#doc-" + id).slideDown();
+
+
+  function onScroll(){
+      // on scroll, update selected header index
+    $(".doc:visible").on("scroll",  function(e) {
+
+      var list = $(".doc:visible").find("h1, h2, h3");
+
+      for (var i = 0; i < list.length; i++)
+        if (list[i].textContent.length > 2 && list[i].getBoundingClientRect().bottom > 300)
+          break;
+
+      $(".ft-selected").removeClass("ft-selected");
+      $("#" + ft.selected.id + "_" + i).parent().prev().addClass("ft-selected");
+
+      if (i == list.length)
+        $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
+
+      if ($(".ft-selected")[0] && document.body.scrollIntoViewIfNeeded)
+        $(".ft-selected")[0].scrollIntoViewIfNeeded();
+
+    });
+
+  }
+
+  onScroll();
+
+
+
+    $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
+    $("#" + id + " ").prev().addClass("glyphicon-refresh glyphicon-spin");
+
+
+
+  ft.selected = {};
+
+
+  $.ajax({
+    xhr: function() {
+      //download percentage as the download is in progress
+      var xhr = new window.XMLHttpRequest();
+      xhr.addEventListener("progress", function(evt) {
+
+
+
+
+
+        if (evt.lengthComputable) {
+          var percentComplete = Math.floor(evt.loaded / evt.total * 100);
+
+        //  if (percentComplete > 5 && percentComplete < 30){
+          //  var x = evt.target.response;
+          //  x = x.substring(x.indexOf('"text"')+8);
+
+            //  console.log(x)
+            //  $(".doc:visible").html(x);
+
+            //  xhr.abort();
+
+
+
+        //  if (!$(".loading-doc").length)
+          //  $("#info").html('<span class="loading-doc"></span> <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>');
+
+          if (ft.ongoingXhrId == id){
+            $("#"+id).parent().css("background",
+              "linear-gradient(90deg, rgb(170, 207, 231) "+percentComplete+"%, transparent 0%) !important");
+
+              $("#"+id).parent().find(".ft-list:first").css("background-color","white");
+          }else
+            xhr.abort();
+
+        }
+      }, false);
+
+      return xhr;
+    },
+    url: "/doc/read",
+    data: {
+      id: id
+    },
+    error: function(r) {
+      if (r.responseText=="Access denied")
+        setTimeout(function(){
+          //alert(r.responseText);
+        }, 1000);
+    },
+    success: function(r) {
+
+      $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
+
+
+
+      if (r == "Not found" && confirm("File id " + id + " is not found. Remove from file tree?")) {
+        $(".ft-selected").closest('.ft-item').remove();
+        return;
+      }
+
+      //set as selected doc object and change URL without reloading apge
+      ft.selected = r;
+      history.pushState(null, "", ft.selected.id);
+
+      //add for public or shared files -- not in filetree
+      if (!$('#' + id).length) {
+        u.index.push( {
+          "id": ft.selected.id,
+          "title": ft.selected.title,
+          "type": "file ft-selected public"})
+
+        if (u.index[0].id=="home")
+          delete u.index[0];
+
+
+        ft.populate($("#filetree"),u.index);
+
+      }
+
+
+      //show doc if not already loaded by the "show previously opened" check
+      if (!$("#doc-" + r.id).length){
+        $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").slideDown();
+
+        onScroll();
+      }
+
+
+
+
+      //scroll to heading if triggered by click on heading within this doc
+      if (headingId)
+        $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
+
+
+    }
+  });
+
+
+},
+
 
 populate: function(div, json) {
 
@@ -331,7 +478,11 @@ populate: function(div, json) {
             json[i].type.indexOf("file")>-1 ? json[i].type.indexOf("collapsed")>-1 ? 'plus' :  'file'
              : json[i].type.indexOf("folder")>-1 ?  json[i].type.indexOf("collapsed")>-1 ? 'folder-close' :  'folder-open'
             : "" ) + " " + ( json[i].type.indexOf("public")>-1 ? ' ft-public ' : "") + '" ></span><span  id="' + json[i].id + '" class="ft-name ' +
-        json[i].type + '" title="' + json[i].title + '" >' + json[i].title + '</span> <span class="ft-delete glyphicon glyphicon-remove" ></span></div>');
+        json[i].type + '" title="' + json[i].title + '" >' + json[i].title + '</span> '+
+        '<div class="ft-share btn-group-xs"> <span class="dropdown-toggle glyphicon glyphicon-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></span>'+
+        '  <ul class="dropdown-menu dropdown-menu-right"><li><a class="sm0">Team</a></li><li><a class="sm1">Public</a></li>  <li><a class="sm2">Public Edit</a></li> <li role="separator" class="divider"></li>  <li><a class="sm3">Specific</a></li>  </ul></div>'+
+
+        ' <span class="ft-delete glyphicon glyphicon-remove" ></span></div>');
 
 
     item.appendTo(div)
@@ -450,159 +601,6 @@ update: function() {
     }
   }
 
-
-
-},
-
-loadFile: function(id, headingId) {
-
-  //allow only one fileLoad at a time, break older if newer is started
-  ft.ongoingXhrId = id;
-
-  //don't reload same file
-  if ( $(".doc:visible").length && $(".doc:visible").attr("id").substring(4) == id && ft.selected.id == id )
-    return;
-
-  //hide current doc
-  $(".doc:visible").slideUp();
-
-  //show selected doc if it's
-  if ($("#doc-" + id).length)
-    $("#doc-" + id).slideDown();
-
-
-  function onScroll(){
-      // on scroll, update selected header index
-    $(".doc:visible").on("scroll",  function(e) {
-      
-      var list = $(".doc:visible").find("h1, h2, h3");
-
-      for (var i = 0; i < list.length; i++)
-        if (list[i].textContent.length > 2 && list[i].getBoundingClientRect().bottom > 300)
-          break;
-
-      $(".ft-selected").removeClass("ft-selected");
-      $("#" + ft.selected.id + "_" + i).parent().prev().addClass("ft-selected");
-
-      if (i == list.length)
-        $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
-
-      if ($(".ft-selected")[0] && document.body.scrollIntoViewIfNeeded)
-        $(".ft-selected")[0].scrollIntoViewIfNeeded();
-
-    });
-
-  }
-
-  onScroll();
-
-
-
-    $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
-    $("#" + id + " ").prev().addClass("glyphicon-refresh glyphicon-spin");
-
-
-
-  ft.selected = {};
-
-
-  $.ajax({
-    xhr: function() {
-      //download percentage as the download is in progress
-      var xhr = new window.XMLHttpRequest();
-      xhr.addEventListener("progress", function(evt) {
-
-
-
-
-
-        if (evt.lengthComputable) {
-          var percentComplete = Math.floor(evt.loaded / evt.total * 100);
-
-        //  if (percentComplete > 5 && percentComplete < 30){
-          //  var x = evt.target.response;
-          //  x = x.substring(x.indexOf('"text"')+8);
-
-            //  console.log(x)
-            //  $(".doc:visible").html(x);
-
-            //  xhr.abort();
-
-
-
-        //  if (!$(".loading-doc").length)
-          //  $("#info").html('<span class="loading-doc"></span> <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>');
-
-          if (ft.ongoingXhrId == id)
-            $("#"+id).parent().css("background",
-              "linear-gradient(90deg, rgb(170, 207, 231) "+percentComplete+"%, transparent 0%)");
-
-          else
-            xhr.abort();
-
-        }
-      }, false);
-
-      return xhr;
-    },
-    url: "/doc/read",
-    data: {
-      id: id
-    },
-    error: function(r) {
-      if (r.responseText=="Access denied")
-        setTimeout(function(){
-          //alert(r.responseText);
-        }, 1000);
-    },
-    success: function(r) {
-
-      $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
-
-
-
-      if (r == "Not found" && confirm("File id " + id + " is not found. Remove from file tree?")) {
-        $(".ft-selected").closest('.ft-item').remove();
-        return;
-      }
-
-      //set as selected doc object and change URL without reloading apge
-      ft.selected = r;
-      history.pushState(null, "", ft.selected.id);
-
-      //add for public or shared files -- not in filetree
-      if (!$('#' + id).length) {
-        u.index.push( {
-          "id": ft.selected.id,
-          "title": ft.selected.title,
-          "type": "file ft-selected public"})
-
-        if (u.index[0].id=="home")
-          delete u.index[0];
-
-
-        ft.populate($("#filetree"),u.index);
-
-      }
-
-
-      //show doc if not already loaded by the "show previously opened" check
-      if (!$("#doc-" + r.id).length){
-        $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").slideDown();
-
-        onScroll();
-      }
-
-
-
-
-      //scroll to heading if triggered by click on heading within this doc
-      if (headingId)
-        $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
-
-
-    }
-  });
 
 
 },

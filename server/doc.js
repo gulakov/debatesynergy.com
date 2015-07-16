@@ -10,6 +10,11 @@ function auth(req, res, next) {
 }
 
 
+//takes callback from "Open With" in Google Drive to create/open file and sync
+app.get('/readdrive', function(req, res) {
+  res.send(req.query.state)
+});
+
 //takes doc ID, return doc text -- allowed if user is owner, share, or public doc
 app.get('/read', function(req, res) {
     var fileId = req.query.id;

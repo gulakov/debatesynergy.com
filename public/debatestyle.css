@@ -203,7 +203,7 @@ u {
   background-color: #ccc !important;
 }
 .ft-options, .ft-name {
-  display: inline;
+  display: inline-block;
 }
 .ft-item:hover > .ft-options{
   display: inline;

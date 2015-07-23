@@ -59,6 +59,14 @@ exports.Round = mongoose.model('Round', new Schema({
 
 
 
+exports.Team = mongoose.model('Team', new Schema({
+    name: String,
+    users: Array,
+    admins: Array,
+    date: {type: Date, default: Date.now}
+}, { versionKey: false }));
+
+
 exports.Download = mongoose.model('Download', new Schema({
     ip: String,
     geo: String,

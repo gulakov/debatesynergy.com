@@ -13,9 +13,9 @@ mongoose.connect('mongodb://localhost/debatedata', {server: { poolSize: 5 }});
 
 //middleware
 app.use(cookieParser());
-app.use(bodyParser.json({limit: '30mb'}));
-app.use(bodyParser.urlencoded({limit: '30mb', extended: true}));
-app.use(session({secret: 'cookie', 	resave: true, saveUninitialized: true, cookie: {maxAge: 100000000000} }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(session({secret: 'cookie', 	resave: true, saveUninitialized: true }));
 
 //routes
 

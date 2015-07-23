@@ -78,8 +78,8 @@ u {
 }
 .size-mode-1 b, .size-mode-1 u {
   font-size: 12pt;
-  height: auto !important;
-min-height: 100%;
+  line-height: 12pt;
+
 
 }
 .size-mode-2  {
@@ -87,12 +87,15 @@ min-height: 100%;
 }
 .size-mode-2 b, .size-mode-2 u {
   font-size: 24pt;
+  line-height: 28pt;
 }
 .size-mode-3  {
   font-size: 6pt;
 }
-.size-mode-3 b, .size-mode-3 .readcardsuper {
+.size-mode-3 h4>b, .size-mode-3 p>b, .size-mode-3 p>u:nth-child(1)>b, .size-mode-3 *[style*="background-color"] {
   font-size: 24pt;
+  line-height: 28pt;
+
 }
 
 /* SIDEBAR */
@@ -135,6 +138,12 @@ min-height: 100%;
 }
 
 /* FILETREE */
+.ft-item:nth-child(even) {
+}
+.ft-list .ft-item:nth-child(odd) {
+  border-left:2px solid rgb(170, 207, 231);
+}
+
 
 #filetree {
   height: calc(100% - 110px);
@@ -181,9 +190,9 @@ min-height: 100%;
 }
 .ft-being-dragged .ft-name {
   opacity: .5;
-  box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .8);
+  __box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .8);
 }
-.ft-selected{
+.ft-selected.ft-item{
   background-color: rgb(170, 207, 231);
 }
 .ft-selected .ft-list{
@@ -193,23 +202,12 @@ min-height: 100%;
 .ft-list:has(>.ft-selected){
   background-color: #ccc !important;
 }
-.ft-icon, .ft-name {
+.ft-options, .ft-name {
   display: inline;
 }
-.ft-item:hover > .ft-delete, .ft-item:hover > .ft-share{
+.ft-item:hover > .ft-options{
   display: inline;
   cursor: pointer;
-}
-.ft-delete{
-  position: absolute;
-  right: 0px;
-  display:none;
-}
-.ft-share{
-  position: absolute;
-  right: 20px;
-  top:0px;
-  display:none;
 }
 .ft-public{
   color: orange;
@@ -226,7 +224,7 @@ min-height: 100%;
   font-size: 75%;
   color: #444;
 }
-.ft-name.collapsed+.ft-share+.ft-delete+.ft-list {
+.ft-name.collapsed+.ft-list {
   display: none;
 }
 
@@ -256,6 +254,26 @@ min-height: 100%;
     }
 }
 
+
+.ft-checkmark{
+  margin-right: -17px;
+  padding-left: 3px;
+}
+.dropdown-menu>li>a{
+  display: inline;
+}
+.ft-options .dropdown-menu{
+  top: 0%;
+  left: 0%;
+  width: 60%;
+  font-size: 90%;
+}
+.ft-visible{
+  background-color: #ddd;
+}
+.ft-visible > .ft-list{
+  background-color: #fefefe;
+}
 /* ROUND */
 
 #round {
@@ -307,7 +325,7 @@ min-height: 100%;
   max-height: 300px;
   overflow: auto;
 }
-.flow-text {
+.flow {
   color: blue;
   font-weight: bold;
 }

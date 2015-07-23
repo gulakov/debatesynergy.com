@@ -214,34 +214,12 @@ $(document).ready(function() {
 
   $(".dropdown-menu").on("click", "li", function(e) {
 
-    /*
-    $(".doc:visible *").each(function() {
-
-      if ($(this).css('font-weight') == 'bold')
-        $(this).addClass('read');
-
-      if ($(this).css('text-decoration') == 'underline')
-        $(this).addClass('readcard');
-
-      if ($(this).css('background-color') != 'rgba(0, 0, 0, 0)')
-        $(this).addClass('readcardsuper');
-
-      if ($(this).css('text-align') == 'center')
-        $(this).addClass('h1');
+    //$(".doc:visible style, #round style").remove();
+//$(".readcard, .read, .readcardsuper").css("line-height", "100%")
 
 
 
-    })
-*/
-
-    $(".doc:visible style, #round style").remove();
-    $(".readcard, .read, .readcardsuper").css("line-height", "100%")
-
-
-
-    var sm = parseInt($(e.target).attr('class').substring(2));
-
-    $('#docs, #round').attr('class', '').addClass("size-mode-" + sm);
+    $('#docs, .speech').attr('class', "size-mode-" + $(e.target).attr('class').substring(2));
 
   })
 

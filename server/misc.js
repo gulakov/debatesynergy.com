@@ -48,9 +48,15 @@ app.get('/', function(req, res, next){
 
       var r = JSON.parse(body), geo = r.city != null ? r.city + " " + r.country : r.country;
 
+      //Debate is in the US; non-US IPs will be blocked
+      if(r.country!="US" && r.country.length){
+	       console.log("Blocked: " + geo);
+         return res.send("Debate Synergy is for academic debate community in the US. Your region of " + geo + " is restricted.");
+      }
+
       Visit.findOne({ip: ip}, function (err, f) {
 
-	       if (!sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi)){
+	       if (sys && !sys.match(/(Baidu|Googlebot|bingbot|sigma|compatible;|duckduckgo)/gi)){
            console.log("Visit: " + geo + " " + sys + " " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString());
 
            if (!f)

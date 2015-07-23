@@ -1,5 +1,5 @@
 //TODO create parenting -- when you're dragging the headings  have arrow icon under
-//collapsible headign levels and auto load which level
+//collapsible heading levels and auto load which level
 //dragging headigns into another documents
 
 var ft = {
@@ -13,13 +13,13 @@ init: function(el, json) {
   ft.populate(el, json);
   $("body").on("click", ".ft-icon", function(e){
     //clicking icon collapses sub-list
-    $(this).next().toggleClass('collapsed');
-    var newIcon = "ft-icon glyphicon glyphicon-";
-
-    newIcon += $(this).next().hasClass("file") ? $(this).next().hasClass('collapsed') ? 'plus' :  'file'
-       : $(this).next().hasClass("folder") ? $(this).next().hasClass('collapsed') ?  'folder-close' :  'folder-open' : '';
-
-    $(this).attr('class', newIcon);
+  /*
+*/
+  })
+  .on("click", ".ft-rename", function(e){
+    var ftName = $(this).closest('.ft-item').find('.ft-name:first');
+    ftName.attr('contenteditable', true);
+    ftName.focus();
 
   })
   .on("mouseup", ".ft-name", function(e){
@@ -27,12 +27,82 @@ init: function(el, json) {
   })
   //clicking item handles the click, loads file
   .on("click", ".ft-item, .ft-name", ft.click)
+  .on("mousedown", ".ft-item .select2", function(){
+
+    //options dropdown shouldnt exit on select users
+    $("body").on("hide.bs.dropdown", ".ft-options", function(e){ console.log(e)
+     e.preventDefault();
+    })
+  })
+  .on("blur", ".select2-search__field", function(){
+    $("body").unbind("hide.bs.dropdown");
+  })
+  .on("click", ".ft-collapse", function(e){
+    var ftName = $(this).closest('.ft-item').find('.ft-name:first');
+
+    ftName.toggleClass('collapsed');
+    var newIcon = "ft-icon glyphicon glyphicon-";
+
+     newIcon += ftName.hasClass("file") ? ftName.hasClass('collapsed') ? 'plus' :  'file'
+        : ftName.hasClass("folder") ? ftName.hasClass('collapsed') ?  'folder-close' :  'folder-open' : '';
+
+        $(this).closest('.ft-item').find('.ft-icon').attr('class', newIcon);
+
+
+  })
+  .on("show.bs.dropdown", ".ft-options", function(e){
+
+
+//$(e.relatedTarget).parent().find(".dropdown-menu").html( )
+
+      $(".ft-share-specific").select2({
+        ajax: {
+          url: "/user/search",
+          dataType: 'json',
+          delay: 50,
+          data: function (params) {
+          return {userinfo: params.term};
+          },
+          processResults: function (data, params) {
+            return {results: data.splice(0, u.name ? 5 : 0)}; //Login required to invite users
+          },
+          cache: true
+          },
+          minimumInputLength: 4,
+          escapeMarkup: function (markup) { return markup; },
+
+          maximumSelectionLength: 9,
+          templateResult: function  (sel) {
+            return sel.email ? u.name ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : "Login required" : sel.text;
+          }
+          //data: finalList,
+
+      })
+
+
+    $(e.relatedTarget).parent().find('.sm0').before('<span class="ft-checkmark glyphicon glyphicon-ok">')
+
+
+
+
+
+  })
+
+  .on("click", ".ft-options > li", function(e){
+
+    $(e).closest('.ft-item').find('.ft-name').addClass("ft-team")
+    console.log(e)
+
+
+  })
+
+
   .on("click", ".ft-delete", function(e){
     //delete button: for owner deletes file, for share & public removes from tree //TODO
 
-    var id = $(this).prev().attr('id');
+    var id = $(this).closest('.ft-item').find('.ft-name:first').attr('id');
 
-    if (!confirm("Are you sure you want to delete the file \"" + $(this).prev().text() + "\"?"))
+    if (!confirm("Are you sure you want to delete the file \"" + $(this).closest('.ft-item').find('.ft-name:first').text() + "\"?"))
       return;
 
     if (local)
@@ -43,11 +113,11 @@ init: function(el, json) {
     $(this).closest('.ft-item').remove();
     u.index=u.index.filter(function(i){return i.id!=id; });
     $("doc-"+id).remove();
-    if(id==ft.selected.id)
-        ft.selected={};
+    if(id == ft.selected.id)
+      ft.selected = {};
 
-    ft.updateNeeded = true;
-    ft.update();
+    ft.updateIndex();
+
 
   })
   .on("keydown", ".ft-name", function(e){
@@ -76,9 +146,14 @@ init: function(el, json) {
       });
     }
 
-    ft.updateNeeded = true;
-    ft.update();
+    //alter index and upload it
+    u.index=u.index.map(function(i){
+      if (i.id==id)
+        i.title = newTitle
+      return i;
+    });
 
+    ft.updateIndex();
 
   })
 
@@ -124,9 +199,9 @@ init: function(el, json) {
 
 
 
-  //update filetree and save every 10s
+  //update filetree and save every 5s
   setInterval(function() {
-   // if (typeof(MutationObserver) == "undefined")
+    if (typeof(MutationObserver) == "undefined")
       ft.updateNeeded = true;
 
     ft.update();
@@ -137,12 +212,18 @@ init: function(el, json) {
 
   if (typeof MutationObserver != "undefined")
     new MutationObserver(function(m) {
-      console.log(m);
       ft.updateNeeded = true;
     }).observe($("#docs")[0], {
       childList: true,
       subtree: true
     });
+
+  $("#docs").keyup(function(e){
+    ft.updateNeeded = true;
+    if ($(window.getSelection().anchorNode).closest("h1,h2,h3").length)
+      ft.update();
+
+  })
 
 
   //click last selected (or first) on first-load
@@ -255,8 +336,10 @@ init: function(el, json) {
       //remove original item if got to this point
       $(".ft-being-dragged:first").closest('.ft-item').remove();
 
-      ft.updateNeeded = true;
-      ft.update();
+      //calculate new index JSON and upload it
+      u.index = ft.toJSON();
+      ft.updateIndex();
+
     });
 
 
@@ -349,9 +432,11 @@ loadFile: function(id, headingId) {
 
 
     $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
-    $("#" + id + " ").prev().addClass("glyphicon-refresh glyphicon-spin");
+    $("#" + id + " ").prev().find(".ft-icon").addClass("glyphicon-refresh glyphicon-spin");
 
 
+
+ $(".ft-visible").removeClass("ft-visible");
 
   ft.selected = {};
 
@@ -385,9 +470,9 @@ loadFile: function(id, headingId) {
 
           if (ft.ongoingXhrId == id){
             $("#"+id).parent().css("background",
-              "linear-gradient(90deg, rgb(170, 207, 231) "+percentComplete+"%, transparent 0%) !important");
+              "linear-gradient(90deg, rgb(170, 207, 231) "+percentComplete+"%, transparent 0%)");
 
-              $("#"+id).parent().find(".ft-list:first").css("background-color","white");
+              $("#"+id).next().css("background-color","white");
           }else
             xhr.abort();
 
@@ -397,13 +482,19 @@ loadFile: function(id, headingId) {
       return xhr;
     },
     url: "/doc/read",
-    data: {
-      id: id
-    },
+    data: {id: id},
     error: function(r) {
       if (r.responseText=="Access denied")
         setTimeout(function(){
-          //alert(r.responseText);
+
+          $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
+
+          if (r == "Not found" && confirm("Access denied to file id " + id + ". Remove from file tree?")) {
+            $(".ft-selected").closest('.ft-item').remove();
+            return;
+          }
+
+
         }, 1000);
     },
     success: function(r) {
@@ -416,6 +507,10 @@ loadFile: function(id, headingId) {
         $(".ft-selected").closest('.ft-item').remove();
         return;
       }
+
+
+      $("#"+id).parent().css("background", "").addClass('ft-visible');
+
 
       //set as selected doc object and change URL without reloading apge
       ft.selected = r;
@@ -452,6 +547,12 @@ loadFile: function(id, headingId) {
         $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
 
 
+      //populate index with the new doc's headings
+      ft.updateNeeded = true;
+      ft.update();
+
+
+
     }
   });
 
@@ -472,17 +573,24 @@ populate: function(div, json) {
     //TODO author/share tooltip info // date crated/ added
 
     var item = json[i].type.indexOf("heading")>-1 ?
-      $('<div class="ft-item" draggable="true"><span  id="' + json[i].id + '" class="ft-name ' +
+      $('<div class="ft-item' + (json[i].type.indexOf("selected")>-1 ? ' ft-selected' : '') + '" draggable="true" ><span  id="' + json[i].id + '" class="ft-name ' +
         json[i].type + '" title="' + json[i].title + '" >' + json[i].title + '</span> </div>')
-      : $('<div class="ft-item" draggable="true"><span class="ft-icon glyphicon glyphicon-' +  (
-            json[i].type.indexOf("file")>-1 ? json[i].type.indexOf("collapsed")>-1 ? 'plus' :  'file'
-             : json[i].type.indexOf("folder")>-1 ?  json[i].type.indexOf("collapsed")>-1 ? 'folder-close' :  'folder-open'
-            : "" ) + " " + ( json[i].type.indexOf("public")>-1 ? ' ft-public ' : "") + '" ></span><span  id="' + json[i].id + '" class="ft-name ' +
-        json[i].type + '" title="' + json[i].title + '" >' + json[i].title + '</span> '+
-        '<div class="ft-share btn-group-xs"> <span class="dropdown-toggle glyphicon glyphicon-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></span>'+
-        '  <ul class="dropdown-menu dropdown-menu-right"><li><a class="sm0">Team</a></li><li><a class="sm1">Public</a></li>  <li><a class="sm2">Public Edit</a></li> <li role="separator" class="divider"></li>  <li><a class="sm3">Specific</a></li>  </ul></div>'+
+      : $('<div class="ft-item" draggable="true"><div class="ft-options btn-group-xs">'+
 
-        ' <span class="ft-delete glyphicon glyphicon-remove" ></span></div>');
+        '<span  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="ft-icon glyphicon glyphicon-' +  (
+              json[i].type.indexOf("file")>-1 ? json[i].type.indexOf("collapsed")>-1 ? 'plus' :  'file'
+               : json[i].type.indexOf("folder")>-1 ?  json[i].type.indexOf("collapsed")>-1 ? 'folder-close' :  'folder-open'
+              : "" ) + " " + ( json[i].type.indexOf("public")>-1 ? ' ft-public ' : "") + '" ></span>'+
+
+        '<ul class="dropdown-menu dropdown-menu-right"><li> <a class="ft-collapse">Collapse / Expand</a></li>  <li> <a class="ft-delete">Delete</a></li> <li> <a class="ft-rename">Rename</a></li><li class="dropdown-header">SHARE</li>'+
+        '<li> <a class="ft-share-team">Team</a></li><li><a class="ft-share-public">Public</a></li><li><a class="ft-share-publicedit">Public Edit</a></li> '+
+        '<li> <select class="ft-share-specific" style="width: 100%"   multiple="multiple" type="text"></select></li>   </ul></div>'+
+
+
+        '<span  id="' + json[i].id + '" class="ft-name ' + json[i].type.replace("ft-selected","") + '"  >' + json[i].title + '</span> '+
+
+
+          '</div>');
 
 
     item.appendTo(div)
@@ -521,20 +629,32 @@ toJSON: function(startLevel) {
 
 },
 
+//upload tree index to server
+updateIndex: function() {
+
+  if (local) {
+    localStorage.debate = JSON.stringify(u.index);
+
+    ft.selected.text = $(".doc:visible").html().replace(/\'/g, '&#39;');
+    localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
+  } else if (u.index.length)  //upload user as object to POST
+    $.ajax({
+        url: '/user/update',
+        data: u,
+        contentType: "application/x-www-form-urlencoded",
+        type: 'POST'
+    });
+
+},
+
+//save doc to server, update headings into index
 update: function() {
-  //if is editting a name
-//  if (!$(".doc:visible").length)
-  //  return;
 
-  var treeJSON = ft.toJSON();
-
+  u.index = ft.toJSON();
 
   //find the headings
-  if (ft.updateNeeded) {
-    var headingList = [],
-      i = 0,
-      selectedId = -1;
-
+  if (ft.selected && $(".doc:visible").length && ft.updateNeeded && ft.selected.id == $(".doc:visible").attr('id').substring(4) ){
+    var headingList = [],  i = 0,  selectedId = -1;
 
     if ($(".ft-selected .ft-name").hasClass("heading"))
       selectedId = parseInt($(".ft-selected .ft-name").attr("id").substring($(".ft-selected .ft-name").attr("id").indexOf("_") + 1))
@@ -557,55 +677,42 @@ update: function() {
 
 
 
+    //add headings as children of current file to indexJSON
+    for (var i in u.index)
+      if (u.index[i].id == ft.selected.id){
+        u.index[i].children = headingList;
+        break;
+      }
 
-    //add headings as children of current file
-    for (var i in treeJSON)
-      if (ft.selected && treeJSON[i].id == ft.selected.id && $(".doc:visible").attr("id").substring(4) == ft.selected.id)
-        treeJSON[i].children = headingList;
 
-  }
 
-  u.index = treeJSON;
-
-  //update tree index
-  if (local) {
-    localStorage.debate = JSON.stringify(u.index);
-
-    ft.selected.text = $(".doc:visible").html().replace(/\'/g, '&#39;');
+  	//backup for offline cache
+  	localStorage.debate = JSON.stringify(u.index);
     localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
-  } else { //upload user as object to POST
-    if (u.index.length)
-    $.ajax({
-        url: '/user/update',
-        data: u,
-        contentType: "application/x-www-form-urlencoded",
-        type: 'POST'
+
+
+
+
+    //recreate index -- but only for the current doc to update its headings
+    $("#"+ ft.selected.id).parent().find(".ft-list").remove()
+    ft.populate( $("#"+ ft.selected.id).parent(), headingList);
+
+    //upload doc
+    $.post('/doc/update', {
+      text: encodeURIComponent($(".doc:visible").html()),
+      id: ft.selected.id
     });
 
-	//backup for offline cache
-	localStorage.debate = JSON.stringify(u.index);
-    localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
-
-
-    if (ft.selected && $(".doc:visible").attr('id') != "undefined" && ft.updateNeeded &&  $(".doc:visible").length && ft.selected.id == $(".doc:visible").attr('id').replace("doc-", '')) {
-      ft.updateNeeded = false;
-
-
-      ft.populate(ft.root, u.index);
-
-      //upload doc
-      $.post('/doc/update', {
-        text: encodeURIComponent($(".doc:visible").html().replace(/\'/g, '&#39;')),
-        id: ft.selected.id
-      });
-    }
+    //5s counter
+    ft.updateNeeded = false;
   }
 
-
+  //save indexJSON
+  ft.updateIndex();
 
 },
 
-
+//click on ft-name event or pass the id to click
 click: function(e) {
   e = typeof e == "string" ? $("#" + e) : $(e.target).hasClass('ft-name') ? $(e.target) : $(e.target).find('.ft-name:first');
 
@@ -646,7 +753,6 @@ click: function(e) {
       if ($("#doc-" + id).length)
         $("#doc-" + id).slideDown()
 
-      ft.update();
       location.hash = id;
 
     } else if (local) {
@@ -665,6 +771,7 @@ click: function(e) {
           .appendTo("#docs").html(ft.selected.text);
 
 
+        //populate index with the new doc's headings
         ft.updateNeeded = true;
         ft.update();
 

@@ -328,8 +328,8 @@ $(document).ready(function() {
                 var val = $(inNodeChild).text();
 
                 //encoding errors
-                var inFixChar = [145,146,147,148,150,151,226], outFixChar = ["'","'",'"','"','-','--',"'"];
-                for (var z in inFixChar)
+                var inFixChar = [145,146,147,148,150,151,226], outFixChar = ["-","-",'-','-','-','--',"'"];
+                for (var z =0; z < inFixChar.length; z++)
                   val=val.replace((new RegExp(String.fromCharCode(inFixChar[z]), 'gi') ), outFixChar[z]);
 
                 var styleAttrNode = inNodeChild.getElementsByTagName("rStyle")[0];

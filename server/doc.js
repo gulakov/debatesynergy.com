@@ -124,36 +124,29 @@ app.post('/update', auth, function(req, res) {
 //takes a search string, search all user's docs text content
 app.get('/search', auth, function(req, res) {
 
-    var data = req.query.q;
+  var q = req.query.q;
 
-    Doc.find()
-        .where({userid: req.user._id})
-        .sort('title')
-        .exec(function (err, files) {
+  Doc.find({"userid": req.user._id, "text": {"$regex": q, "$options": "i" }}).sort('title').exec(function (err, files) {
+        if (!files)
+            return res.json([]);
 
-            if (!files.length || !data)
-                return res.json([]);
+        return res.json(files.map(function(f){          
+          var matchedPosition = f.text.toLowerCase().indexOf(q.toLowerCase());
+          var matchedString = f.text.substring(f.text.lastIndexOf(" ", matchedPosition-40), matchedPosition)
+            + "<b>"+q+"</b>" + f.text.substring(matchedPosition+q.length, f.text.indexOf(" ", matchedPosition+q.length + 40) );
+           return {id: f._id, text: f.title, matchedString: matchedString };
 
-            var matchedFiles = [], text, matchedString, matchedPosition;
-
-            for (var i in files){
-              text = files[i].text.replace(/(<([^>]+)>)/ig, "");
-              if (new RegExp(data, "gi").test(text)){
-                  matchedPosition = text.toLowerCase().indexOf(data.toLowerCase());
-                  matchedString = text.substring(text.lastIndexOf(" ", matchedPosition-40), matchedPosition)
-                    + "<b>"+data+"</b>" + text.substring(matchedPosition+data.length, text.indexOf(" ", matchedPosition+data.length + 40) );
-                  matchedFiles.push({id: files[i]._id, text: files[i].title, matchedString: matchedString });
-              }
-            }
-
-            return res.json(matchedFiles);
-        });
+        }));
+  });
 
 });
 
 //takes doc id, delete doc by removing ownership
-app.get('/delete',  auth, function(req, res){
-    Doc.update({_id: req.query.id, userid: req.user._id}, {userid: "trash"}).exec();
+app.get('/delete', auth, function(req, res){
+    Doc.update({_id: req.query.id, userid: req.user._id}, {userid: "trash_"+ req.user._id }).exec(function(e, f){
+      return res.end();
 
-    res.end();
+    });
+
+
 });

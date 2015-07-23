@@ -261,17 +261,25 @@ $(document).ready(function() {
       r.mySide = "neg";
 
 
-    if ($(this).hasClass(r.mySide))
-      return;
+  //  if ($(this).hasClass(r.mySide))
+    //  return;
 
 
 
-    var sel = window.getSelection();
-    var range = sel.getRangeAt(0);
-    var el = $("<span>").addClass("flow-text").html(" ")[0];
+    var el = $("<p>").addClass("flow").html("&nbsp;");
 
-    range.collapse();
-    range.insertNode(el);
+    var p = $(window.getSelection().anchorNode).closest('p');
+
+    if (p.prev().hasClass("flow"))
+      el = p.prev();
+    else
+      p.before(el)
+
+
+    var range = document.createRange();
+    range.setStart(el[0], 0);
+    range.setEnd(el[0], 1);
+    sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
 
@@ -358,7 +366,7 @@ $(document).ready(function() {
     e.stopPropagation();
 
 
-    $("#" + e.target.href.replace(/.+\#/gi, "")).append($("#drag-copy").clone().show());
+    $("#" + e.target.href.replace(/.+\#/gi, "")).append($("#drag-copy").html());
   });
 
 
@@ -370,7 +378,7 @@ $(document).ready(function() {
     e.preventDefault();
     e.stopPropagation();
 
-    $(e.target).append($("#drag-copy").clone().show());
+    $(e.target).append($("#drag-copy").html());
 
 
     $('#round .tab-pane').unbind('dragover');

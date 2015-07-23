@@ -44,8 +44,9 @@ app.get('/', auth, function(req, res, next) {
 
 app.get('/create', auth, function(req, res) {
 
-    require("q").all([req.query.aff1, req.query.aff2, req.query.neg1, req.query.neg2, req.query.judge1].map(function(userInfo) {
-       return User.findOne({$or:[{email: userInfo}, {name: userInfo}]})
+    require("q").all([req.query.aff1, req.query.aff2, req.query.neg1, req.query.neg2, req.query.judge1].map(function(userId) {
+       return User.findById(userId);
+          //{$or:[{email: userInfo}, {name: userInfo}]})
     }))
     .done(function (foundUserList) {
 

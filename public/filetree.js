@@ -11,29 +11,21 @@ init: function(el, json) {
 
   //populate and events
   ft.populate(el, json);
-  $("body").on("click", ".ft-icon", function(e){
-    //clicking icon collapses sub-list
-  /*
-*/
-  })
-  .on("click", ".ft-rename", function(e){
-    var ftName = $(this).closest('.ft-item').find('.ft-name:first');
-    ftName.attr('contenteditable', true);
-    ftName.focus();
-
-  })
+  $("body")
   .on("mouseup", ".ft-name", function(e){
     $(this).attr('contenteditable', true);
   })
   //clicking item handles the click, loads file
   .on("click", ".ft-item, .ft-name", ft.click)
-  .on("mousedown", ".ft-item .select2", function(){
 
     //options dropdown shouldnt exit on select users
+  .on("mousedown", ".ft-item .select2", function(){
+
     $("body").on("hide.bs.dropdown", ".ft-options", function(e){ console.log(e)
      e.preventDefault();
     })
   })
+
   .on("blur", ".select2-search__field", function(){
     $("body").unbind("hide.bs.dropdown");
   })
@@ -50,76 +42,14 @@ init: function(el, json) {
 
 
   })
-  .on("show.bs.dropdown", ".ft-options", function(e){
-
-
-//$(e.relatedTarget).parent().find(".dropdown-menu").html( )
-
-      $(".ft-share-specific").select2({
-        ajax: {
-          url: "/user/search",
-          dataType: 'json',
-          delay: 50,
-          data: function (params) {
-          return {userinfo: params.term};
-          },
-          processResults: function (data, params) {
-            return {results: data.splice(0, u.name ? 5 : 0)}; //Login required to invite users
-          },
-          cache: true
-          },
-          minimumInputLength: 4,
-          escapeMarkup: function (markup) { return markup; },
-
-          maximumSelectionLength: 9,
-          templateResult: function  (sel) {
-            return sel.email ? u.name ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : "Login required" : sel.text;
-          }
-          //data: finalList,
-
-      })
-
-
-    $(e.relatedTarget).parent().find('.sm0').before('<span class="ft-checkmark glyphicon glyphicon-ok">')
-
-
-
-
-
-  })
-
-  .on("click", ".ft-options > li", function(e){
-
-    $(e).closest('.ft-item').find('.ft-name').addClass("ft-team")
-    console.log(e)
-
+  .on("click", ".ft-rename", function(e){
+    var ftName = $(this).closest('.ft-item').find('.ft-name:first');
+    ftName.attr('contenteditable', true);
+    ftName.focus();
 
   })
 
 
-  .on("click", ".ft-delete", function(e){
-    //delete button: for owner deletes file, for share & public removes from tree //TODO
-
-    var id = $(this).closest('.ft-item').find('.ft-name:first').attr('id');
-
-    if (!confirm("Are you sure you want to delete the file \"" + $(this).closest('.ft-item').find('.ft-name:first').text() + "\"?"))
-      return;
-
-    if (local)
-      localStorage.removeItem("debate_" + id);
-    else
-      $.get("/doc/delete", {id: id});
-
-    $(this).closest('.ft-item').remove();
-    u.index=u.index.filter(function(i){return i.id!=id; });
-    $("doc-"+id).remove();
-    if(id == ft.selected.id)
-      ft.selected = {};
-
-    ft.updateIndex();
-
-
-  })
   .on("keydown", ".ft-name", function(e){
     if(e.which==13){
       $(this).blur();
@@ -157,40 +87,95 @@ init: function(el, json) {
 
   })
 
+    .on("click", ".ft-delete", function(e){
+      //delete button: for owner deletes file, for share & public removes from tree //TODO
+
+      var id = $(this).closest('.ft-item').find('.ft-name:first').attr('id');
+
+      if (!confirm("Are you sure you want to delete the file \"" + $(this).closest('.ft-item').find('.ft-name:first').text() + "\"?"))
+        return;
+
+      if (local)
+        localStorage.removeItem("debate_" + id);
+      else
+        $.get("/doc/delete", {id: id});
+
+      $(this).closest('.ft-item').remove();
+      u.index=u.index.filter(function(i){return i.id!=id; });
+      $("doc-"+id).remove();
+      if(id == ft.selected.id)
+        ft.selected = {};
+
+      ft.updateIndex();
+
+
+    })
+
+
+    //update share user, only for owner
+    .on("click", ".ft-share-team, .ft-share-public, .ft-share-publicedit", function(e){
+
+      //TODO only for owner
+     var shareClass = $(e.target).attr("class").replace("ft-share-",""), ftName =  $(e.target).closest('.ft-item').find('.ft-name:first');
 
 
 
-  //update share user, only for owner
-  //if (u._id == ft.selected.userid) {
-
-
-    $(".ft-share")
-      .on('focus', function() {
-        if ('[emails], public, public edit' == $("#file-sharing").text())
-          $("#file-sharing").empty();
+      $.post('/doc/update', {
+        id: ftName.attr('id'),
+        share: shareClass
       })
-      .on('keydown', function(e) {
 
-        if (e.keyCode != 13) return;
-        e.preventDefault();
+      ftName.removeClass("ft-team ft-public ft-publicedit");
+      ftName.addClass("ft-"+shareClass);
 
-        var shareList = $("#file-sharing").text().split(',').map(function(i) {
-          return i.trim();
-        });
-        $.post('/doc/update', {
-          id: ft.selected.id,
-          share: $("#file-sharing").val()
-        }, function(r) {
-          $("#file-sharing").val(r.join(", "));
-          $("#file-sharing").addClass('btn-info');
-          setTimeout(function() {
-            $("#file-sharing").removeClass('btn-info');
-          }, 1000)
+      $('.ft-checkmark').remove();
+      $(e.target).before('<span class="ft-checkmark glyphicon glyphicon-ok">')
 
-        });
+
+    })
+
+    //first load of menu should show checked;
+    .on("show.bs.dropdown", ".ft-options", function(e){
+
+
+          $(".ft-share-specific").select2({
+            ajax: {
+              url: "/user/search",
+              dataType: 'json',
+              delay: 50,
+              data: function (params) {
+              return {userinfo: params.term};
+              },
+              processResults: function (data, params) {
+                return {results: data.splice(0, u.name ? 5 : 0)}; //Login required to invite users
+              },
+              cache: true
+              },
+              minimumInputLength: 4,
+              escapeMarkup: function (markup) { return markup; },
+
+              maximumSelectionLength: 9,
+              templateResult: function  (sel) {
+                return sel.email ? u.name ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : "Login required" : sel.text;
+              }
+              //data: finalList,
+
+          })
+
+          var  ftName =  $(e.target).closest('.ft-item').find('.ft-name:first');
+
+          var itemToCheck = ftName.hasClass('ft-publicedit') ? ".ft-share-publicedit" :
+            ftName.hasClass('ft-public') ? ".ft-share-public" :  ftName.hasClass('ft-team') ? ".ft-share-team"  : "";
+
+          $('.ft-checkmark').remove();
+          $(e.relatedTarget).parent().find(itemToCheck).before('<span class="ft-checkmark glyphicon glyphicon-ok">')
+
+
+
 
 
       })
+
 
 
 
@@ -230,13 +215,15 @@ init: function(el, json) {
   window.setTimeout(function() {
       if ($('.ft-selected').length)
         $('.ft-selected').click();
-      else
-        $('.ft-item:first').click();
+      else{
+      //  $('.ft-item:first').click();
+        window.scrollTo(0,0)
+      }
   }, 1000);
 
 
 
-  //drag and rearrange file order
+  //***DRAG HEADINGS and rearrange file order
   $('#filetree').on("dragstart", function(e) {
       ft.dragging = $(e.target).closest('.ft-item');
 
@@ -399,9 +386,19 @@ loadFile: function(id, headingId) {
   //hide current doc
   $(".doc:visible").slideUp();
 
-  //show selected doc if it's
-  if ($("#doc-" + id).length)
-    $("#doc-" + id).slideDown();
+  //show selected doc if it's loaded before
+  var prevDoc = $("#doc-" + id);
+  if (prevDoc.length){
+      prevDoc.slideDown();
+      ft.selected = prevDoc.data("info");
+
+      $(".ft-visible").removeClass("ft-visible");
+      $("#"+id).parent().css("background", "").addClass('ft-visible');
+      history.pushState(null, "", ft.selected.id);
+      if (headingId)
+        prevDoc.find("h1, h2, h3")[headingId].scrollIntoView();
+      return;
+  }
 
 
   function onScroll(){
@@ -425,18 +422,15 @@ loadFile: function(id, headingId) {
 
     });
 
-  }
+  };
 
   onScroll();
 
 
+  $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
+  $("#" + id + " ").prev().find(".ft-icon").addClass("glyphicon-refresh glyphicon-spin");
 
-    $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
-    $("#" + id + " ").prev().find(".ft-icon").addClass("glyphicon-refresh glyphicon-spin");
-
-
-
- $(".ft-visible").removeClass("ft-visible");
+  $(".ft-visible").removeClass("ft-visible");
 
   ft.selected = {};
 
@@ -489,7 +483,7 @@ loadFile: function(id, headingId) {
 
           $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
 
-          if (r == "Not found" && confirm("Access denied to file id " + id + ". Remove from file tree?")) {
+          if (confirm("Access denied to file id " + id + ". Remove from file tree?")) {
             $(".ft-selected").closest('.ft-item').remove();
             return;
           }
@@ -514,10 +508,27 @@ loadFile: function(id, headingId) {
 
       //set as selected doc object and change URL without reloading apge
       ft.selected = r;
+
       history.pushState(null, "", ft.selected.id);
+
+
+
+      //show doc if not already loaded by the "show previously opened" check
+
+        $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").slideDown();
+
+        delete ft.selected.text;
+        $("#doc-" + ft.selected.id).data("info", ft.selected);
+
+        onScroll();
+
+
 
       //add for public or shared files -- not in filetree
       if (!$('#' + id).length) {
+        if (!u.index)
+          u.index = [];
+
         u.index.push( {
           "id": ft.selected.id,
           "title": ft.selected.title,
@@ -528,15 +539,8 @@ loadFile: function(id, headingId) {
 
 
         ft.populate($("#filetree"),u.index);
+        $("#showround").click()
 
-      }
-
-
-      //show doc if not already loaded by the "show previously opened" check
-      if (!$("#doc-" + r.id).length){
-        $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").slideDown();
-
-        onScroll();
       }
 
 
@@ -753,7 +757,7 @@ click: function(e) {
       if ($("#doc-" + id).length)
         $("#doc-" + id).slideDown()
 
-      location.hash = id;
+    //  location.hash = id;
 
     } else if (local) {
 

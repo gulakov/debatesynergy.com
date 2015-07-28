@@ -138,8 +138,7 @@ u {
 }
 
 /* FILETREE */
-.ft-item:nth-child(even) {
-}
+
 .ft-list .ft-item:nth-child(odd) {
   border-left:2px solid rgb(170, 207, 231);
 }
@@ -169,7 +168,10 @@ u {
 }
 .ft-name {
   cursor: text;
-  display: inline; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width:80px
+  white-space: nowrap;
+}
+.ft-name.file{
+   width: 90%;
 }
 .ft-icon{
   cursor: pointer;
@@ -206,12 +208,18 @@ u {
   display: inline-block;
 }
 .ft-item:hover > .ft-options{
-  display: inline;
   cursor: pointer;
 }
+.ft-publicedit{
+  color: firebrick;
+}
 .ft-public{
+  color: red;
+}
+.ft-team{
   color: orange;
 }
+
 #filetree .heading-h1 {
   padding-left: 5px;
 }

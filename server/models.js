@@ -17,7 +17,8 @@ exports.Doc = mongoose.model('Doc', new Schema({
     userid: String,
     title: String,
     text: String,
-    share: Array,
+    share: String,
+    shareusers: Array,
     date_created: {type: Date, default: Date.now},
     date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));

@@ -219,8 +219,8 @@ $(document).ready(function() {
 
 
 
-    $('#docs, .speech').attr('class', "size-mode-" + $(e.target).attr('class').substring(2));
-
+    $('#docs, .tab-content').attr('class', "size-mode-" + $(e.target).attr('class').substring(2));
+    $('.speech').parent().addClass('tab-content');
   })
 
 

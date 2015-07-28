@@ -15,19 +15,16 @@ mongoose.connect('mongodb://localhost/debatedata', {server: { poolSize: 5 }});
 app.use(cookieParser());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-app.use(session({secret: 'cookie', 	resave: true, saveUninitialized: true }));
+app.use(session({secret: 'session', resave: true, saveUninitialized: true }));
 
 //routes
-
 app.use(require('./server/auth'));
-
 app.use('/user', require('./server/user'));
 app.use('/doc', require('./server/doc'));
+app.use('/team', require('./server/team'));
 app.use('/round', require('./server/round')(io));
 app.use('/', require('./server/misc'));
 
-app.use(express.static(__dirname + '/public', {setHeaders: function (res, path, stat) {
-    res.set('Cache-Control', 'max-age=3600000000000000');
-  }
-
-}));
+app.use(express.static(__dirname + '/public', {setHeaders: function(res, path, stat){
+    res.set('Cache-Control', 'max-age=1000000000000000');
+}}));

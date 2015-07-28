@@ -14,7 +14,7 @@ app.all('/', function(req, res, next) {
         })
 });
 
-//repopulate current user's index with all files in database belonging to that user
+//repopulate current user's index with all files in database belonging to that user, losing folders
 app.all('/recover', auth, function(req, res, next) {
 
   Doc.find({userid: req.user._id}, function(e, docs) {
@@ -51,10 +51,9 @@ app.all('/update', auth, function(req, res) {
   res.end();
 });
 
-
-//takes userinfo either email or name, returns list of users mathing either of those with publically friendly user objects
+//takes userinfo either email or name, returns list of users matching with publically friendly user objects
 app.get('/search', function(req, res) {
-    var userinfo = { "$regex": req.query.userinfo, "$options": "i" } ;
+    var userinfo = {"$regex": req.query.userinfo, "$options": "i"};
 
     User.find({$or:[{email:userinfo}, {name: userinfo}]}, function(error, users){
         	res.json( users ? users.map(function(user){ return {id:user._id, email: user.email, text: user.name};}) : [] );
@@ -74,7 +73,6 @@ app.get('/:email?', function(req, res) {
 //ensures user is logged in
 function auth(req, res, next) {
   if (!req.isAuthenticated())
-    res.send("Login required");
-  else
-    return next();
+    return res.send("Login required");
+  return next();
 }

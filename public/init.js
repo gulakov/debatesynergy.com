@@ -330,7 +330,7 @@ $(document).ready(function() {
                 //encoding errors
                 var inFixChar = [145,146,147,148,150,151,226], outFixChar = ["-","-",'-','-','-','--',"'"];
                 for (var z =0; z < inFixChar.length; z++)
-                  val=val.replace((new RegExp(String.fromCharCode(inFixChar[z]), 'gi') ), outFixChar[z]);
+                  val=val.replace((new RegExp(String.fromCharCode(inFixChar[z]), 'gi') ), '');
 
                 var styleAttrNode = inNodeChild.getElementsByTagName("rStyle")[0];
                 if (styleAttrNode) {
@@ -574,6 +574,8 @@ $(document).ready(function() {
       start = p.prev().prev().prev();
 
     p = start.next().next();
+    if (!start.next().text().length || !p.text().length)
+      p = p.next();
     end = p;
     if (type(p) == 3)
       end = p;

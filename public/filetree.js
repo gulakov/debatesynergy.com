@@ -384,12 +384,12 @@ loadFile: function(id, headingId) {
     return;
 
   //hide current doc
-  $(".doc:visible").slideUp();
+  $(".doc:visible").hide() //.slideUp();
 
   //show selected doc if it's loaded before
   var prevDoc = $("#doc-" + id);
   if (prevDoc.length){
-      prevDoc.slideDown();
+      prevDoc.show() //slideDown();
       ft.selected = prevDoc.data("info");
 
       $(".ft-visible").removeClass("ft-visible");
@@ -515,7 +515,7 @@ loadFile: function(id, headingId) {
 
       //show doc if not already loaded by the "show previously opened" check
 
-        $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").slideDown();
+        $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").show() //slideDown();
 
         delete ft.selected.text;
         $("#doc-" + ft.selected.id).data("info", ft.selected);
@@ -755,7 +755,7 @@ click: function(e) {
       })[0];
 
       if ($("#doc-" + id).length)
-        $("#doc-" + id).slideDown()
+        $("#doc-" + id).show(); //slideDown()
 
     //  location.hash = id;
 

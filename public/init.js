@@ -44,7 +44,7 @@ $(document).ready(function() {
 
       } else { //*** user not logged in
 
-        $("#showround").click();
+      
 
         $("#sidebar").prepend($("<a>").addClass(" btn btn-danger btn-google-oauth").attr("href", "/auth"))
           .find('.btn-google-oauth').click(function() {
@@ -117,6 +117,33 @@ $(document).ready(function() {
                 setTimeout(function(){
                   window.Timer();
                 }, 500);
+
+
+
+
+                  //hash change to load doc
+
+                  function loadHash() {
+                    var id = location.pathname.substr(1);
+
+                    if ($('#' + id).length && ft.selected.id != id) {
+                      $('#' + id).click();
+                    } else if (id == "home") {
+                      ft.selected = false;
+                      $(".doc").hide();
+                      $("#doc-home").show()
+                    } else if (id){
+                        $(".doc").hide();
+                      ft.loadFile(id)
+                    }
+                  }
+
+                  $(window).on('popstate', loadHash);
+                  if (location.pathname)
+                    loadHash();
+                //TODO back fwd overrites hisory non sequential because of push state on back button
+
+
 
               //*** INIT SEARCHBOX
 
@@ -206,28 +233,6 @@ $(document).ready(function() {
         }, 500);
       }
   })
-
-
-  //hash change to load doc
-
-  function loadHash() {
-    var id = location.pathname.substr(1);
-
-    if ($('#' + id).length && ft.selected.id != id) {
-      $('#' + id).click();
-    } else if (id == "home") {
-      ft.selected = false;
-      $(".doc").slideUp();
-      $("#doc-home").slideDown()
-    } else if (id){
-      ft.loadFile(id)
-    }
-  }
-
-  $(window).on('popstate', loadHash);
-  if (location.pathname)
-    loadHash();
-//TODO back fwd overrites hisory non sequential because of push state on back button
 
 
   //DOCX files are dropped onto the webpage and auto-converted to debate html and added for user
@@ -330,7 +335,7 @@ $(document).ready(function() {
                 //encoding errors
                 var inFixChar = [145,146,147,148,150,151,226], outFixChar = ["-","-",'-','-','-','--',"'"];
                 for (var z =0; z < inFixChar.length; z++)
-                  val=val.replace((new RegExp(String.fromCharCode(inFixChar[z]), 'gi') ), '');
+                  val=val.replace((new RegExp(String.fromCharCode(inFixChar[z]), 'gi') ), ' ');
 
                 var styleAttrNode = inNodeChild.getElementsByTagName("rStyle")[0];
                 if (styleAttrNode) {

@@ -135,6 +135,15 @@ init: function(el, json) {
     })
 
     //first load of menu should show checked;
+    .on("mousedown", ".ft-item", function(e){
+      if(e.which==3){
+        e.preventDefault();
+        $(e.target).closest(".ft-item").find(".ft-options").addClass('open');
+      }
+    })
+    .on("contextmenu", ".ft-item", function(e){
+      return false;
+    })
     .on("show.bs.dropdown", ".ft-options", function(e){
 
 
@@ -215,10 +224,12 @@ init: function(el, json) {
   window.setTimeout(function() {
       if ($('.ft-selected').length)
         $('.ft-selected').click();
-      else{
-      //  $('.ft-item:first').click();
+      else if (u.index[0].id=="home"){
+        $('.ft-item:first').click();
+        $("#showround").click();
         window.scrollTo(0,0)
       }
+
   }, 1000);
 
 
@@ -397,6 +408,7 @@ loadFile: function(id, headingId) {
       history.pushState(null, "", ft.selected.id);
       if (headingId)
         prevDoc.find("h1, h2, h3")[headingId].scrollIntoView();
+      $("#select2-searchtext-container").html(ft.selected.title);
       return;
   }
 
@@ -509,7 +521,10 @@ loadFile: function(id, headingId) {
       //set as selected doc object and change URL without reloading apge
       ft.selected = r;
 
-      history.pushState(null, "", ft.selected.id);
+      if (typeof history.pushState == "undefined") //ie9
+        location.hash=ft.selected.id;
+      else
+        history.pushState(null, "", ft.selected.id);
 
 
 
@@ -525,21 +540,23 @@ loadFile: function(id, headingId) {
 
 
       //add for public or shared files -- not in filetree
-      if (!$('#' + id).length) {
-        if (!u.index)
-          u.index = [];
+      if (!$('#' + ft.selected.id).length) {
+        //setTimeout(function(){
+          if (!u.index)
+            u.index = [];
 
-        u.index.push( {
-          "id": ft.selected.id,
-          "title": ft.selected.title,
-          "type": "file ft-selected public"})
+          u.index.push( {
+            "id": ft.selected.id,
+            "title": ft.selected.title,
+            "type": "file ft-selected public"})
 
-        if (u.index[0].id=="home")
-          delete u.index[0];
+          if (u.index[0].id=="home")
+            delete u.index[0];
 
 
-        ft.populate($("#filetree"),u.index);
-        $("#showround").click()
+          ft.populate($("#filetree"),u.index);
+          //$("#showround").click()
+      //  }, 1000);
 
       }
 
@@ -549,6 +566,9 @@ loadFile: function(id, headingId) {
       //scroll to heading if triggered by click on heading within this doc
       if (headingId)
         $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
+
+      //put current doc title in the search box to improve clarity
+      $("#select2-searchtext-container").html(ft.selected.title);
 
 
       //populate index with the new doc's headings
@@ -566,7 +586,7 @@ loadFile: function(id, headingId) {
 
 populate: function(div, json) {
 
-  if (div[0].id == ft.root[0].id){
+  if (ft.root &&  div[0] && div[0].id == ft.root[0].id){
     div.empty();
   }else{
     div.append('<div class="ft-list">');
@@ -577,7 +597,7 @@ populate: function(div, json) {
     //TODO author/share tooltip info // date crated/ added
 
     var item = json[i].type.indexOf("heading")>-1 ?
-      $('<div class="ft-item' + (json[i].type.indexOf("selected")>-1 ? ' ft-selected' : '') + '" draggable="true" ><span  id="' + json[i].id + '" class="ft-name ' +
+      $('<div class="ft-item' + (json[i].type.indexOf("ft-selected")>-1 ? ' ft-selected' : '') + '" draggable="true" ><span  id="' + json[i].id + '" class="ft-name ' +
         json[i].type + '" title="' + json[i].title + '" >' + json[i].title + '</span> </div>')
       : $('<div class="ft-item" draggable="true"><div class="ft-options btn-group-xs">'+
 
@@ -591,7 +611,7 @@ populate: function(div, json) {
         '<li> <select class="ft-share-specific" style="width: 100%"   multiple="multiple" type="text"></select></li>   </ul></div>'+
 
 
-        '<span  id="' + json[i].id + '" class="ft-name ' + json[i].type.replace("ft-selected","") + '"  >' + json[i].title + '</span> '+
+        '<span  id="' + json[i].id + '" class="ft-name ' + json[i].type + '"  >' + json[i].title + '</span> '+
 
 
           '</div>');
@@ -664,7 +684,7 @@ update: function() {
       selectedId = parseInt($(".ft-selected .ft-name").attr("id").substring($(".ft-selected .ft-name").attr("id").indexOf("_") + 1))
 
 
-    $(".doc:visible").find("h1, h2, h3").each(function() {
+    $(".doc:visible:first").find("h1, h2, h3").each(function() {
 
       if ($(this).text().length > 2) {
         headingList.push({
@@ -703,7 +723,7 @@ update: function() {
 
     //upload doc
     $.post('/doc/update', {
-      text: encodeURIComponent($(".doc:visible").html()),
+      text: encodeURIComponent($(".doc:visible:first").html()),
       id: ft.selected.id
     });
 

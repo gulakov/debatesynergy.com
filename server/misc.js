@@ -50,8 +50,7 @@ app.get('/', function(req, res, next){
 
       //keep getting random foreign crawlers, so non-US IPs will be blocked
       if(r.country!="US" && r.country.length){
-	       console.log("Blocked: " + geo + " " + ip);
-         return res.status(404).end();
+	         return res.status(404).end();
        }
 
       Visit.findOne({ip: ip}, function (err, f) {

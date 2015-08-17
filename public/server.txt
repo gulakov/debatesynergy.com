@@ -1,7 +1,2 @@
-START: Wednesday, August 12, 2015 22:28:56
-Visit: San Francisco US Windows NT 6.1; Win64; x64 Wednesday, August 12, 2015 22:29:05
-Login: Alex Gulakov Wednesday, August 12, 2015 22:29:10
-Visit: San Francisco US Windows NT 6.1; Win64; x64 Wednesday, August 12, 2015 22:29:10
-Visit: San Francisco US Windows NT 6.1; Win64; x64 Wednesday, August 12, 2015 22:34:56
-Visit: Kaysville US Windows NT 6.3; WOW64 Wednesday, August 12, 2015 22:36:44
-New Download: Kaysville US Windows NT 6.3; WOW64 Wednesday, August 12, 2015 22:36:58
+START: Monday, August 17, 2015 22:04:06
+Visit: San Francisco US Windows NT 6.1; Win64; x64 Monday, August 17, 2015 22:04:11

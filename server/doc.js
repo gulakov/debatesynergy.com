@@ -59,7 +59,7 @@ app.post('/update',  function(req, res) {
       if (!f)  return res.end();
 
       //update text body -- allowed for owner, share users, and publicedit
-      if (text && (f.share == "publicedit" || req.user._id && f.userid == req.user._id || req.user._id && f.shareusers.indexOf(req.user._id)>-1 ) ){
+      if (text && (f.share == "publicedit" || req.user && f.userid == req.user._id || req.user._id && f.shareusers.indexOf(req.user._id)>-1 ) ){
         text = require('sanitize-html')(decodeURIComponent(text), {
           allowedTags: ['h1', 'h2', 'h3', 'h4', 'span', 'p', 'ul', 'li', 'u', 'b', 'i', 'br'],
           allowedAttributes: { 'span': ['style'] },

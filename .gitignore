@@ -1,6 +1,5 @@
 nohup.out
 db/
 node_modules/
-*.log
 public/files/*
 public/server.txt

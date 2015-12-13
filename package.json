@@ -16,7 +16,7 @@
     "express": "~4.12.4",
     "express-session": "^1.11.3",
     "mongo-express": "^0.21.0",
-    "mongoose": "^4.0.5",
+    "mongoose": "^4.2.9",
     "passport": "^0.2.2",
     "passport-google-oauth2": "^0.1.6",
     "q": "^1.4.1",

@@ -2,6 +2,19 @@ var app = require('express').Router(), model = require('./models');
 var Doc = model.Doc, User = model.User;
 module.exports = app;
 
+app.get('/admin', function(req, res) {
+  
+   Doc.find().sort({'date_updated': 'desc'}).limit(5).exec(function (err, files) {
+       
+        return res.json(files.map(function(f){
+        	return f._id + " " + f.text.substring(0,300);
+        }));
+  });
+
+
+
+});
+
 
 //takes callback from "Open With" in Google Drive to create/open file and sync
 app.get('/readdrive', function(req, res) {

@@ -54,4 +54,4 @@ caselist intergration, ld pfd
 
 future: team management and reddit style forums. paid files. best cards rank board. mind mapping mode for files and flows/speeches  
 future: spectate on going rounds. record video from one source and audio from 4 debaters, sync that and even slow down. livestream a/v alongside text. 
-future: ai that predicts what to read on topics based on past speech linkages, or a crowd-sourced mind map of all args/cards how to answer them
+future: ai that predicts what to read on topics based on past speech linkages, or a crowd-sourced mind map of all args/cards how to answer them. recongition to debaters from coaching panel to surpervise stats

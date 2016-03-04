@@ -205,7 +205,7 @@ $(document).ready(function() {
 
   //correct filetree height
   setTimeout(function(){
-    $("#filetree").height( $("#sidebar").height() - $("#controls").height() - $("#info").height() + 'px')
+    //$("#filetree").height( $("#sidebar").height() - $("#controls").height() - $("#info").height() + 'px')
 
   }, 2000)
 
@@ -535,12 +535,10 @@ $(document).ready(function() {
 
 
   //ctrl click to select whole card
-  $("#docs").on("mouseover", "p,h4", function(e) {
+  $("#docs").on("dblclick", "p,h4", function(e) {
 
-    if (!e.ctrlKey)
-      return;
-
-
+    e.preventDefault();
+    e.stopPropagation();
 
     e = $(e.target);
     var p = e.closest("p, h4");
@@ -589,7 +587,7 @@ $(document).ready(function() {
     else if (type(p.next().next()) == 3)
       end = p.next().next();
 
-      if(!$("#card-options").length)
+     /* if(!$("#card-options").length)
 
         start.append("<div id='card-options'>x</div>");
 
@@ -602,6 +600,7 @@ $(document).ready(function() {
     $("#card-options").css("position", "absolute")
     .css("top", "-10px")
     .css("left", 0)
+    */
 
 
 

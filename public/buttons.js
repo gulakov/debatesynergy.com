@@ -26,6 +26,16 @@ $(document).ready(function() {
 
   });
 
+
+  $("#showfileinfo").click(function() {
+
+
+    $("#file-info-modal").modal('show');
+
+
+  });
+
+
   $('#settings_save').click(function() {
 
     $.post("/user/update", {
@@ -226,7 +236,12 @@ $(document).ready(function() {
 
   $("#big").click(function() {
 
-    u.big = !u.big ? 1 : u.big == 2 ? 0 : 2;
+     window.setTimeout(function(){
+
+      $(".ft-selected").click();
+     },1000)
+
+     u.big = !u.big ? 1 : u.big == 2 ? 0 : 2;
 
 
 
@@ -235,7 +250,6 @@ $(document).ready(function() {
     for (var i = 0; i < list.length; i++)
       if (list[i].getBoundingClientRect().top > 0)
         break;
-
 
 
 
@@ -259,7 +273,8 @@ $(document).ready(function() {
 
     }
 
-    list[i].scrollIntoView();
+   // list[i].scrollIntoView();
+  
 
   })
 

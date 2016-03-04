@@ -113,9 +113,11 @@ u {
   content: "Sign in";
 }
 #controls {
-  width: 100%;
-  overflow: hidden;
-  display: table-row;
+  width: inherit;
+  position: fixed;
+  z-index: 1000;
+  background-color: white;
+  height: 52px;
 }
 
 #searchtext {
@@ -140,13 +142,15 @@ u {
 /* FILETREE */
 
 .ft-list .ft-item:nth-child(odd) {
-  border-left:2px solid rgb(170, 207, 231);
+  /*border-left:2px solid rgb(170, 207, 231);*/
 }
 
 
 #filetree {
-  height: calc(100% - 110px);
+  height: 100%;
   overflow: auto;
+  padding-top: 52px;
+  overflow-x: hidden;
 }
 .ft-list {
   display: block;

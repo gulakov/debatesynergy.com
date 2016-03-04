@@ -260,9 +260,11 @@ $(document).ready(function() {
     else if (r.neg1 == u.email || r.neg2 == u.email)
       r.mySide = "neg";
 
+    var isSpeechAff = $(this).index()%2;
 
-  //  if ($(this).hasClass(r.mySide))
-    //  return;
+    //if you're in your own speech or no side declared -- exit inserting flow
+    if ( (!r.mySide) || (r.mySide == "aff" && isSpeechAff) || (r.mySide == "neg" && !isSpeechAff) )
+      return;
 
 
 
@@ -367,6 +369,8 @@ $(document).ready(function() {
 
 
     $("#" + e.target.href.replace(/.+\#/gi, "")).append($("#drag-copy").html());
+
+      $("#drag-copy").empty();
   });
 
 
@@ -375,10 +379,15 @@ $(document).ready(function() {
     if ($(this).attr('contenteditable') == 'false')
       return;
 
+      if ($("#drag-copy").html().length == 0)
+        return;
+
     e.preventDefault();
     e.stopPropagation();
 
     $(e.target).append($("#drag-copy").html());
+
+      $("#drag-copy").empty();
 
 
     $('#round .tab-pane').unbind('dragover');
@@ -518,12 +527,15 @@ function startRound() {
     if (r.scroll_2AR) $("li a[href=#speech2AR]").addClass("btn btn-info");
 
 
-    $("#aff1").val(r.aff1);
-    $("#aff2").val(r.aff2);
-    $("#neg1").val(r.neg1);
-    $("#neg2").val(r.neg2);
-    $("#judge1").val(r.judge1);
+    $("#select2-aff1-container").html(r.aff1);
+    $("#select2-aff2-container").html(r.aff2);
 
+
+    $("#select2-neg1-container").html(r.neg1);
+    $("#select2-neg2-container").html(r.neg2);
+
+
+    $("#select2-judge1-container").html(r.judge1);
 
     if (!r.status_aff1)
       $("#aff1").addClass("btn-info");

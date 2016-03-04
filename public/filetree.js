@@ -19,7 +19,7 @@ init: function(el, json) {
   .on("click", ".ft-item, .ft-name", ft.click)
 
     //options dropdown shouldnt exit on select users
-  .on("mousedown", ".ft-item .select2", function(){
+  /*.on("mousedown", ".ft-item .select2", function(){
 
     $("body").on("hide.bs.dropdown", ".ft-options", function(e){ console.log(e)
      e.preventDefault();
@@ -28,8 +28,10 @@ init: function(el, json) {
 
   .on("blur", ".select2-search__field", function(){
     $("body").unbind("hide.bs.dropdown");
-  })
-  .on("click", ".ft-collapse", function(e){
+  })*/
+
+  //TODO fix double click on file and check dragging
+  .on("click", ".ft-icon", function(e){
     var ftName = $(this).closest('.ft-item').find('.ft-name:first');
 
     ftName.toggleClass('collapsed');
@@ -135,15 +137,7 @@ init: function(el, json) {
     })
 
     //first load of menu should show checked;
-    .on("mousedown", ".ft-item", function(e){
-      if(e.which==3){
-        e.preventDefault();
-        $(e.target).closest(".ft-item").find(".ft-options").addClass('open');
-      }
-    })
-    .on("contextmenu", ".ft-item", function(e){
-      return false;
-    })
+
     .on("show.bs.dropdown", ".ft-options", function(e){
 
 
@@ -415,7 +409,11 @@ loadFile: function(id, headingId) {
 
   function onScroll(){
       // on scroll, update selected header index
+      //TODO slowwww
     $(".doc:visible").on("scroll",  function(e) {
+
+     // if(!skipScroll){
+
 
       var list = $(".doc:visible").find("h1, h2, h3");
 
@@ -429,9 +427,18 @@ loadFile: function(id, headingId) {
       if (i == list.length)
         $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
 
-      if ($(".ft-selected")[0] && document.body.scrollIntoViewIfNeeded)
-        $(".ft-selected")[0].scrollIntoViewIfNeeded();
+    //  if ($(".ft-selected")[0] && document.body.scrollIntoViewIfNeeded)
+      //  $(".ft-selected")[0].scrollIntoView(true);
 
+      if ($(".ft-selected")[0]){
+        $(".ft-selected")[0].scrollIntoView();
+        if ( $(".ft-selected").offset().top < window.innerHeight/2)
+          $("#filetree")[0].scrollTop -= window.innerHeight/2
+
+       // $("#filetree")[0].scrollTop = $(".ft-selected").position().top-window.innerHeight/2+75
+      }
+
+     // }
     });
 
   };
@@ -530,7 +537,8 @@ loadFile: function(id, headingId) {
 
       //show doc if not already loaded by the "show previously opened" check
 
-        $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").show() //slideDown();
+        if (!$("#doc-" + ft.selected.id).length)
+          $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").show() //slideDown();
 
         delete ft.selected.text;
         $("#doc-" + ft.selected.id).data("info", ft.selected);
@@ -599,22 +607,14 @@ populate: function(div, json) {
     var item = json[i].type.indexOf("heading")>-1 ?
       $('<div class="ft-item' + (json[i].type.indexOf("ft-selected")>-1 ? ' ft-selected' : '') + '" draggable="true" ><span  id="' + json[i].id + '" class="ft-name ' +
         json[i].type + '" title="' + json[i].title + '" >' + json[i].title + '</span> </div>')
-      : $('<div class="ft-item" draggable="true"><div class="ft-options btn-group-xs">'+
+      : $('<div class="ft-item" draggable="true">'+
 
         '<span  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="ft-icon glyphicon glyphicon-' +  (
               json[i].type.indexOf("file")>-1 ? json[i].type.indexOf("collapsed")>-1 ? 'plus' :  'file'
                : json[i].type.indexOf("folder")>-1 ?  json[i].type.indexOf("collapsed")>-1 ? 'folder-close' :  'folder-open'
               : "" ) + " " + ( json[i].type.indexOf("public")>-1 ? ' ft-public ' : "") + '" ></span>'+
 
-        '<ul class="dropdown-menu dropdown-menu-right"><li> <a class="ft-collapse">Collapse / Expand</a></li>  <li> <a class="ft-delete">Delete</a></li> <li> <a class="ft-rename">Rename</a></li><li class="dropdown-header">SHARE</li>'+
-        '<li> <a class="ft-share-team">Team</a></li><li><a class="ft-share-public">Public</a></li><li><a class="ft-share-publicedit">Public Edit</a></li> '+
-        '<li> <select class="ft-share-specific" style="width: 100%"   multiple="multiple" type="text"></select></li>   </ul></div>'+
-
-
-        '<span  id="' + json[i].id + '" class="ft-name ' + json[i].type + '"  >' + json[i].title + '</span> '+
-
-
-          '</div>');
+        '<span  id="' + json[i].id + '" class="ft-name ' + json[i].type + '"  >' + json[i].title + '</span></div>');
 
 
     item.appendTo(div)
@@ -790,9 +790,9 @@ click: function(e) {
         //show selected doc if it's already loaded
         if ($("#doc-" + id).length)
           $("#doc-" + id).show()
-        else // load doc from localStorage
-          $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true)
-          .appendTo("#docs").html(ft.selected.text);
+      //  else // load doc from localStorage
+      //    $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true)
+    //      .appendTo("#docs").html(ft.selected.text);
 
 
         //populate index with the new doc's headings

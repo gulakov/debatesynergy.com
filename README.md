@@ -1,5 +1,5 @@
 
-DebateSynergy.com source code is open and free for improvements from the high school and college debate community, so that users can make custom plugins and suggest feature improvements under the Issues tab. Built with Node.js and MongoDB, using jQuery & Bootstrap interface to format user's research files and manage files with a filetree, and  using socket.io to livestream debate rounds to the room, as the user scrolls speech.
+DebateSynergy.com is a free open-source web app for the high school and college debate community, enabling users to make custom plugins and suggest features. Built with Node.js and MongoDB, using jQuery & Bootstrap interface to format user's research files and manage files with a filetree, and using socket.io to livestream debate rounds to the room, as the user scrolls speech.
 
 
 ```

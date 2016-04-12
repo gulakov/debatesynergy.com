@@ -1,14 +1,11 @@
-WEB WORKERS! to parse the document in a background thread. also bind a mutation observer to heading names!!
+http://lab.lepture.com/editor/
 speeches should be paginated with a slideshow slideout
 detect cards and on hover literally have them cardable
-http://materializecss.com/
 www.muicss.com/
 
 tablets use styulus just swipe over text to underline  it, maybe also disable keyboard cause its slow and annoying
 
-
 rooms for socket
-reeding mode - split pages flip option
 pdate only when needed
 
 style customization - obviously needed
@@ -23,6 +20,7 @@ google drive folder import
 coauthor
 
 audio record and stream
+when opening rounds or switchign font size, preserve current page
 
 round livestream status for tourney
 time in round status- sync timer

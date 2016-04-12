@@ -73,13 +73,15 @@ app.get('/', function(req, res, next){
 
 });
 
-app.get('/debatestyle.css', function(req, res){
-  res.header('Cache-Control', 'max-age=3600000000000000');
-  res.sendFile('public/debatestyle.css', {root: __dirname.replace("/server","")});
-});
 
 
 //route forwards debatesynergy.com/fileId 24-character database uid to home
 app.get(/[a-z0-9]{24}/, function(req, res){
   res.sendFile('public/index.html', {root: __dirname.replace("/server","")});
 });
+
+
+var mongo_express = require('mongo-express/lib/middleware')
+var mongo_express_config = require('mongo-express/config.default')
+
+app.use('/mongo', mongo_express(mongo_express_config))

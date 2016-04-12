@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <!--Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com. The "debatesynergy.com" website is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. -->
@@ -14,15 +14,16 @@
   <link rel="stylesheet" href="debatestyle.css" />
   <script type="text/javascript" src="lib/jquery.min.js"></script>
   <script type="text/javascript" src="lib/bootstrap.min.js"></script>
-  <script src="lib/select2.full.min.js"></script>
+  <script type="text/javascript" src="lib/select2.full.min.js"></script>
+  <script type="text/javascript" src="socket.io/socket.io.js"></script>
 
 
+  <script type="text/javascript" src="user/index.js"></script>
   <script type="text/javascript" src="buttons.js"></script>
   <script type="text/javascript" src="round.js" ></script>
   <script type="text/javascript" src="timer.js"></script>
   <script type="text/javascript" src="filetree.js"></script>
   <script type="text/javascript" src="init.js"></script>
-  <script> //if (typeof(u)=="undefined") location.pathname+="/"; //offline.html redirect when scripts are not loaded</script>
 </head>
 <body>
 
@@ -32,7 +33,7 @@
       <div class="form-search form-inline form-group-sm">
         <select id="searchtext" type="text"></select>
       </div>
-      
+
       <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-transfer" id="showround" title="Round"></button>
       <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-header" id="block" title="Heading"></button>
       <button data-toggle="tooltip" data-placement="bottom" class="btn btn-default glyphicon glyphicon-bold" id="read" title="Bold"></button>
@@ -48,8 +49,10 @@
         <button type="button"  class="btn btn-default glyphicon glyphicon-option-horizontal" title="Embiggen" data-toggle="dropdown"  aria-expanded="false"></button>
         <ul class="dropdown-menu">
 
-            <li><a class="sm0">Default</a></li>
-            <li><a class="sm1">Minimize Unread</a></li>
+            <li><a class="set-size-0">Default Font Size</a></li>
+            <li><a class="set-size-1">Minimize Unread</a></li>
+            <li><a class="ft-collapse-btn">Collapse Filetree</a></li>
+
         </ul>
       </div>
 
@@ -62,7 +65,7 @@
   </div>
 
   <div id="docs">
-    <div id="doc-home" class="doc" style="display: none">
+    <div id="doc-home" class="doc" style="display: none" contenteditable="true">
 
       <h1> Welcome to Debate Synergy</h1>
       <p>
@@ -151,16 +154,16 @@
 
     <div class="tab-content">
       <div class="tab-pane active" id="speechmain">
-        <select id="judge1" type="text" class="form-control input-xlarge" data-placeholder="Judge emails or names"  multiple="multiple"></select>
+        <select id="judges" type="text" class="form-control input-xlarge username-select" data-placeholder="Judge emails or names"  multiple="multiple"></select>
 
         <div class="row">
           <div class="col-lg-6">
-            <select id="aff1" type="text" class="form-control input-xlarge" data-placeholder="1A email or name" style="width: 100%"></select>
-            <select id="aff2" type="text" class="form-control input-xlarge" data-placeholder="2A email or name" style="width: 100%"></select>
+            <select id="aff1" type="text" class="form-control input-xlarge username-select" data-placeholder="1A email or name" style="width: 100%"></select>
+            <select id="aff2" type="text" class="form-control input-xlarge username-select" data-placeholder="2A email or name" style="width: 100%"></select>
           </div>
           <div class="col-lg-6">
-            <select id="neg1" type="text" class="form-control input-xlarge" data-placeholder="1N email or name" style="width: 100%"></select>
-            <select id="neg2" type="text" class="form-control input-xlarge" data-placeholder="2N email or name" style="width: 100%"></select>
+            <select id="neg1" type="text" class="form-control input-xlarge username-select" data-placeholder="1N email or name" style="width: 100%"></select>
+            <select id="neg2" type="text" class="form-control input-xlarge username-select" data-placeholder="2N email or name" style="width: 100%"></select>
           </div>
         </div>
 
@@ -242,11 +245,10 @@
           <a target="_blank" href="http://www.codecademy.com/en/tracks/javascript">Javascript</a>
           <a target="_blank" href="https://learn.jquery.com/about-jquery/">jQuery</a>
           <a target="_blank" href="http://getbootstrap.com/components/">Bootstrap</a>
-          <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Tutorials">Advanced</a>
-          <a target="_blank" href="https://github.com/gulakov/debatesynergy.com">Source</a>
+          <a target="_blank" href="https://github.com/gulakov/debatesynergy.com">Source Code</a>
 
-          <textarea id="custom-js" class="form-control" rows="7" placeholder="Insert javascript code to load custom plugins"></textarea>
-          <textarea id="custom-css" class="form-control" rows="7" placeholder="Insert CSS to customize default styles &#10;.read{font-weight: bold;} &#10;.readcard{  text-decoration: underline;} &#10;.readcardsuper{text-decoration: underline;  background-color: yellow;}&#10;h1{font-size: 24pt;  text-align: center; text-decoration: underline;}"></textarea>
+          <textarea id="custom-js" class="form-control" rows="7" placeholder="Insert JavaScript code to extend Debate Synergy"></textarea>
+          <textarea id="custom-css" class="form-control" rows="7" placeholder="Insert CSS to customize default styles &#10;b{font-weight: bold;} &#10;u{  text-decoration: underline;} &#10;*[background-color]{text-decoration: underline;  background-color: yellow;}&#10;h1{font-size: 24pt;  text-align: center; text-decoration: underline;}"></textarea>
 
 
 
@@ -301,29 +303,31 @@
             <span aria-hidden="true">&times;</span>
             <span class="sr-only">Close</span>
           </button>
-          <h4 class="modal-title">File Information & Sharing</h4>
+          <h4 class="modal-title">File Information &amp; Sharing</h4>
         </div>
         <div class="modal-body">
 
-            <p><a class="ft-delete">Delete</a></p>
+
+                Title: <span id="file-info-title"></span> <br>
+                Owner: <span id="file-info-owner"></span> <br>
+                <div id="file-share-by-owner" class="btn-group">
+                Sharing:  <br>
+
+                <label class="radio-inline">  <input type="radio" name="share" class="radio-share" id="share-none" >Private</label>
+                <br>
+                <label class="radio-inline">  <input type="radio" name="share" class="radio-share" id="share-team">Team</label>
+                <br>
+                <label class="radio-inline"><input type="radio" name="share"  class="radio-share" id="share-public" >Public View-only</label>
+                <br>
+                <label class="radio-inline"><input type="radio" name="share" class="radio-share" id="share-specific" >Specific
+                  <select id="share-select" multiple="multiple"></select>
+                </label>
+
+              </div>
 
 
-            <p>
-
-
-          <label class="radio">
-            <input type="radio" name="filetype" class="filetype" value="file" checked="true"> Team</label>
-
-          <label class="radio">
-            <input type="radio" name="filetype" class="filetype" value="folder"> Public</label>
-
-          <label class="radio">
-            <input type="radio" name="filetype" class="filetype" value="folder"> Public Edit</label>
-
-          <label class="radio">
-            <input type="radio" name="filetype" class="filetype" value="folder"> Specific: <select class="ft-share-specific" style="width: 100%"   multiple="multiple" type="text"></select>  </label>
-
-            </p>
+              <br>
+            <button type="button" class="btn btn-danger ft-delete">Delete</button>
 
 
         </div>

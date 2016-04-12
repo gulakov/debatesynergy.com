@@ -1,21 +1,73 @@
-var u = {}, local;
+//var u = {};
+var local;
+
+$( window ).unload(function() {
+
+  //ft.updateIndex();
+
+  ft.update();
+});
 
 
 $(document).ready(function() {
 
   //initiallize user object and index
-  $.ajax({
-     type: "GET",
-     url: "/user",
-     dataType: "json",
-     cache: false
-   }).done(function(userJSON){
 
-      u = userJSON || {};
+  if(u){
+
+      initUser(u)
+  } else
+
+    $.ajax({
+       type: "GET",
+       url: "/user",
+       dataType: "json",
+       cache: false
+     })
+      .error(function(e) { //****no internet -- offline mode
+
+          //load cache
+          //TODO move from index
+
+        var resources = ["lib/bootstrap.min.css", "lib/select2.min.css",
+            "lib/jquery.min.js", "lib/bootstrap.min.js", "lib/select2.full.min.js"];
+
+        if (location.protocol!="file:")
+        for (var i =0; i< resources.length; i++)
+          $('<script>').appendTo('body').attr('src', resources[i]);
+
+
+          $('body').append('<div id="offline" style="position: absolute; bottom: 0px; left: 0px; z-index: 9999;">Offline</div>');
+
+          u = {name:"offline", index:[]};
+          window.local = true;
+
+          if (!localStorage.debate || localStorage.debate=='undefined') {
+            localStorage.debate_local0 = '{"userid":"local","title":"First","text":"First file","id":"local0"}';
+            localStorage.debate = '[{"id":"local0","title":"First","type":"file","children":[]}]';
+          }
+
+          u.index = JSON.parse(localStorage.debate);
+
+          //init filetree
+          ft.init($('#filetree'), u.index);
+
+      })
+    .done(initUser)
+
+
+    function initUser(userJSON){
+
+      console.log(userJSON)
+
+       u = userJSON || {};
 
 
       if (u.index) { //user logged in
         console.log(u.index);
+
+        //min  unread
+        $("#docs").addClass("size-mode-1");
 
 
         var customCSS = $("<style>").appendTo('head');
@@ -26,7 +78,7 @@ $(document).ready(function() {
 
         if (u.options.length)
 
-            $("#sidebar").css('width', u.options[0]+'px');
+            $("#sidebar").css('max-width', u.options[0]+'px');
 
 
         //remember to reauth
@@ -44,7 +96,10 @@ $(document).ready(function() {
 
       } else { //*** user not logged in
 
-      
+        //round panel
+        $("#showround").click()
+
+
 
         $("#sidebar").prepend($("<a>").addClass(" btn btn-danger btn-google-oauth").attr("href", "/auth"))
           .find('.btn-google-oauth').click(function() {
@@ -72,46 +127,17 @@ $(document).ready(function() {
 
       };
 
-
       //init filetree
       ft.init($('#filetree'), u.index);
 
-    })
-    .error(function(e) { //****no internet -- offline mode
-
-        //load cache
-        //TODO move from index
-
-      var resources = ["lib/bootstrap.min.css", "lib/select2.min.css",
-          "lib/jquery.min.js", "lib/bootstrap.min.js", "lib/select2.full.min.js"];
-
-      if (location.protocol!="file:")
-      for (var i =0; i< resources.length; i++)
-        $('<script>').appendTo('body').attr('src', resources[i]);
 
 
-        $('body').append('<div id="offline" style="position: absolute; bottom: 0px; left: 0px; z-index: 9999;">Offline</div>');
 
-        u = {name:"offline", index:[]};
-        window.local = true;
-
-        if (!localStorage.debate || localStorage.debate=='undefined') {
-          localStorage.debate_local0 = '{"userid":"local","title":"First","text":"First file","id":"local0"}';
-          localStorage.debate = '[{"id":"local0","title":"First","type":"file","children":[]}]';
-        }
-
-        u.index = JSON.parse(localStorage.debate);
-
-        //init filetree
-        ft.init($('#filetree'), u.index);
-
-    })
-    .always(function(){
-            //load online-only API
+       //load online-only API
             if (!window.local){
-              $("<script>").appendTo('head').attr('src', 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js?'+Date.now());
-              $("<script>").appendTo('head').attr('src', 'https://apis.google.com/js/client.js?onload=gapiInit&c='+Date.now());
-              initSockets();
+             // $("<script>").appendTo('head').attr('src', 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js?'+Date.now());
+              //$("<script>").appendTo('head').attr('src', 'https://apis.google.com/js/client.js?onload=gapiInit&c='+Date.now());
+              setTimeout(function(){ initSockets(); }, 1000)
             }
                 //timer
                 setTimeout(function(){
@@ -142,6 +168,9 @@ $(document).ready(function() {
                   if (location.pathname)
                     loadHash();
                 //TODO back fwd overrites hisory non sequential because of push state on back button
+
+
+
 
 
 
@@ -182,7 +211,7 @@ $(document).ready(function() {
                      escapeMarkup: function (markup) { return markup; },
                      templateResult: function  (sel) {
 
-                        return sel.matchedString ? "<span style='font-size: 80%'><b>" +sel.text + "</b> <br>" + "<span style='font-size: 70%'>"+sel.matchedString + "</span></span>" : "<span><b>" +sel.text + "</b> " + "</span>";
+                        return sel.matchedString ? "<span style='font-size: 80%'><b>" +sel.text + "</b> <br>" + "<span style='font-size: 70%'>"+sel.matchedString.replace(/<[^>]*>/gi, "") + "</span></span>" : "<span><b>" +sel.text + "</b> " + "</span>";
                       }
               }).on("select2:select", function (e) {
 
@@ -197,17 +226,11 @@ $(document).ready(function() {
               });
 
 
-
-    })
-
+    }
 
 
 
-  //correct filetree height
-  setTimeout(function(){
-    //$("#filetree").height( $("#sidebar").height() - $("#controls").height() - $("#info").height() + 'px')
 
-  }, 2000)
 
 
   //mobile swipe to toggle sidebar
@@ -405,8 +428,8 @@ $(document).ready(function() {
   //resizable sidebar
   var dragStart = 0;
   $("#sidebar").on('mousemove',function(e){
-      if($(this).width() - e.offsetX < 15)
-          $("body").css('cursor','ew-resize');
+      if($(this).width() - e.offsetX < 10)
+          $("body").css('cursor','e-resize');
       else if(!dragStart)
            $("body").css('cursor','');
   })
@@ -427,7 +450,7 @@ $(document).ready(function() {
         $("body").unbind('mousemove');
         $("body").unbind('mouseup');
         if (dragStart){
-            $("#sidebar").css('width',e.pageX+'px');
+            $("#sidebar").css('max-width',e.pageX+'px');
 
             $.post("/user/update", {sidebar: e.pageX });
 
@@ -491,24 +514,40 @@ $(document).ready(function() {
 
     $("#docs, .doc").on('keydown', function(e){
       //document.designMode = 'on';
-      $(this).focus()
+      //$(this).focus()
     })
 
-  $("#docs")[0].addEventListener("paste", function(e) {
+  $("#docs")[0].addEventListener("paste", function(e) { return;  //DISABLE
     e.stopPropagation();
     e.preventDefault();
-    console.log(e);
+
     var data = e.clipboardData.getData("text/html");
     if (!data.length)
       data = e.clipboardData.getData("text/plain");
 
 
-    data = data.replace(/ class="western"/gi, '');
+
+
+    data = data.replace(/<u([^>]+)>/gi, 'UNDERLINE_START').replace(/<\/u>/gi, 'UNDERLINE_END')
+
+    data = data.replace(/<b([^>]+)>/gi, 'BOLD_START').replace(/<\/b>/gi, 'BOLD_END')
+
+    data = data.replace(/<p([^>]+)>/gi, 'P_START').replace(/<\/p>/gi, 'P_END')
+
+
+     data=data.replace(/(<([^>]+)>)/ig,'')
+
+
+     data=data.replace(/P_START/gi, '<p>').replace(/P_END/gi, '</p>')
+     data=data.replace(/BOLD_START/gi, '<b>').replace(/BOLD_END/gi, '</b>')
+     data=data.replace(/UNDERLINE_START/gi, '<u>').replace(/UNDERLINE_END/gi, '</u>')
+
 
     range = window.getSelection().getRangeAt(0);
     node = range.createContextualFragment(data);
     range.insertNode(node);
 
+    /*
     $("#docs style")
 
 
@@ -528,14 +567,23 @@ $(document).ready(function() {
         })
 
 
-    }
+    }*/
 
 
   }, true);
 
 
   //ctrl click to select whole card
-  $("#docs").on("dblclick", "p,h4", function(e) {
+  $("#docs").on("click", "p,h4", function(e) {
+
+    var p = $(e.target).closest("p, h4");
+    p.focus()
+    $(".active-card").removeClass("active-card")
+    p.addClass("active-card")
+
+    //select whole card on triple click
+    if (e.originalEvent.detail!=2)
+      return;
 
     e.preventDefault();
     e.stopPropagation();
@@ -544,6 +592,8 @@ $(document).ready(function() {
     var p = e.closest("p, h4");
 
 
+
+    //TODO fix card selection algo
     function type(p) {
       var u = p.find("u").length;
       var b = p.find("b").length;
@@ -562,7 +612,6 @@ $(document).ready(function() {
         return 1;
       else if (b < a)
         return 2;
-
 
     }
 

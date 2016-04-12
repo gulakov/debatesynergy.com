@@ -1,9 +1,13 @@
-var app = require('express').Router(), model = require('./models');
-var io, User = model.User, Round = model.Round;
-module.exports = function (_io) {
-    //pass io from app.js
-    io = _io;
-    return app;
+var app = require('express').Router(),
+  model = require('./models');
+
+var io, User = model.User,
+  ObjectID = require('mongodb').ObjectID,
+  Round = model.Round;
+module.exports = function(_io) {
+  //pass io from app.js
+  io = _io;
+  return app;
 };
 
 //auth
@@ -13,28 +17,40 @@ function auth(req, res, next) {
   return next();
 }
 
-app.get('/', auth, function(req, res, next) {
+
+//return all rounds accepted by this user
+app.get('/', function(req, res, next) {
+
+  var userId = req.user._id;
+
+  Round.find({
+      $or: [{
+        "aff1.id": userId, "aff1.status": true
+      }, {
+        "aff2.id": userId, "aff2.status": true
+      }, {
+        "neg1.id": userId, "neg1.status": true
+      }, {
+        "neg2.id": userId, "neg2.status": true
+      }, {
+        "judges": { $elemMatch: {"id": userId, "status": true} }
+      }]
+    },
+    //{sort: [['date', -1]]}, // not returning
+    function(e, foundRounds) {
+
+      return res.send(foundRounds);
 
 
-    var email = req.user.email;
+      var roundsAccepted = foundRounds.filter(function(i) {
+        return ((i.aff1 == email && i.status_aff1) ||
+          (i.aff2 == email && i.status_aff2) ||
+          (i.neg1 == email && i.status_neg1) ||
+          (i.neg2 == email && i.status_neg2) ||
+          (i.judges == email && i.status_judges));
+      });
 
-    Round.find(
-        { $or:[{aff1: email}, {aff2: email}, {neg1: email}, {neg2: email}, {judge1: email}] },
-        //{sort: [['date', -1]]}, // not returning
-        function (e, foundRounds) {
-
-        return res.json(foundRounds);
-
-
-        var roundsAccepted = foundRounds.filter(function(i) {
-            return (( i.aff1 == email && i.status_aff1) ||
-                ( i.aff2 == email && i.status_aff2) ||
-                ( i.neg1 == email && i.status_neg1) ||
-                ( i.neg2 == email && i.status_neg2) ||
-                ( i.judge1 == email && i.status_judge1));
-        });
-
-        return res.json(roundsAccepted);
+      //return res.json(roundsAccepted);
     })
 
 
@@ -42,198 +58,216 @@ app.get('/', auth, function(req, res, next) {
 });
 
 
-app.get('/create', auth, function(req, res) {
-
-    require("q").all([req.query.aff1, req.query.aff2, req.query.neg1, req.query.neg2, req.query.judge1].map(function(userId) {
-       return User.findById(userId);
-          //{$or:[{email: userInfo}, {name: userInfo}]})
-    }))
-    .done(function (foundUserList) {
-
-        console.log(foundUserList);
-
-        //if some email is not found, end process
-        if(foundUserList.indexOf(null) > -1 )
-            return res.json(foundUserList.map(function(i){return !i;}));
-
-
-        Round.create({
-            aff1: foundUserList[0].email,
-            aff2: foundUserList[1].email,
-            neg1: foundUserList[2].email,
-            neg2: foundUserList[3].email,
-            judge1: foundUserList[4].email
-
-        }, function (e, newRoundJson) {
-
-            var people = foundUserList[0].email + " " + foundUserList[1].email
-                + " vs " + foundUserList[2].email + " " + foundUserList[3].email + " judged by " + foundUserList[4].email;
-
-            people = people.replace(/\@[^ ]+/gi, '');
-
-
-            for (var i=0;i<5;i++)
-
-                io.sockets.to(foundUserList[i].socket).emit('round_youAreInvited', {
-                    roundId: newRoundJson._id,
-                    people: people
-                });
-
-
-            return res.json({roundId: newRoundJson._id, people: people  });
-
-        });
-    });
-});
-
 
 app.all('/read', auth, function(req, res) {
 
-    Round.findOne({_id: req.query.id}, function (e, f) {
-        return res.json(f);
-    });
+  Round.findOne({
+    _id: req.query.id
+  }, function(e, f) {
+    return res.json(f);
+  });
 
 });
 
 
-app.all('/accept', auth, function(req, res) {
 
+app.get('/create', auth, function(req, res) {
 
-    var userId = req.user._id;
-    var roundId = req.query.roundId;
-    var userEmail;
+  require("q").all([req.query.aff1, req.query.aff2, req.query.neg1, req.query.neg2].concat(req.query.judges).map(function(userId) {
+      return userId && userId.length ? User.findById(userId) : false;
+    }))
+    .done(function(foundUsersFull) {
 
-    User.findOne({_id: userId}).exec(function (e, f) {
+      foundUsers = foundUsersFull.map(function(i) {
+        return {
+          name: i.name || "",
+          id: i ? i._id.toString() : "",
+          status: false
+        }
+      })
 
+      console.log(foundUsers);
+      var speech_init = {text: "", scroll: 0};
 
-        userEmail = f.email;
-        userName = f.name.toLowerCase();
+      Round.create({
+        aff1: foundUsers[0],
+        aff2: foundUsers[1],
+        neg1: foundUsers[2],
+        neg2: foundUsers[3],
+        judges: foundUsers.slice(4),
+        speech1AC: speech_init,
+        speech1NC: speech_init,
+        speech2AC: speech_init,
+        speech2NC: speech_init,
+        speech1NR: speech_init,
+        speech1AR: speech_init,
+        speech2NR: speech_init,
+        speech2AR: speech_init
 
+      }, function(e, newRoundJson) {
 
-        Round.findOne({_id: roundId}).exec(function (e, f) {
+        var people = foundUsers[0].name + " " + foundUsers[1].name + " vs " + foundUsers[2].name + " " + foundUsers[3].name + " judged by " +
+          foundUsers.slice(4).map(function(i) {  return i.name  }).join(", ");
 
-            if (f.aff1.toLowerCase() == userName || f.aff1 == userEmail)
-                Round.update({_id: roundId}, {status_aff1: true},function () {
-                });
-            if (f.aff2.toLowerCase() == userName || f.aff2 == userEmail)
-                Round.update({_id: roundId}, {status_aff2: true},function () {
-                });
-            if (f.neg1.toLowerCase() == userName || f.neg1 == userEmail)
-                Round.update({_id: roundId}, {status_neg1: true},function () {
-                });
-            if (f.neg2.toLowerCase() == userName || f.neg2 == userEmail)
-                Round.update({_id: roundId}, {status_neg2: true},function () {
-                });
-            if (f.judge1.toLowerCase() == userName || f.judge1 == userEmail)
-                Round.update({_id: roundId}, {status_judge1: true},function () {
-                });
+        for (var i in foundUsersFull)
+          io.to("/#" + foundUsersFull[i].socket).emit('round_youAreInvited', {
+            roundId: newRoundJson._id,
+            people: people
+          });
 
-
-            //notify your friend that you accepted the round
-            Round.findOne({_id: roundId},function (e, f) {
-
-                var usersToPing = [];
-
-                if (f.status_aff1)
-                    usersToPing.push(f.aff1);
-                if (f.status_aff2)
-                    usersToPing.push(f.aff2);
-                if (f.status_neg1)
-                    usersToPing.push(f.neg1);
-                if (f.status_neg2)
-                    usersToPing.push(f.neg2);
-                if (f.status_judge1)
-                    usersToPing.push(f.judge1);
-
-
-                for (var i in usersToPing)
-
-                    User.findOne({email: usersToPing[i]}, function (e, f) {
-
-
-                        io.sockets.to(f.socket).emit( 'round_inviteResponse', {roundId: roundId});
-
-
-                    });
-
-
-            });
-
-
-            return res.end(roundId);
-
-
+        return res.json({
+          roundId: newRoundJson,
+          people: people
         });
 
+      });
+    });
+});
+
+
+app.all('/accept', auth, function(req,  res) {
+
+  var userId = req.user._id;
+  var roundId = req.query.roundId;
+
+  Round.findById(roundId).exec(function(e, roundJSON) {
+    if (!roundJSON)
+      return res.end("Round not found " + roundId);
+
+    if (roundJSON.aff1.id == userId)
+      Round.update({
+        _id: roundId
+      }, {
+        $set: {
+          "aff1.status": true
+        }
+      }, function() {});
+    if (roundJSON.aff2.id == userId)
+      Round.update({
+        _id: roundId
+      }, {
+        $set: {
+          "aff2.status": true
+        }
+      }, function() {});
+    if (roundJSON.neg1.id == userId)
+      Round.update({
+        _id: roundId
+      }, {
+        $set: {
+          "neg1.status": true
+        }
+      }, function() {});
+    if (roundJSON.neg2.id == userId)
+      Round.update({
+        _id: roundId
+      }, {
+        $set: {
+          "neg2.status": true
+        }
+      }, function() {});
+
+    var judges_index = roundJSON.judges.map(function(i) {
+      return i.id
+    }).indexOf(userId);
+    //if (judges_index > -1)
+
+
+    Round.update({
+      "_id": new ObjectID(roundId),
+      "judges":  { $elemMatch: {"id": userId} }
+    }, {
+      $set: {
+        "judges.$.status": true
+      }
+    }, function() {});
+
+    var usersToPing = [roundJSON.aff1, roundJSON.aff2, roundJSON.neg1, roundJSON.neg2].concat(roundJSON.judges)
+
+    for (var i in usersToPing)
+
+      User.findById(usersToPing[i].id, function(e, f) {
+      if (f)
+        io.to("/#" + f.socket).emit('round_inviteResponse', {
+          roundId: roundId
+        });
 
     });
 
+
+    //return res.end(roundId);
+  });
 
 });
 
 
 app.post('/update', auth, function(req, res) {
 
-    var userId = req.user._id;
-    var userEmail = req.user.email;
-    var roundId = req.body.roundId;
-    var sanitizeHtml = require("sanitize-html");
+  var userId = req.user._id;
+  var userEmail = req.user.email;
+  var roundId = req.body.roundId;
+  var sanitizeHtml = require("sanitize-html");
 
 
-    Round.findOneAndUpdate({_id: roundId}, {
-        speech1AC: sanitizeHtml(req.body.speech1AC),
-        speech1NC: sanitizeHtml(req.body.speech1NC),
-        speech2AC: sanitizeHtml(req.body.speech2AC),
-        speech2NC: sanitizeHtml(req.body.speech2NC),
-        speech1NR: sanitizeHtml(req.body.speech1NR),
-        speech1AR: sanitizeHtml(req.body.speech1AR),
-        speech2NR: sanitizeHtml(req.body.speech2NR),
-        speech2AR: sanitizeHtml(req.body.speech2AR)
-    }, function (e, f) {
+  Round.findOneAndUpdate({
+    _id: roundId
+  }, {
+    speech1AC: sanitizeHtml(req.body.speech1AC),
+    speech1NC: sanitizeHtml(req.body.speech1NC),
+    speech2AC: sanitizeHtml(req.body.speech2AC),
+    speech2NC: sanitizeHtml(req.body.speech2NC),
+    speech1NR: sanitizeHtml(req.body.speech1NR),
+    speech1AR: sanitizeHtml(req.body.speech1AR),
+    speech2NR: sanitizeHtml(req.body.speech2NR),
+    speech2AR: sanitizeHtml(req.body.speech2AR)
+  }, function(e, f) {
 
-        if (!f)
-            return res.end();
-
-
-        var usersToPing = [];
-
-        //figure out my partner
-
-        if (userEmail == f.aff1 || userEmail == f.aff2) {
-
-            if (f.status_aff1)
-                usersToPing.push(f.aff1);
-            if (f.status_aff2)
-                usersToPing.push(f.aff2);
-
-        } else if (userEmail == f.neg1 || userEmail == f.neg2) {
-
-            if (f.status_neg1)
-                usersToPing.push(f.neg1);
-            if (f.status_neg2)
-                usersToPing.push(f.neg2);
-
-        }
+    if (!f)
+      return res.end();
 
 
-        for (var i in usersToPing)
-            User.findOne({email: usersToPing[i]}, function (e, f) {
+    var usersToPing = [];
 
-                if (req.user._id != f._id)
-                     io.sockets.to(f.socket).emit('round_newTextForPartner', {round: f});
+    //figure out my partner
 
-            });
+    if (userEmail == f.aff1 || userEmail == f.aff2) {
+
+      if (f.status_aff1)
+        usersToPing.push(f.aff1);
+      if (f.status_aff2)
+        usersToPing.push(f.aff2);
+
+    } else if (userEmail == f.neg1 || userEmail == f.neg2) {
+
+      if (f.status_neg1)
+        usersToPing.push(f.neg1);
+      if (f.status_neg2)
+        usersToPing.push(f.neg2);
+
+    }
+
+
+    for (var i in usersToPing)
+      User.findOne({
+        email: usersToPing[i]
+      }, function(e, f) {
+
+        if (!e && f != "undefined" && req.user._id != f._id)
+          io.to("/#" + f.socket).emit('round_newTextForPartner', {
+            round: f
+          });
+
+      });
 
 
 
-    });
+  });
 
 
-    return res.end();
+  return res.end();
 
 });
-
-
+/*
 app.get('/updateScroll', auth, function(req, res) {
 
 
@@ -297,8 +331,8 @@ app.get('/updateScroll', auth, function(req, res) {
         }
 
 
-        if (f.status_judge1)
-            usersToPing.push(f.judge1);
+        if (f.status_judges)
+            usersToPing.push(f.judges);
 
 
         //speech partial to send
@@ -328,7 +362,7 @@ app.get('/updateScroll', auth, function(req, res) {
             User.findOne({email: usersToPing[i]}, function (e, f) {
 
                 if (req.user._id != f._id)
-                    io.sockets.to(f.socket).emit( 'round_newTextForEnemy', {
+                    io.to("/#"+f.socket).emit( 'round_newTextForEnemy', {
                         speechName: speechName,
                         speechPartial: speechPartial
 
@@ -343,42 +377,48 @@ app.get('/updateScroll', auth, function(req, res) {
 
 
 });
-
+*/
 
 app.get('/resend', auth, function(req, res) {
+//TODO accept new changed people to send to
+
+  var roundId = req.query.roundId;
+
+  Round.findOne({
+    _id: roundId
+  }, function(e, f) {
+
+    var usersToPing = [];
+
+    if (!f.status_aff1)
+      usersToPing.push(f.aff1);
+    if (!f.status_aff2)
+      usersToPing.push(f.aff2);
+    if (!f.status_neg1)
+      usersToPing.push(f.neg1);
+    if (!f.status_neg2)
+      usersToPing.push(f.neg2);
+    if (!f.status_judges)
+      usersToPing.push(f.judges);
 
 
-    var roundId = req.query.roundId;
+    for (var i in usersToPing)
 
-    Round.findOne({_id: roundId}, function (e, f) {
+      User.findOne({
+      email: usersToPing[i]
+    }, function(e, f) {
 
-        var usersToPing = [];
-
-        if (!f.status_aff1)
-            usersToPing.push(f.aff1);
-        if (!f.status_aff2)
-            usersToPing.push(f.aff2);
-        if (!f.status_neg1)
-            usersToPing.push(f.neg1);
-        if (!f.status_neg2)
-            usersToPing.push(f.neg2);
-        if (!f.status_judge1)
-            usersToPing.push(f.judge1);
-
-
-        for (var i in usersToPing)
-
-            User.findOne({email: usersToPing[i]}, function (e, f) {
-
-                 io.sockets.to(f.socket).emit(  'round_youareinvited', {roundId: roundId});
-
-
-            });
+      io.to("/#" + f.socket).emit('round_youareinvited', {
+        roundId: roundId
+      });
 
 
     });
 
-    return res.end();
+
+  });
+
+  return res.end();
 
 });
 
@@ -386,7 +426,11 @@ app.get('/resend', auth, function(req, res) {
 app.all('/join', auth, function(req, res) {
 
 
-    User.findOneAndUpdate({_id: req.user._id}, {socket: req.query.socket}, function(){});
+  User.findOneAndUpdate({
+    _id: req.user._id
+  }, {
+    socket: req.query.socket
+  }, function() {});
 
-    res.end();
+  res.end();
 });

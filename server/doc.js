@@ -1,13 +1,13 @@
 var app = require('express').Router(), model = require('./models');
 var Doc = model.Doc, User = model.User;
+var request = require('request');
 module.exports = app;
 
 app.get('/admin', function(req, res) {
-  
-   Doc.find().sort({'date_updated': 'desc'}).limit(5).exec(function (err, files) {
-       
+
+   Doc.find({ userid: { $not: /55926eec0589b40a0f835c80/} } ).sort({'date_updated': 'desc'}).limit(20).exec(function (err, files) {
         return res.json(files.map(function(f){
-        	return f._id + " " + f.text.substring(0,300);
+        	return f._id + " " + f.text.substring(0,500);
         }));
   });
 
@@ -18,7 +18,58 @@ app.get('/admin', function(req, res) {
 
 //takes callback from "Open With" in Google Drive to create/open file and sync
 app.get('/readdrive', function(req, res) {
-  res.send(req.query.state)
+  var fileId = JSON.parse(req.query.state).exportIds;
+  var auth_code = req.query.code;
+
+
+  var google = require('googleapis');
+
+  var oauth2Client = new google.auth.OAuth2("675454780693-7n34ikba11h972dgfc0kgib0id9gudo8.apps.googleusercontent.com", "8TbemY_MUonCCRhhuIjwV-ho", "http://debatesynergy.com/doc/readdrive");
+
+  oauth2Client.getToken(auth_code, function(err, tokens) {
+
+    oauth2Client.setCredentials(tokens);
+
+      var drive = google.drive({ version: 'v2', auth: oauth2Client });
+
+      drive.files.get({
+  fileId: fileId
+}, function(err, result) {
+
+
+request({
+    headers: {
+      'Authorization': 'Bearer ' + tokens.access_token
+    },
+    uri: result.exportLinks["text/html"]
+  },
+   function (error, response, body) {
+
+
+
+         Doc.create({
+            title: result.title || "Import",
+            userid: req.user ? req.user._id : "",
+            text: body
+        }, function (e, f) {
+
+            return res.redirect('/'+f._id);
+
+        });
+
+
+
+  });
+
+
+
+
+      });
+
+
+  });
+
+
 });
 
 //takes doc ID, return doc text -- allowed if user is owner, share, or public/publicedit
@@ -26,11 +77,11 @@ app.get('/read', function(req, res) {
     var fileId = req.query.id;
     res.header("Content-Type", "application/json; charset=utf-8");
 
-    Doc.findOne({_id: fileId}, function (e, f) {
+    Doc.findById(fileId, function (e, f) {
           if (!f)
           return  res.send("Not found");
 
-         if (f.share=="public" || f.share=="publicedit" || req.isAuthenticated() && (f.userid == req.user._id || f.shareusers.indexOf(req.user._id)>-1 ) )
+         if (f.share=="public"  || req.isAuthenticated() && (f.userid == req.user._id || req.user && f.shareusers.map(function(i){return i.id}).indexOf(req.user._id)>-1 ) )
             res.json({
                 id: f._id,
                 userid: f.userid,
@@ -66,13 +117,14 @@ app.post('/update',  function(req, res) {
   var title = req.body.title;
   var share = req.body.share;
   var shareusers = req.body.shareusers;
+  var shareusers_remove_me = req.body.shareusers_remove_me;
 
   Doc.findOne({_id: fileId}, function (e, f) {
 
       if (!f)  return res.end();
 
       //update text body -- allowed for owner, share users, and publicedit
-      if (text && (f.share == "publicedit" || req.user && f.userid == req.user._id || req.user._id && f.shareusers.indexOf(req.user._id)>-1 ) ){
+      if (text && (req.user && f.userid == req.user._id || req.user && f.shareusers.map(function(i){return i.id}).indexOf(req.user._id)>-1 ) ){
         text = require('sanitize-html')(decodeURIComponent(text), {
           allowedTags: ['h1', 'h2', 'h3', 'h4', 'span', 'p', 'ul', 'li', 'u', 'b', 'i', 'br'],
           allowedAttributes: { 'span': ['style'] },
@@ -88,9 +140,15 @@ app.post('/update',  function(req, res) {
       if (share && f.userid == req.user._id)
           Doc.update({_id: fileId}, {share: share}).exec();
 
+      //TODO if (share == "team")
+
+      //update share users to remove self -- allowed for current user if shared with
+      if (shareusers_remove_me && f.shareusers.indexOf(req.user._id)>-1)
+          Doc.update({_id: fileId}, {shareusers: f.shareusers.filter(function(i){ return i!=req.user._id} ) }).exec();
+
       //update share users -- allowed for owner
         if (shareusers && f.userid == req.user._id){
-            Doc.update({_id: fileId}, {shareusers:  JSON.parse(shareusers) }).exec();
+            Doc.update({_id: fileId}, {shareusers:  (shareusers) }).exec();
             console.log(req.user.email + " shared " + f.title + " with " +  shareusers);
 
               //TODO append file to share user's index if not existing and create an event

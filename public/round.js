@@ -1,18 +1,21 @@
 var r = {};
-
-function initSockets(){
 var socket;
 
+function initSockets(){
+
+
 if (typeof(io)!="undefined")
-   socket = io();
+   socket = io()
+
 if (socket)
   socket.on('error', function() {
-  setTimeout(function() {
 
-    if (navigator.userAgent.indexOf("Chrome") == -1)
-      document.cookie = 'debatesynergylogin=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    else //TODO dev mode -- server auto refresh only on Chrome
-      location.reload();
+      console.log("end")
+    location.reload(true);
+
+  setTimeout(function() {
+    location.reload(true);
+
   }, 100);
 })
 .on('connect', function() {
@@ -48,6 +51,7 @@ if (socket)
 
 
   socket.on('round_youAreInvited', function(msg) {
+    console.log(msg)
 
 
     $("#info").append('<div class="alert alert-success alert-dismissable">' +
@@ -56,7 +60,7 @@ if (socket)
       .find(".btn-primary").click(function() {
 
         r = {
-          id: msg.roundId
+          _id: msg.roundId
         };
 
         $.get("/round/accept", {
@@ -70,6 +74,7 @@ if (socket)
 
 
   socket.on('round_inviteResponse', function onServerSentEvent(msg) {
+    console.log(msg)
     startRound();
 
 
@@ -96,7 +101,7 @@ $(document).ready(function() {
 
   //autofill usernames
 
-  $("#judge1, #aff1, #aff2, #neg1, #neg2").select2({
+  $("#judges, #aff1, #aff2, #neg1, #neg2").select2({
     ajax: {
       url: "/user/search",
       dataType: 'json',
@@ -109,7 +114,7 @@ $(document).ready(function() {
       },
       cache: true
       },
-      minimumInputLength: 4,
+      minimumInputLength: 2,
       escapeMarkup: function (markup) { return markup; },
 
       maximumSelectionLength: 9,
@@ -172,7 +177,7 @@ $(document).ready(function() {
 
 
   $("#roundcreate").click(function() {
-    $("#aff1, #aff2, #neg1, #neg2, #judge1").removeClass("btn-danger");
+    $("#aff1, #aff2, #neg1, #neg2, #judges").removeClass("btn-danger");
 
 
     if ($("#roundcreate").text() == "Invite") {
@@ -183,13 +188,12 @@ $(document).ready(function() {
         aff2: $("#aff2").val(),
         neg1: $("#neg1").val(),
         neg2: $("#neg2").val(),
-        judge1: $("#judge1").val()
+        judges: $("#judges").val()
 
       }, function(r) {
 
 
-
-        $("#aff1, #aff2, #neg1, #neg2, #judge1").removeClass("btn-danger");
+        $("#aff1, #aff2, #neg1, #neg2, #judges").removeClass("btn-danger");
 
         for (var i in r)
           $("#" + r[i]).addClass("btn-danger");
@@ -450,34 +454,21 @@ function round_init() {
 
     for (var i in resp) {
 
-
       var roundDiv = $("<div>");
+      roundDiv.attr('id', resp[i]._id);
+
+      roundDiv.html("<a class='label label-default'>" + (new Date(resp[i].date_created)).toLocaleDateString() + "</a> " +
+        resp[i].aff1.name + " " + resp[i].aff2.name + " <strong>vs</strong> " +
+        resp[i].neg1.name + " " + resp[i].neg2.name  + " <strong>judged by</strong> " +
+        resp[i].judges.map(function(i) { return i.name; }).join(", ") );
 
 
-      var roundLabel = $("<a class='label label-default'>");
-
-      var date = (new Date(resp[i].date_created)).toLocaleDateString();
-
-      roundLabel.html(date);
-
-      var people = " " + resp[i].aff1 + " " + resp[i].aff2 + " <strong>vs</strong> " + resp[i].neg1 + " " + resp[i].neg2;
-      people = people.replace(/\@[^ ]+/gi, '');
-      roundDiv.html(people);
-
-      roundLabel.attr('id', resp[i]._id);
-
-      roundLabel.click(function() {
-
+      roundDiv.click(function() {
 
         r._id = $(this).attr('id');
 
-
         startRound();
-
       })
-
-
-      roundDiv.prepend(roundLabel);
 
       $("#pastrounds").append(roundDiv);
 
@@ -495,27 +486,27 @@ function startRound() {
     $("#showround").click();
   }
 
-
   $.getJSON("/round/read", {
     id: r._id
   }, function(roundJSON) {
-
     //set global
 
     r = roundJSON;
+    //#AACFE7
+
+    $("#speech1AC").html(r.speech1AC.text);
+    $("#speech1NC").html(r.speech1NC.text);
+    $("#speech2AC").html(r.speech2AC.text);
+    $("#speech2NC").html(r.speech2NC.text);
+
+    $("#speech1NR").html(r.speech1NR.text);
+    $("#speech1AR").html(r.speech1AR.text);
+    $("#speech2NR").html(r.speech2NR.text);
+    $("#speech2AR").html(r.speech2AR.text);
+
+    /*$("#speech-tabs a").removeClass("btn-info");
 
 
-    $("#speech1AC").html(r.speech1AC);
-    $("#speech1NC").html(r.speech1NC);
-    $("#speech2AC").html(r.speech2AC);
-    $("#speech2NC").html(r.speech2NC);
-
-    $("#speech1NR").html(r.speech1NR);
-    $("#speech1AR").html(r.speech1AR);
-    $("#speech2NR").html(r.speech2NR);
-    $("#speech2AR").html(r.speech2AR);
-
-    $("#speech-tabs a").removeClass("btn-info");
 
     if (r.scroll_1AC) $("li a[href=#speech1AC]").addClass("btn btn-info");
     if (r.scroll_1NC) $("li a[href=#speech1NC]").addClass("btn btn-info");
@@ -524,50 +515,57 @@ function startRound() {
     if (r.scroll_1NR) $("li a[href=#speech1NR]").addClass("btn btn-info");
     if (r.scroll_1AR) $("li a[href=#speech1AR]").addClass("btn btn-info");
     if (r.scroll_2NR) $("li a[href=#speech2NR]").addClass("btn btn-info");
-    if (r.scroll_2AR) $("li a[href=#speech2AR]").addClass("btn btn-info");
+    if (r.scroll_2AR) $("li a[href=#speech2AR]").addClass("btn btn-info");*/
 
 
-    $("#select2-aff1-container").html(r.aff1);
-    $("#select2-aff2-container").html(r.aff2);
 
+    $('.username-select').empty()
 
-    $("#select2-neg1-container").html(r.neg1);
-    $("#select2-neg2-container").html(r.neg2);
+    $("#aff1").append("<option value='"+r.aff1.id+"'selected>"+r.aff1.name+"</option>");
+    $("#aff2").append("<option value='"+r.aff2.id+"'selected>"+r.aff2.name+"</option>");
+    $("#neg1").append("<option value='"+r.neg1.id+"'selected>"+r.neg1.name+"</option>");
+    $("#neg2").append("<option value='"+r.neg2.id+"'selected>"+r.neg2.name+"</option>");
 
+    for (var i in r.judges)
+      $('#judges').append("<option value='"+r.judges[i].id+"' selected>"+r.judges[i].name+"</option>");
 
-    $("#select2-judge1-container").html(r.judge1);
+    $('.username-select').trigger('change');
 
-    if (!r.status_aff1)
+    for (var i in r.judges)
+      if (r.judges[i].status)
+        $("#judges+span .select2-selection__choice").eq(i).css("background-color", "rgb(170, 207, 231)")
+
+    if (!r.judges.find(function(i){ return !i.status } ))
+      $("#judges").removeClass("btn-info").attr("disabled", true);
+    else
+      $("#judges").addClass("btn-info");
+
+    if (!r.aff1.status)
       $("#aff1").addClass("btn-info");
     else
       $("#aff1").removeClass("btn-info").attr("disabled", true);
 
-    if (!r.status_aff2)
+    if (!r.aff2.status)
       $("#aff2").addClass("btn-info");
     else
       $("#aff2").removeClass("btn-info").attr("disabled", true);
 
-    if (!r.status_neg1)
+    if (!r.neg1.status)
       $("#neg1").addClass("btn-info");
     else
       $("#neg1").removeClass("btn-info").attr("disabled", true);
 
-    if (!r.status_neg2)
+    if (!r.neg2.status)
       $("#neg2").addClass("btn-info");
     else
       $("#neg2").removeClass("btn-info").attr("disabled", true);
-
-    if (!r.status_judge1)
-      $("#judge1").addClass("btn-info");
-    else
-      $("#judge1").removeClass("btn-info").attr("disabled", true);
 
 
 
     //block opp side input
     // $(".speech").attr("contenteditable", false);
 
-    if (r.aff1 == u.email || r.aff2 == u.email)
+    if (r.aff1.id == u.id || r.aff2.id == u.email.id)
       r.mySide = "aff";
     else if (r.neg1 == u.email || r.neg2 == u.email)
       r.mySide = "neg";
@@ -578,11 +576,12 @@ function startRound() {
 
     $("#roundcreate").text("Resend");
 
-
-    if (r.status_aff1 && r.status_aff2 && r.status_neg1 && r.status_neg2 && r.status_judge1)
+    /*
+    if (r.status_aff1 && r.status_aff2 && r.status_neg1 && r.status_neg2 && r.status_judges)
       $("#roundcreate").hide();
     else
       $("#roundcreate").show();
+      */
 
 
   })

@@ -24,35 +24,20 @@ exports.Doc = mongoose.model('Doc', new Schema({
 }, { versionKey: false }));
 
 exports.Round = mongoose.model('Round', new Schema({
-    aff1: String,
-    aff2: String,
-    neg1: String,
-    neg2: String,
-    judge1: String,
+    aff1: Object,
+    aff2: Object,
+    neg1: Object,
+    neg2: Object,
+    judges: Object,
 
-    status_aff1: {type: Boolean, default: false},
-    status_aff2: {type: Boolean, default: false},
-    status_neg1: {type: Boolean, default: false},
-    status_neg2: {type: Boolean, default: false},
-    status_judge1: {type: Boolean, default: false},
-
-    speech1AC: {type: String, default: ""},
-    speech1NC: {type: String, default: ""},
-    speech2AC: {type: String, default: ""},
-    speech2NC: {type: String, default: ""},
-    speech1NR: {type: String, default: ""},
-    speech1AR: {type: String, default: ""},
-    speech2NR: {type: String, default: ""},
-    speech2AR: {type: String, default: ""},
-
-    scroll_1AC: {type: Number, default: 0},
-    scroll_1NC: {type: Number, default: 0},
-    scroll_2AC: {type: Number, default: 0},
-    scroll_2NC: {type: Number, default: 0},
-    scroll_1NR: {type: Number, default: 0},
-    scroll_1AR: {type: Number, default: 0},
-    scroll_2NR: {type: Number, default: 0},
-    scroll_2AR: {type: Number, default: 0},
+    speech1AC: Object,
+    speech1NC: Object,
+    speech2AC: Object,
+    speech2NC: Object,
+    speech1NR: Object,
+    speech1AR: Object,
+    speech2NR: Object,
+    speech2AR: Object,
 
     date_created: {type: Date, default: Date.now},
     date_updated: {type: Date, default: Date.now}

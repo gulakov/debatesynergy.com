@@ -3,10 +3,10 @@
   "description": "DebateSynergy.com web app allows high school and college debate teams to store online research and stream debate rounds.",
   "version": "2.1.0",
   "scripts": {
-    "start": "forever --minUptime=10 --spinSleepTime=2000 -e public/server.txt -o public/server.txt -v -w .",
+    "start": "forever --minUptime=10 --spinSleepTime=2000 -e public/server.txt -o public/server.txt -a -v -w .",
     "start-nohup": "nohup forever --minUptime=10 --spinSleepTime=2000 -v -w . > public/server.txt &",
-    "mongo": "nohup service mongodb stop && mkdir -p db && rm -f db/mongod.lock &&  mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1 --quiet &",
-    "admin": "nohup node node_modules/mongo-express/app.js &",
+    "mongo": "killall mongod &>/dev/null && mkdir -p db && rm -f db/mongod.lock && nohup mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1  > ~/debatesynergy.com/mongo.log  2>&1 &",
+    "admin": "nohup node node_modules/mongo-express/app.js &>/dev/null",
     "setup": " npm install forever -g && mv node_modules/mongo-express/config.default.js node_modules/mongo-express/config.js"
   },
   "dependencies": {
@@ -15,7 +15,7 @@
     "debug": "^2.2.0",
     "express": "~4.12.4",
     "express-session": "^1.11.3",
-    "mongo-express": "^0.21.0",
+    "googleapis": "^4.0.0",
     "mongoose": "^4.2.9",
     "passport": "^0.2.2",
     "passport-google-oauth2": "^0.1.6",

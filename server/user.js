@@ -14,6 +14,17 @@ app.all('/', function(req, res, next) {
         })
 });
 
+app.all('/index.js', function(req, res, next) {
+
+    if (!req.user)
+        res.send("var u = "+ false);
+    else
+        User.findOne({_id: req.user._id},
+        function(err, u){
+            res.send("var u = "+ JSON.stringify(u))
+        })
+});
+
 //repopulate current user's index with all files in database belonging to that user, losing folders
 app.all('/recover', auth, function(req, res, next) {
 
@@ -61,12 +72,12 @@ app.get('/search', function(req, res) {
 });
 
 //URL takes /user/sample@email.com, returns data for that user
-app.get('/:email?', function(req, res) {
-    User.findOne({email: req.params.email}, function(error, user) {
+app.get('/:id?', function(req, res) {
+    User.findOne( { $or:[ {email: req.params.id}, {_id: req.params.id}] }, function(error, user) {
         if(user)
-        	res.json({id:user._id, email: user.email, name: user.name, text: user.email, socket: user.socket});
+        	res.json({id:user._id, email: user.email, name: user.name, socket: user.socket});
         else
-        	res.send("No user with email "+req.params.email)
+        	res.send("No user found")
     })
 });
 

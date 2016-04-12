@@ -5,6 +5,161 @@ $(document).ready(function() {
   $('button').tooltip();
 
 
+  //file info modal -- init
+  $("#showfileinfo").click(function() {
+
+    if (!ft.selected.id) {
+      alert("Select a file to view its information.");
+      return;
+    }
+
+
+
+    $("#file-info-modal").modal('show');
+
+
+    $("#file-info-title").text(ft.selected.title)
+    // if file is shared with you
+    if (ft.selected.userid != u._id) {
+      $.getJSON("/user/" + ft.selected.userid, function(r) {
+
+        $("#file-info-owner").text(r.name + " (" + r.email + ")")
+      })
+
+      $("#file-share-by-owner").remove()
+
+      //remove as collaborator
+
+    } else {
+
+
+
+      //if you are owner of this file
+      $("#file-info-owner").text("me")
+
+      $("#file-info-title").attr("contenteditable","true")
+
+
+      //share
+      var share_id = 0;
+      if (ft.selected.share == "team") share_id = 1
+      if (ft.selected.share == "public") share_id = 2
+      if (ft.selected.share == "specific") share_id = 3
+      $(".radio-share").eq(share_id).attr('checked', 'checked');
+
+
+      //prepop shareusers
+      $('#share-select').empty()
+      for (var i in ft.selected.shareusers)
+        $('#share-select').append("<option value='"+ft.selected.shareusers[i].id+"' selected>"+ft.selected.shareusers[i].text+"</option>");
+
+
+      $('#share-select').trigger('change');
+
+
+    }
+
+
+  });
+
+
+
+
+
+$('#share-select').select2({
+  ajax: {
+    url: "/user/search",
+    dataType: 'json',
+    delay: 50,
+    data: function (params) {
+    return {userinfo: params.term};
+    },
+    processResults: function (data, params) {
+      return {results: data.splice(0, u.name ? 5 : 0)}; //Login required to invite users
+    },
+    cache: true
+    },
+    minimumInputLength: 4,
+    escapeMarkup: function (markup) { return markup; },
+
+    maximumSelectionLength: 9,
+    templateResult: function  (sel) {
+      return sel.email ? u.name ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : "Login required" : sel.text;
+    }
+    //data: finalList,
+
+})
+
+
+
+
+
+
+  //file info modal - delete button: for owner deletes file, for share & public removes from tree
+  $(".ft-delete").click(function() {
+    var id = ft.selected.id;
+
+    if (ft.selected.userid != u._id) {
+      if (!confirm("Are you sure you want to remove yourself as a shared collaborator of the file \"" + ft.selected.title + "\"?"))
+        return;
+
+          $.post('/doc/update', {
+            id: ft.selected.id,
+            shareusers_remove_me: true
+          })
+
+    } else {
+      if (!confirm("Are you sure you want to delete the file \"" + ft.selected.title + "\"" + (ft.selected.share ? " from yourself and all shared users" : "") + "?"))
+        return;
+
+      $.get("/doc/delete", {
+        id: id
+      });
+    }
+
+    //TODO chrome.storage
+
+    $("#" + id).closest('.ft-item').remove();
+    u.index = u.index.filter(function(i) {
+      return i.id != id;
+    });
+    $("#doc-" + id).remove();
+    ft.selected = {};
+    ft.updateIndex();
+
+
+    $("#file-info-modal").modal('hide');
+  })
+
+
+  //file info modal -- save title, sharing
+  $("#file-info-modal-submit").click(function(){
+
+        $.post('/doc/update', {
+          id: ft.selected.id,
+          title: $("#file-info-title").val(),
+          share: $(".radio-share:checked")[0].id.substring(6),
+          shareusers:  $('#share-select').select2("data").map(function(i){ return {id:i.id,  text:i.text}; })
+        })
+        //TODO chrome.storage
+
+        //change share color in filetree
+        $("#" + ft.selected.id).closest('.ft-item').addClass($(".radio-share:checked")[0].id.substring(6))
+
+
+          $("#file-info-modal").modal('hide');
+
+  })
+
+
+
+
+
+
+
+
+
+
   $("#showsettings").click(function() {
 
     /*if (u.debatetype == 1)
@@ -27,13 +182,6 @@ $(document).ready(function() {
   });
 
 
-  $("#showfileinfo").click(function() {
-
-
-    $("#file-info-modal").modal('show');
-
-
-  });
 
 
   $('#settings_save').click(function() {
@@ -218,30 +366,48 @@ $(document).ready(function() {
   })
 
 
-
+  /// ... end button dropdown menu
   $('.dropdown-toggle').dropdown()
 
 
   $(".dropdown-menu").on("click", "li", function(e) {
+    var btn = $(e.target).attr('class');
+
+    if (btn == "ft-collapse-btn")
+      $(".file.ft-name:not(.collapsed)").siblings(".ft-icon").click()
+
+    if (btn == "ft-expand-btn")
+          $(".file.ft-name.collapsed").siblings(".ft-icon").click()
+
+
+    if (btn == "set-size-0"){
+
+          $('#docs, .tab-content').attr('class', "size-mode-0");
+          $('.speech').parent().addClass('tab-content');
+    }
+
+    if (btn == "set-size-1"){
+
+          $('#docs, .tab-content').attr('class', "size-mode-1");
+          $('.speech').parent().addClass('tab-content');
+    }
 
     //$(".doc:visible style, #round style").remove();
-//$(".readcard, .read, .readcardsuper").css("line-height", "100%")
+    //$(".readcard, .read, .readcardsuper").css("line-height", "100%")
 
 
 
-    $('#docs, .tab-content').attr('class', "size-mode-" + $(e.target).attr('class').substring(2));
-    $('.speech').parent().addClass('tab-content');
   })
 
 
   $("#big").click(function() {
 
-     window.setTimeout(function(){
+    window.setTimeout(function() {
 
       $(".ft-selected").click();
-     },1000)
+    }, 1000)
 
-     u.big = !u.big ? 1 : u.big == 2 ? 0 : 2;
+    u.big = !u.big ? 1 : u.big == 2 ? 0 : 2;
 
 
 
@@ -273,8 +439,8 @@ $(document).ready(function() {
 
     }
 
-   // list[i].scrollIntoView();
-  
+    // list[i].scrollIntoView();
+
 
   })
 
@@ -282,24 +448,14 @@ $(document).ready(function() {
   $("#showround").click(function() {
     if ($("#round").is(":visible")) {
       $("#round, #timer").hide();
-
+      /*
       if ($(document).width() < 700)
         $("#docs").css("width", "65%");
       else
-        $("#docs").css("width", "85%");
-
+      */
+      
     } else {
       $("#round, #timer").show();
-
-      if ($(document).width() < 700) {
-        $("#round").css("width", "65%");
-        $("#docs").css("width", "0%");
-      } else {
-        $("#docs").css("width", "40%");
-        $("#round").css("width", "45%");
-
-      }
-
       round_init()
 
 
@@ -367,9 +523,9 @@ $(document).ready(function() {
     $("#file-new-modal").modal('show');
 
 
-    $("#file-new-modal").on('shown.bs.modal', function () {
-      $("#filename").focus().keydown(function(e){
-        if(e.keyCode==13)
+    $("#file-new-modal").on('shown.bs.modal', function() {
+      $("#filename").focus().keydown(function(e) {
+        if (e.keyCode == 13)
           $("#file-new-modal-submit").click();
       })
     });
@@ -394,9 +550,9 @@ $(document).ready(function() {
 
 
       if (local) {
-        var id = "local"+Math.floor((10000 * Math.random()));
+        var id = "local" + Math.floor((10000 * Math.random()));
 
-        fileData.id=id;
+        fileData.id = id;
 
         localStorage["debate_" + id] = JSON.stringify(fileData);
 
@@ -449,7 +605,7 @@ $(document).ready(function() {
     }
 
 
-  //  $('.ft-name').click(ft.click);
+    //  $('.ft-name').click(ft.click);
 
     $("#file-new-modal").modal('hide');
 

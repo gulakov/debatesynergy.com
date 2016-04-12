@@ -11,3 +11,4 @@ node_modules/**/*
 public/*.txt
 nohup.out
 *.md
+mongo.log

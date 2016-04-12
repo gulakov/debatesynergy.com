@@ -29,7 +29,8 @@ init: function(el, json) {
   .on("blur", ".select2-search__field", function(){
     $("body").unbind("hide.bs.dropdown");
   })*/
-
+  //TODO <> cursor not appearing of file names
+  //TODO fodles
   //TODO fix double click on file and check dragging
   .on("click", ".ft-icon", function(e){
     var ftName = $(this).closest('.ft-item').find('.ft-name:first');
@@ -44,13 +45,6 @@ init: function(el, json) {
 
 
   })
-  .on("click", ".ft-rename", function(e){
-    var ftName = $(this).closest('.ft-item').find('.ft-name:first');
-    ftName.attr('contenteditable', true);
-    ftName.focus();
-
-  })
-
 
   .on("keydown", ".ft-name", function(e){
     if(e.which==13){
@@ -89,98 +83,6 @@ init: function(el, json) {
 
   })
 
-    .on("click", ".ft-delete", function(e){
-      //delete button: for owner deletes file, for share & public removes from tree //TODO
-
-      var id = $(this).closest('.ft-item').find('.ft-name:first').attr('id');
-
-      if (!confirm("Are you sure you want to delete the file \"" + $(this).closest('.ft-item').find('.ft-name:first').text() + "\"?"))
-        return;
-
-      if (local)
-        localStorage.removeItem("debate_" + id);
-      else
-        $.get("/doc/delete", {id: id});
-
-      $(this).closest('.ft-item').remove();
-      u.index=u.index.filter(function(i){return i.id!=id; });
-      $("doc-"+id).remove();
-      if(id == ft.selected.id)
-        ft.selected = {};
-
-      ft.updateIndex();
-
-
-    })
-
-
-    //update share user, only for owner
-    .on("click", ".ft-share-team, .ft-share-public, .ft-share-publicedit", function(e){
-
-      //TODO only for owner
-     var shareClass = $(e.target).attr("class").replace("ft-share-",""), ftName =  $(e.target).closest('.ft-item').find('.ft-name:first');
-
-
-
-      $.post('/doc/update', {
-        id: ftName.attr('id'),
-        share: shareClass
-      })
-
-      ftName.removeClass("ft-team ft-public ft-publicedit");
-      ftName.addClass("ft-"+shareClass);
-
-      $('.ft-checkmark').remove();
-      $(e.target).before('<span class="ft-checkmark glyphicon glyphicon-ok">')
-
-
-    })
-
-    //first load of menu should show checked;
-
-    .on("show.bs.dropdown", ".ft-options", function(e){
-
-
-          $(".ft-share-specific").select2({
-            ajax: {
-              url: "/user/search",
-              dataType: 'json',
-              delay: 50,
-              data: function (params) {
-              return {userinfo: params.term};
-              },
-              processResults: function (data, params) {
-                return {results: data.splice(0, u.name ? 5 : 0)}; //Login required to invite users
-              },
-              cache: true
-              },
-              minimumInputLength: 4,
-              escapeMarkup: function (markup) { return markup; },
-
-              maximumSelectionLength: 9,
-              templateResult: function  (sel) {
-                return sel.email ? u.name ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : "Login required" : sel.text;
-              }
-              //data: finalList,
-
-          })
-
-          var  ftName =  $(e.target).closest('.ft-item').find('.ft-name:first');
-
-          var itemToCheck = ftName.hasClass('ft-publicedit') ? ".ft-share-publicedit" :
-            ftName.hasClass('ft-public') ? ".ft-share-public" :  ftName.hasClass('ft-team') ? ".ft-share-team"  : "";
-
-          $('.ft-checkmark').remove();
-          $(e.relatedTarget).parent().find(itemToCheck).before('<span class="ft-checkmark glyphicon glyphicon-ok">')
-
-
-
-
-
-      })
-
-
-
 
 
 
@@ -189,7 +91,7 @@ init: function(el, json) {
 
   //update filetree and save every 5s
   setInterval(function() {
-    if (typeof(MutationObserver) == "undefined")
+   // if (typeof(MutationObserver) == "undefined")
       ft.updateNeeded = true;
 
     ft.update();
@@ -197,7 +99,7 @@ init: function(el, json) {
 
   //update triggered only when needed
   ft.updateNeeded = false;
-
+/*
   if (typeof MutationObserver != "undefined")
     new MutationObserver(function(m) {
       ft.updateNeeded = true;
@@ -205,6 +107,8 @@ init: function(el, json) {
       childList: true,
       subtree: true
     });
+
+  */
 
   $("#docs").keyup(function(e){
     ft.updateNeeded = true;
@@ -399,6 +303,10 @@ loadFile: function(id, headingId) {
 
       $(".ft-visible").removeClass("ft-visible");
       $("#"+id).parent().css("background", "").addClass('ft-visible');
+
+      if($("#"+id).hasClass("collapsed"))
+        $("#"+id).parent().find(".ft-icon").click()
+
       history.pushState(null, "", ft.selected.id);
       if (headingId)
         prevDoc.find("h1, h2, h3")[headingId].scrollIntoView();
@@ -410,7 +318,9 @@ loadFile: function(id, headingId) {
   function onScroll(){
       // on scroll, update selected header index
       //TODO slowwww
-    $(".doc:visible").on("scroll",  function(e) {
+    $(".doc:visible").on("scroll",  function(e) { console.log(1)
+
+     // return
 
      // if(!skipScroll){
 
@@ -450,6 +360,10 @@ loadFile: function(id, headingId) {
   $("#" + id + " ").prev().find(".ft-icon").addClass("glyphicon-refresh glyphicon-spin");
 
   $(".ft-visible").removeClass("ft-visible");
+
+
+
+  $(".ft-file-selected").removeClass("ft-file-selected");
 
   ft.selected = {};
 
@@ -537,13 +451,38 @@ loadFile: function(id, headingId) {
 
       //show doc if not already loaded by the "show previously opened" check
 
-        if (!$("#doc-" + ft.selected.id).length)
-          $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true).html(ft.selected.text).appendTo("#docs").show() //slideDown();
+        if (!$("#doc-" + ft.selected.id).length){
+
+              var doc_div = $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr('contenteditable',true);
+
+                /*var SIZE = 200000;
+                chunk_len = Math.ceil(ft.selected.text.length/SIZE);
+                console.log( ft.selected.text.length)
+
+                for (var i = 0 ; i < chunk_len; i++){
+
+                	 doc_div.append("<div >"+ft.selected.text.substring(i*SIZE,(i+1)*SIZE)+"</div>")
+
+                }*/
+
+
+
+               doc_div.html(ft.selected.text)
+
+
+              doc_div.appendTo("#docs").show() //slideDown();
+
+
+        }
 
         delete ft.selected.text;
         $("#doc-" + ft.selected.id).data("info", ft.selected);
 
         onScroll();
+
+
+      if($("#"+id).hasClass("collapsed"))
+        $("#"+id).parent().find(".ft-icon").click()
 
 
 
@@ -672,8 +611,8 @@ updateIndex: function() {
 },
 
 //save doc to server, update headings into index
-update: function() {
-
+update: function() { 
+ 
   u.index = ft.toJSON();
 
   //find the headings
@@ -710,9 +649,11 @@ update: function() {
 
 
 
+
+
   	//backup for offline cache
-  	localStorage.debate = JSON.stringify(u.index);
-    localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
+  //	localStorage.debate = JSON.stringify(u.index);
+  //  localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
 
 
 

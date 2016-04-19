@@ -1,6 +1,6 @@
 {
   "name": "debatesynergy.com",
-  "description": "DebateSynergy.com web app allows high school and college debate teams to store online research and stream debate rounds.",
+  "description": "DebateSynergy.com web app enables high school and college debate teams to store online research and stream debate rounds.",
   "version": "2.1.0",
   "scripts": {
     "start": "forever --minUptime=10 --spinSleepTime=2000 -e public/server.txt -o public/server.txt -a -v -w .",

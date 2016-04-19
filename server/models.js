@@ -20,6 +20,7 @@ exports.Doc = mongoose.model('Doc', new Schema({
     text: String,
     share: String,
     shareusers: Array,
+    google_sync: Object,
     date_created: {type: Date, default: Date.now},
     date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));

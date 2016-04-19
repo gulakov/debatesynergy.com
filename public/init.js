@@ -216,20 +216,24 @@ $("#sidebar").on('mousemove',function(e){
 if(!dragSidebar)
     $("body").css('cursor','');
 })
-.on('mousedown',function(e){
-  if($("#sidebar").width() - e.offsetX > 15)
+.on('mousedown touchstart',function(e){
+  var start = e.originalEvent.touches ? e.originalEvent.touches[0].clientX : e.offsetX;
+  if($("#sidebar").width() - start > 20)
     return;
+
 
   dragSidebar = true;
 
-  $("body").on('mousemove',function(e){
+  $("body").on('mousemove touchmove',function(e){
      e.preventDefault();
   })
-  .on('mouseup',function(e){
-    $("body").off('mousemove mouseup');
+  .on('mouseup touchend',function(e){
+    $("body").off('mousemove mouseup touchend touchmove');
 
     if (dragSidebar){
         dragSidebar = false;
+        e = e.originalEvent.touches ? e.originalEvent.changedTouches[0] : e;
+
         $("#sidebar").css('max-width',e.pageX+'px');
         $.post("/user/update", {options: {sidebar: e.pageX }});
     }

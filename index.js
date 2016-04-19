@@ -16,8 +16,8 @@ http.createServer(function (req, res) {
     res.end();
 }).listen(80);
 var server = https.createServer({
-  key: fs.readFileSync('/home/alex/letsencrypt/etc/live/debatesynergy.com/privkey.pem'),
-  cert: fs.readFileSync('/home/alex/letsencrypt/etc/live/debatesynergy.com/fullchain.pem')
+  key: fs.readFileSync( process.env.HOME + '/letsencrypt/live/debatesynergy.com/privkey.pem'),
+  cert: fs.readFileSync(process.env.HOME + '/letsencrypt/live/debatesynergy.com/fullchain.pem')
 }, app).listen(443);
 
 var io = require('socket.io')(server);
@@ -48,7 +48,7 @@ app.use('/team', require('./server/team'));
 app.use('/round', require('./server/round')(io));
 app.use('/', require('./server/home'));
 
-app.use(require('serve-static')(__dirname + '/public', {  maxAge: 00000000000000 }))
+app.use(require('serve-static')(__dirname + '/public', {  maxAge: config.cache ? 1000 * 3600 * 24 : 0  }))
 
 app.use(function(err, req, res, next){
   if(err.status == 400)

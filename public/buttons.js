@@ -19,6 +19,15 @@ $(document).ready(function() {
 
 
     $("#file-info-title").text(ft.selected.title)
+
+    $("#file-info-created").text(new Date(ft.selected.date_created).toLocaleString())
+
+
+    $("#file-info-modified").text(new Date(ft.selected.date_updated).toLocaleString())
+
+
+    $("#file-info-words").text(   ($(".doc:visible").find('u,b').text().split(/\b\S+\b/g).length-1) + " read, " + ($(".doc:visible").text().split(/\b\S+\b/g).length-1) + " total" )
+
     // if file is shared with you
     if (ft.selected.userid != u._id) {
       $.getJSON("/user/" + ft.selected.userid, function(r) {
@@ -26,13 +35,15 @@ $(document).ready(function() {
         $("#file-info-owner").text(r.name + " (" + r.email + ")")
       })
 
-      $("#file-share-by-owner").remove()
+      $("#file-share-by-owner").hide()
 
       //remove as collaborator
 
     } else {
 
 
+
+      $("#file-share-by-owner").show()
 
       //if you are owner of this file
       $("#file-info-owner").text("me")
@@ -48,12 +59,10 @@ $(document).ready(function() {
       $(".radio-share").eq(share_id).attr('checked', 'checked');
 
 
-      //prepop shareusers
+      //pre-populate shareusers
       $('#share-select').empty()
       for (var i in ft.selected.shareusers)
         $('#share-select').append("<option value='"+ft.selected.shareusers[i].id+"' selected>"+ft.selected.shareusers[i].text+"</option>");
-
-
       $('#share-select').trigger('change');
 
 
@@ -134,17 +143,18 @@ $('#share-select').select2({
 
   //file info modal -- save title, sharing
   $("#file-info-modal-submit").click(function(){
+      var sharetype = $("#file-share-by-owner input:checked").attr('id').substring(6);
 
         $.post('/doc/update', {
           id: ft.selected.id,
           title: $("#file-info-title").val(),
-          share: $(".radio-share:checked")[0].id.substring(6),
+          share: sharetype,
           shareusers:  $('#share-select').select2("data").map(function(i){ return {id:i.id,  text:i.text}; })
         })
         //TODO chrome.storage
 
         //change share color in filetree
-        $("#" + ft.selected.id).closest('.ft-item').addClass($(".radio-share:checked")[0].id.substring(6))
+        $("#" + ft.selected.id).closest('.ft-item').addClass(sharetype)
 
 
           $("#file-info-modal").modal('hide');
@@ -162,151 +172,75 @@ $('#share-select').select2({
 
   $("#showsettings").click(function() {
 
-    /*if (u.debatetype == 1)
-        $(".debatetype")[0].checked = true;
-    if (u.debatetype == 2)
-        $(".debatetype")[1].checked = true;
 
-    $("#teamname").val(u.teamname);
-    */
+    $('#team-members-select').select2({
+      ajax: {
+        url: "/user/search",
+        dataType: 'json',
+        delay: 50,
+        tags: true,
+        data: function (params) {
+        return {userinfo: params.term};
+        },
+        processResults: function (data, params) {
+          return {results: data.splice(0, u.name ? 5 : 0)}; //Login required to invite users
+        },
+        cache: true
+        },
+        minimumInputLength: 2,
+        escapeMarkup: function (markup) { return markup; },
 
-    $("#custom-css").val(u.custom_css);
-    $("#custom-js").val(u.custom_js);
+        maximumSelectionLength: 100,
+        templateResult: function  (sel) {
+          return sel.email ? u.name ? "<span><b>" +sel.text + "</b> " + sel.email + "</span>" : "Login required" : sel.text;
+        }
+        //data: finalList,
 
-    $("#settings").modal('show');
+    })
 
-    setTimeout(function() {
-      $("#filename").focus();
-    }, 500)
+    if (u.options){
+      $(".debatetype").eq(u.options.debatetype-1).prop("checked", true)
+
+
+
+
+      $("#custom-css").val(u.custom_css);
+      $("#custom-js").val(u.custom_js);
+
+
+    }
+
+
+          $("#settings").modal('show');
+
+
+
+
+
 
   });
 
 
+  $('#settings_logout').click(function() {
+    document.location.pathname = '/user/logout';
+  });
 
+  $('#btn-settings-save').click(function() {
 
-  $('#settings_save').click(function() {
-
-    $.post("/user/update", {
-      // debatetype: $(".debatetype:checked").val(),
-      // teamname: $("#teamname").val(),
-      custom_css: encodeURIComponent($("#custom-css").val()),
+  $.post("/user/update", {
+      options: JSON.stringify({debatetype: $(".debatetype:checked").val() }),
+        custom_css: encodeURIComponent($("#custom-css").val()),
       custom_js: encodeURIComponent($("#custom-js").val())
-    }, function() {
+    }, function(e) {
       location.reload();
     });
 
     $("#settings").modal('hide');
 
-  });
-
-  $('#settings_logout').click(function() {
-    document.location.pathname = '/auth/logout';
-  });
-
-
-  $("#import_googledrive").click(function() {
-
-    var filePickerResponse = function(pickedFilesData) {
-
-      if (pickedFilesData.action != "picked") return;
-
-      gapi.client.drive.files.get({
-        'fileId': pickedFilesData.docs[0].id
-      }).execute(function(resp) {
-        $.ajax({
-          url: resp.exportLinks["text/html"],
-          type: 'GET',
-          beforeSend: function(xhr) {
-            xhr.setRequestHeader('Authorization', 'Bearer ' + gapi.auth.getToken().access_token);
-          },
-          data: {},
-          success: function(fileHtml) {
-
-            //create new!!
-
-            $(".doc:visible").html(fileHtml)
-
-
-            setTimeout(function() {
-
-              $(".doc:visible *").each(function() {
-
-                if ($(this).css('font-weight') == 'bold')
-                  $(this).addClass('read');
-
-                if ($(this).css('text-decoration') == 'underline')
-                  $(this).addClass('readcard');
-
-                if ($(this).css('background-color') != 'rgba(0, 0, 0, 0)' && $(this).css('background-color') != 'transparent')
-                  $(this).addClass('readcardsuper');
-
-                if ($(this).css('text-align') == 'center')
-                  $(this).addClass('h1');
-
-
-
-              })
-
-              $(".doc style").remove()
-
-            }, 500);
-
-
-
-
-
-
-          }
-        });
-      });
-
-    };
-
-    var view = new google.picker.View(google.picker.ViewId.DOCUMENTS);
-    view.setMimeTypes("application/vnd.google-apps.document");
-
-    var picker = new google.picker.PickerBuilder()
-      .enableFeature(google.picker.Feature.NAV_HIDDEN)
-      .addView(view)
-      .setOAuthToken(authToken)
-      .setDeveloperKey(apiKey)
-      .setCallback(filePickerResponse)
-      .build();
-    picker.setVisible(true);
-
 
   });
 
-  /*
 
-  $("#speech1AC, #speech1NC").on("scroll", function() {
-
-
-      var list= $("#speech1AC p");
-
-      for(var i =0; i < list.length; i++)
-        if ( list[i].getBoundingClientRect().top > 150 )
-          break;
-
-      $("#speech1AC .r").css("top", list[i].getBoundingClientRect().top );
-
-
-
-
-      var list= $("#speech1NC p");
-
-      for(var i =0; i < list.length; i++)
-        if ( list[i].getBoundingClientRect().top > 150 )
-          break;
-
-      $("#speech1NC .r").css("top", list[i].getBoundingClientRect().top );
-
-
-
-
-
-  })
-  */
 
   $("#block").click(function() {
 
@@ -349,16 +283,17 @@ $('#share-select').select2({
   })
 
 
-  $("#normal").click(function() {
+  $("#format-remove").click(function() {
 
 
-    document.execCommand('removeFormat');
+    //document.execCommand('removeFormat');
+  //  return;
 
     var range = window.getSelection().getRangeAt(0);
     var selectionContents = range.toString();
     var div = document.createElement("span");
 
-    div.innerHTML = selectionContents;
+    div.innerHTML = "</b></u></h1></h4></span>"+selectionContents;
     range.deleteContents();
     range.insertNode(div);
 
@@ -370,34 +305,25 @@ $('#share-select').select2({
   $('.dropdown-toggle').dropdown()
 
 
-  $(".dropdown-menu").on("click", "li", function(e) {
-    var btn = $(e.target).attr('class');
+    $("#ft-collapse-btn").click(function() {
 
-    if (btn == "ft-collapse-btn")
-      $(".file.ft-name:not(.collapsed)").siblings(".ft-icon").click()
-
-    if (btn == "ft-expand-btn")
-          $(".file.ft-name.collapsed").siblings(".ft-icon").click()
+        $(".ft-file.ft-name:not(.collapsed)").siblings(".ft-icon").click()
+    })
 
 
-    if (btn == "set-size-0"){
+    $("#ft-minimize-unread").click(function() {
 
-          $('#docs, .tab-content').attr('class', "size-mode-0");
-          $('.speech').parent().addClass('tab-content');
-    }
+      if ( $('#docs').hasClass('size-mode-1') ){
+        $('#docs, .speech').addClass("size-mode-0").removeClass("size-mode-1");
 
-    if (btn == "set-size-1"){
+      }else{
+          $('#docs, .speech').addClass("size-mode-1").removeClass("size-mode-0");
+      }
 
-          $('#docs, .tab-content').attr('class', "size-mode-1");
-          $('.speech').parent().addClass('tab-content');
-    }
+      $("#ft-minimize-unread .fa-margin").toggleClass('fa-check-square-o').toggleClass('fa-square-o')
 
-    //$(".doc:visible style, #round style").remove();
-    //$(".readcard, .read, .readcardsuper").css("line-height", "100%")
+    })
 
-
-
-  })
 
 
   $("#big").click(function() {
@@ -453,7 +379,7 @@ $('#share-select').select2({
         $("#docs").css("width", "65%");
       else
       */
-      
+
     } else {
       $("#round, #timer").show();
       round_init()
@@ -466,56 +392,9 @@ $('#share-select').select2({
   });
 
 
-  $("#searchtext").on('keydown', function(e) {
-
-    if (e.keyCode == 13) {
 
 
-      var val = $("#searchtext").val();
-      var resp = "";
-
-      if (u.name) {
-        $.getJSON('/doc/search', {
-          data: val
-        }, function(resp) {
-
-          // alert(resp)
-
-          $('#sidebar').popover('destroy').popover({
-            "hide": 5000,
-            html: 'true',
-            content: "'" + val + "' found in " + resp,
-            placement: "right"
-          }).popover('show');
-
-        });
-      } else {
-
-        for (var i in u.index)
-          if (u.index[i]['text'].indexOf(val) > -1)
-            resp += u.index[i]['title'] + " ";
-
-
-        $('#sidebar').popover({
-          "hide": 5000,
-          html: 'true',
-          content: "d",
-          placement: "right"
-        }).popover('show');
-
-
-
-      }
-
-
-    }
-
-  })
-
-
-
-
-  // new file dialog box
+  //NEW FILE
 
 
   $("#file-new").click(function() {
@@ -543,7 +422,7 @@ $('#share-select').select2({
 
 
       var fileData = {
-        "type": "file ft-selected",
+        "type": "ft-file ft-selected",
         "title": $("#filename").val(),
         "text": ""
       }
@@ -600,19 +479,88 @@ $('#share-select').select2({
       ft.populate(ft.root, u.index);
 
       $(".ft-name:last").click();
-
-
     }
-
-
-    //  $('.ft-name').click(ft.click);
 
     $("#file-new-modal").modal('hide');
 
-
-
-
   });
+
+
+    $("#import_googledrive").click(function() {
+
+      var filePickerResponse = function(pickedFilesData) {
+
+        if (pickedFilesData.action != "picked") return;
+
+        gapi.client.drive.files.get({
+          'fileId': pickedFilesData.docs[0].id
+        }).execute(function(resp) {
+          $.ajax({
+            url: resp.exportLinks["text/html"],
+            type: 'GET',
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader('Authorization', 'Bearer ' + gapi.auth.getToken().access_token);
+            },
+            success: function(fileHtml) {
+
+              //create new
+              $.get("/doc/create", {title: $("#filename").val()    }, function(id) {
+
+                u.index.push({
+                  "type": "ft-file ft-selected",
+                  "title": resp.title,
+                  "id": id
+                });
+
+                ft.populate(ft.root, u.index);
+                ft.loadFile(id, function() {
+                  //paste google doc html into new doc
+                  $(".doc:visible").html(fileHtml).find("span, u").each(function() {
+                    })
+
+                  /*  if ($(this).css('font-weight') == 'bold')
+                      $(this).wrap('<b>');
+
+                //    if ($(this).css('text-decoration') == 'underline')
+                  //    $(this).wrap('<u>');
+
+                    if ($(this).css('background-color') != 'rgba(0, 0, 0, 0)' && $(this).css('background-color') != 'transparent')
+                      $(this).wrap('<span style="background-color: yellow;">');
+
+                    if ($(this).css('text-align') == 'center')
+                      $(this).wrap('<h2>');
+
+
+
+                //  $(".doc style").remove()*/
+
+                });
+
+              })
+
+            }
+          });
+        });
+
+      };
+
+      var view = new google.picker.View(google.picker.ViewId.DOCUMENTS);
+      view.setMimeTypes("application/vnd.google-apps.document");
+
+      var picker = new google.picker.PickerBuilder()
+        .enableFeature(google.picker.Feature.NAV_HIDDEN)
+        .addView(view)
+        .setOAuthToken(authToken)
+        .setDeveloperKey(apiKey)
+        .setCallback(filePickerResponse)
+        .build();
+      picker.setVisible(true);
+
+        $("#file-new-modal").modal('hide');
+
+
+    });
+
 
 
 });

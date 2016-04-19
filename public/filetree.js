@@ -16,7 +16,7 @@ init: function(el, json) {
     $(this).attr('contenteditable', true);
   })
   //clicking item handles the click, loads file
-  .on("click", ".ft-item, .ft-name", ft.click)
+  .on("click", ".ft-item", ft.click)
 
     //options dropdown shouldnt exit on select users
   /*.on("mousedown", ".ft-item .select2", function(){
@@ -36,9 +36,9 @@ init: function(el, json) {
     var ftName = $(this).closest('.ft-item').find('.ft-name:first');
 
     ftName.toggleClass('collapsed');
-    var newIcon = "ft-icon glyphicon glyphicon-";
+    var newIcon = "ft-icon fa fa-";
 
-     newIcon += ftName.hasClass("file") ? ftName.hasClass('collapsed') ? 'plus' :  'file'
+     newIcon += ftName.hasClass("ft-file") ? ftName.hasClass('collapsed') ? 'plus' :  'file'
         : ftName.hasClass("folder") ? ftName.hasClass('collapsed') ?  'folder-close' :  'folder-open' : '';
 
         $(this).closest('.ft-item').find('.ft-icon').attr('class', newIcon);
@@ -86,16 +86,21 @@ init: function(el, json) {
 
 
 
+  $("#filetree").scroll(function(){
+    this.scrollLeft=0;
+  })
+
+
 
 
 
   //update filetree and save every 5s
   setInterval(function() {
    // if (typeof(MutationObserver) == "undefined")
-      ft.updateNeeded = true;
+    //  ft.updateNeeded = true;
 
     ft.update();
-  }, 5000);
+  }, 20000);
 
   //update triggered only when needed
   ft.updateNeeded = false;
@@ -119,7 +124,7 @@ init: function(el, json) {
 
 
   //click last selected (or first) on first-load
-  window.setTimeout(function() {
+  window.setTimeout(function() { return;
       if ($('.ft-selected').length)
         $('.ft-selected').click();
       else if (u.index[0].id=="home"){
@@ -177,7 +182,7 @@ init: function(el, json) {
         $('#filetree > .ft-list > .ft-item:last').after(ft.dragging);
 
         //folder/file: dropped onto: folders (next, child),  files (next)
-      } else if (ft.dragging.find(".ft-name").hasClass("folder") || ft.dragging.find(".ft-name").hasClass("file")) {
+      } else if (ft.dragging.find(".ft-name").hasClass("folder") || ft.dragging.find(".ft-name").hasClass("ft-file")) {
 
         if (dropClass=="folder" && e.originalEvent.clientX > 30) { //dropping on folder makes it a child if over px from left
           if (!dropItem.find('.ft-list').length)
@@ -185,7 +190,7 @@ init: function(el, json) {
 
           dropItem.find('.ft-list').append(ft.dragging);
 
-        } else if (dropClass=="folder" || dropClass=="file") {
+        } else if (dropClass=="folder" || dropClass=="ft-file") {
 
           dropItem.after(ft.dragging);
         } else //don't allow others
@@ -195,7 +200,7 @@ init: function(el, json) {
       //headings: dropped onto files (child) or headings (next)
       } else if (ft.dragging.find(".ft-name").hasClass("heading")) {
 
-        if (dropClass=="file") {
+        if (dropClass=="ft-file") {
           if (!dropItem.find('.ft-list').length)
             dropItem.append("<div class='ft-list'>")
 
@@ -283,7 +288,7 @@ init: function(el, json) {
 
 },
 
-loadFile: function(id, headingId) {
+loadFile: function(id, callback) {
 
   //allow only one fileLoad at a time, break older if newer is started
   ft.ongoingXhrId = id;
@@ -307,10 +312,12 @@ loadFile: function(id, headingId) {
       if($("#"+id).hasClass("collapsed"))
         $("#"+id).parent().find(".ft-icon").click()
 
-      history.pushState(null, "", ft.selected.id);
-      if (headingId)
-        prevDoc.find("h1, h2, h3")[headingId].scrollIntoView();
-      $("#select2-searchtext-container").html(ft.selected.title);
+      if ( ft.selected){
+        history.pushState(null, "", ft.selected.id);
+        $("#select2-searchtext-container").html(ft.selected.title);
+      }
+      if (callback)
+        callback();
       return;
   }
 
@@ -318,11 +325,18 @@ loadFile: function(id, headingId) {
   function onScroll(){
       // on scroll, update selected header index
       //TODO slowwww
-    $(".doc:visible").on("scroll",  function(e) { console.log(1)
+    $(".doc:visible").on("scroll",  function(e) {
+      if (window.off) return;
+
+
+
 
      // return
 
      // if(!skipScroll){
+
+    //  if( $('body').scrollTop() ) $('body').scrollTop(0)
+
 
 
       var list = $(".doc:visible").find("h1, h2, h3");
@@ -412,17 +426,26 @@ loadFile: function(id, headingId) {
     data: {id: id},
     error: function(r) {
       if (r.responseText=="Access denied")
-        setTimeout(function(){
 
           $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
 
-          if (confirm("Access denied to file id " + id + ". Remove from file tree?")) {
-            $(".ft-selected").closest('.ft-item').remove();
-            return;
-          }
 
 
-        }, 1000);
+
+          $("#info").append('<div class="alert alert-danger alert-dismissable">' +
+              '<button  class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+            'Access denied to file id ' + id +  '.' + (($("#filetree #"+id).length) ? ' Remove from file tree?':'') + ' <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
+              .on('click', ".btn-primary", function() {
+
+                  if ($("#filetree #"+id).length){
+                    $("#filetree #"+id).closest('.ft-item').remove();
+                    return;
+                  }
+              })
+
+
+
+
     },
     success: function(r) {
 
@@ -453,24 +476,49 @@ loadFile: function(id, headingId) {
 
         if (!$("#doc-" + ft.selected.id).length){
 
-              var doc_div = $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr('contenteditable',true);
+          if (window.chunk){
 
-                /*var SIZE = 200000;
-                chunk_len = Math.ceil(ft.selected.text.length/SIZE);
-                console.log( ft.selected.text.length)
+            var doc_div = $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id) //.attr('contenteditable',true);
 
-                for (var i = 0 ; i < chunk_len; i++){
+              var SIZE = 100000;
+              chunk_len = Math.ceil(ft.selected.text.length/SIZE);
+              //console.log( ft.selected.text.length)
 
-                	 doc_div.append("<div >"+ft.selected.text.substring(i*SIZE,(i+1)*SIZE)+"</div>")
+              for (var i = 0 ; i < chunk_len; i++){
 
-                }*/
+                 doc_div.append("<div class='chunk' contenteditable='true'>"+ft.selected.text.substring(i*SIZE,(i+1)*SIZE)+"</div>")
+
+              }
 
 
 
-               doc_div.html(ft.selected.text)
+            // doc_div.html(ft.selected.text)
+
+          } else{
+
+            var doc_div = $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr('contenteditable',true);
+
+
+
+
+            doc_div.html(ft.selected.text)
+
+
+
+          }
 
 
               doc_div.appendTo("#docs").show() //slideDown();
+              /*
+              setTimeout(function(){
+                new MediumEditor('.doc', {
+                    paste: {
+                        cleanPastedHTML: true,
+                        forcePlainText: false
+                    }
+                });
+
+              }, 100);*/
 
 
         }
@@ -486,7 +534,7 @@ loadFile: function(id, headingId) {
 
 
 
-      //add for public or shared files -- not in filetree
+      //add for public or shared files or files you removed from tree -- not in filetree
       if (!$('#' + ft.selected.id).length) {
         //setTimeout(function(){
           if (!u.index)
@@ -495,7 +543,7 @@ loadFile: function(id, headingId) {
           u.index.push( {
             "id": ft.selected.id,
             "title": ft.selected.title,
-            "type": "file ft-selected public"})
+            "type": "ft-file ft-selected public"})
 
           if (u.index[0].id=="home")
             delete u.index[0];
@@ -510,9 +558,9 @@ loadFile: function(id, headingId) {
 
 
 
-      //scroll to heading if triggered by click on heading within this doc
-      if (headingId)
-        $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
+      if (callback) callback()
+      document.body.dispatchEvent(new CustomEvent("doc"));
+
 
       //put current doc title in the search box to improve clarity
       $("#select2-searchtext-container").html(ft.selected.title);
@@ -548,8 +596,8 @@ populate: function(div, json) {
         json[i].type + '" title="' + json[i].title + '" >' + json[i].title + '</span> </div>')
       : $('<div class="ft-item" draggable="true">'+
 
-        '<span  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="ft-icon glyphicon glyphicon-' +  (
-              json[i].type.indexOf("file")>-1 ? json[i].type.indexOf("collapsed")>-1 ? 'plus' :  'file'
+        '<span class="ft-icon fa fa-' +  (
+              json[i].type.indexOf("ft-file")>-1 ? json[i].type.indexOf("collapsed")>-1 ? 'plus' :  'file'
                : json[i].type.indexOf("folder")>-1 ?  json[i].type.indexOf("collapsed")>-1 ? 'folder-close' :  'folder-open'
               : "" ) + " " + ( json[i].type.indexOf("public")>-1 ? ' ft-public ' : "") + '" ></span>'+
 
@@ -594,16 +642,17 @@ toJSON: function(startLevel) {
 
 //upload tree index to server
 updateIndex: function() {
+  if (window.off)return;
 
   if (local) {
     localStorage.debate = JSON.stringify(u.index);
 
     ft.selected.text = $(".doc:visible").html().replace(/\'/g, '&#39;');
     localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
-  } else if (u.index.length)  //upload user as object to POST
+  } else if (u.index.length && u.name)  //upload user as object to POST
     $.ajax({
         url: '/user/update',
-        data: u,
+        data: {userid: u._id, index:u.index},
         contentType: "application/x-www-form-urlencoded",
         type: 'POST'
     });
@@ -611,8 +660,9 @@ updateIndex: function() {
 },
 
 //save doc to server, update headings into index
-update: function() { 
- 
+update: function() {
+  if (window.off)return;
+
   u.index = ft.toJSON();
 
   //find the headings
@@ -689,71 +739,37 @@ click: function(e) {
   $('.ft-selected').removeClass('ft-selected');
   e.parent().addClass('ft-selected');
 
-
-
-
-
+  //click on heading to go to it and if needed open the file its in
   if (e.hasClass("heading")) {
 
     headingId = parseInt(id.substring(id.indexOf("_") + 1));
     id = id.substring(0, id.indexOf("_"));
 
-    if (ft.selected.id == id && $(".doc:visible").attr('id').replace("doc-", '') == id)
+     if (ft.selected && ft.selected.id == id && $(".doc:visible").attr('id').replace("doc-", '') == id)
       $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
-    else //if clicked on header in unopened file, load that file, then go to header
-      ft.loadFile(id, headingId);
+    else {//if clicked on header in unopened file, load that file, then go to header
 
-  	$(".doc:visible").scrollTop($(".doc:visible").scrollTop() - 260);
+      console.log(111)
+      ft.loadFile(id, function(){
+          //scroll to heading if triggered by click on heading within this doc
+            $(".doc:visible").find("h1, h2, h3")[headingId].scrollIntoView();
+      });
+    }
+  	//$(".doc:visible").scrollTop($(".doc:visible").scrollTop() - 260);
 
 
+  //logged out, show homepage manual
+  } else if (e.hasClass("ft-file") && !u.name) {
 
-  } else if (e.hasClass("file")) {
 
-    if (!u.name) { //SPECIAL PAGE: guest user welcome screen
-
-      ft.selected = u.index.filter(function(i) {
-        return id == i.id;
-      })[0];
+      ft.selected = u.index[0];
 
       if ($("#doc-" + id).length)
-        $("#doc-" + id).show(); //slideDown()
+        $("#doc-" + id).show();
 
-    //  location.hash = id;
-
-    } else if (local) {
-
-        ft.selected = JSON.parse(localStorage["debate_" + id]);
-
-
-        //hide current doc
-        $(".doc:visible").hide();
-
-        //show selected doc if it's already loaded
-        if ($("#doc-" + id).length)
-          $("#doc-" + id).show()
-      //  else // load doc from localStorage
-      //    $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr("contenteditable", true)
-    //      .appendTo("#docs").html(ft.selected.text);
-
-
-        //populate index with the new doc's headings
-        ft.updateNeeded = true;
-        ft.update();
-
-        //location.hash = ft.selected.id;
-        //history.pushState(null, "", ft.selected.id);
-
-
-
-    } else //load file when clicked on filetitle
+  //load file when clicked on filetitle
+  } else if (e.hasClass("ft-file")) {
       ft.loadFile(id);
-
-
-  } else if (e.hasClass("folder")) {
-
-    //TODO
-    //  $(".doc").hide();
-    //ft.selected = {};
 
   }
 
@@ -783,7 +799,7 @@ dblclick: function() {
 
   }
 
-  if (!$(this).hasClass("file") && !$(this).hasClass("folder"))
+  if (!$(this).hasClass("ft-file") && !$(this).hasClass("folder"))
     return;
   //TODO what should dblclick/ longtouch on file titles do?
 

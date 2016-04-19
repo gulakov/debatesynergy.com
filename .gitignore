@@ -3,3 +3,5 @@ db/
 node_modules/
 public/files/*
 public/server.txt
+config.json
+config.mongo.json

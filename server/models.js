@@ -3,12 +3,13 @@ var mongoose = require('mongoose'), Schema = mongoose.Schema;
 exports.User = mongoose.model('User', new Schema({
     email:  String,
     name:  String,
+    auth: String,
     custom_css: String,
     custom_js: String,
     index: Object,
     socket: String,
-    options: Array,
-    pending: Array,
+    options: Object,
+    notifications: Array,
     date_created: {type: Date, default: Date.now},
     date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));

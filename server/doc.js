@@ -1,5 +1,5 @@
 var app = require('express').Router(), model = require('./models');
-var Doc = model.Doc, User = model.User;
+var Doc = model.Doc, User = model.User,  ObjectID = require('mongodb').ObjectID;
 var request = require('request');
 module.exports = app;
 
@@ -11,66 +11,82 @@ app.get('/admin', function(req, res) {
         }));
   });
 
+});
 
+
+
+
+app.get('/drivelist', function(req, res) {
+
+
+  request({
+    url: 'https://www.googleapis.com/drive/v2/files',
+    qs: {
+      q: "mimeType contains 'document'"
+    },
+    headers: {
+      'Authorization': 'Bearer ' + req.session.access_token
+    }},  function (error, response, body){
+
+
+
+      res.send(body)
+  })
 
 });
 
 
 //takes callback from "Open With" in Google Drive to create/open file and sync
 app.get('/readdrive', function(req, res) {
-  var fileId = JSON.parse(req.query.state).exportIds;
-  var auth_code = req.query.code;
+  var state = JSON.parse(req.query.state),
+  fileId = state.exportIds || state.ids,
+  access_token = req.session.access_token;
 
-
-  var google = require('googleapis');
-
-  var oauth2Client = new google.auth.OAuth2("675454780693-7n34ikba11h972dgfc0kgib0id9gudo8.apps.googleusercontent.com", "8TbemY_MUonCCRhhuIjwV-ho", "http://debatesynergy.com/doc/readdrive");
-
-  oauth2Client.getToken(auth_code, function(err, tokens) {
-
-    oauth2Client.setCredentials(tokens);
-
-      var drive = google.drive({ version: 'v2', auth: oauth2Client });
-
-      drive.files.get({
-  fileId: fileId
-}, function(err, result) {
-
-
-request({
+  //takes fileId, request google doc file metadata
+  request({
+    url: 'https://www.googleapis.com/drive/v3/files/' + fileId,
     headers: {
-      'Authorization': 'Bearer ' + tokens.access_token
-    },
-    uri: result.exportLinks["text/html"]
-  },
-   function (error, response, body) {
+      'Authorization': 'Bearer ' + req.session.access_token
+    }},  function (error, response, body){
+      var body = JSON.parse(body);
+      if (body.error) //unauthorized
+        return res.redirect('/')
+
+
+      //takes google doc, returns file HTML
+      request({
+          uri: body.exportLinks["text/html"],
+          headers: {
+            'Authorization': 'Bearer ' + req.session.access_token
+        }}, function (error, response, body) {
+
+
+                //updated google doc HTML with new HTML
+               request({
+                 uri: 'https://www.googleapis.com/upload/drive/v2/files/'+fileId,
+                 method: 'PUT',
+                 qs: {
+                   uploadType: 'media'
+                 },
+                 form:  body.replace(/(and)/gi,'Gulakov'),
+                 headers: {
+                   'Content-Type': 'application/vnd.google-apps.document',
+                   'Authorization': 'Bearer ' + tokens.access_token
+                 }},  function (error, response, body){
 
 
 
-         Doc.create({
-            title: result.title || "Import",
-            userid: req.user ? req.user._id : "",
-            text: body
-        }, function (e, f) {
+                   res.redirect(JSON.parse(body).alternateLink)
+               })
 
-            return res.redirect('/'+f._id);
 
         });
 
-
-
-  });
-
-
-
-
-      });
-
-
-  });
+  })
 
 
 });
+
 
 //takes doc ID, return doc text -- allowed if user is owner, share, or public/publicedit
 app.get('/read', function(req, res) {
@@ -81,13 +97,15 @@ app.get('/read', function(req, res) {
           if (!f)
           return  res.send("Not found");
 
-         if (f.share=="public"  || req.isAuthenticated() && (f.userid == req.user._id || req.user && f.shareusers.map(function(i){return i.id}).indexOf(req.user._id)>-1 ) )
+         if (f.share=="public"  || req.session.user && (f.userid == req.session.user._id || req.session.user && f.shareusers.map(function(i){return i.id}).indexOf(req.session.user._id)>-1 ) )
             res.json({
                 id: f._id,
                 userid: f.userid,
                 title: f.title,
                 share: f.share,
                 shareusers: f.shareusers,
+                date_created: f.date_created,
+                date_updated: f.date_updated,
                 text: f.text
             });
         else
@@ -102,7 +120,7 @@ app.get('/create', auth, function(req, res) {
 
     Doc.create({
         title: req.query.title || "New File",
-        userid: req.user._id,
+        userid: req.session.user._id,
         text: ""
     }, function (e, f) {
         return res.json(f._id);
@@ -112,6 +130,7 @@ app.get('/create', auth, function(req, res) {
 //takes doc id and updated text, title, or shared, performs needed update
 app.post('/update',  function(req, res) {
 
+  var userId = req.session.user ? req.session.user._id : false;
   var fileId = req.body.id;
   var text = req.body.text;
   var title = req.body.title;
@@ -124,7 +143,7 @@ app.post('/update',  function(req, res) {
       if (!f)  return res.end();
 
       //update text body -- allowed for owner, share users, and publicedit
-      if (text && (req.user && f.userid == req.user._id || req.user && f.shareusers.map(function(i){return i.id}).indexOf(req.user._id)>-1 ) ){
+      if (text && (f.userid == userId || f.shareusers.map(function(i){return i.id}).indexOf(userId)>-1 ) ){
         text = require('sanitize-html')(decodeURIComponent(text), {
           allowedTags: ['h1', 'h2', 'h3', 'h4', 'span', 'p', 'ul', 'li', 'u', 'b', 'i', 'br'],
           allowedAttributes: { 'span': ['style'] },
@@ -133,23 +152,35 @@ app.post('/update',  function(req, res) {
       }
 
       //update doc title -- allowed for owner
-      if (title && f.userid == req.user._id)
+      if (title && f.userid == userId)
           Doc.update({_id: fileId}, {title: title, date_updated: Date.now() }).exec();
 
       //update share level -- allowed for owner
-      if (share && f.userid == req.user._id)
+      if (share && f.userid == userId)
           Doc.update({_id: fileId}, {share: share}).exec();
 
       //TODO if (share == "team")
 
       //update share users to remove self -- allowed for current user if shared with
-      if (shareusers_remove_me && f.shareusers.indexOf(req.user._id)>-1)
-          Doc.update({_id: fileId}, {shareusers: f.shareusers.filter(function(i){ return i!=req.user._id} ) }).exec();
+      if (shareusers_remove_me && f.shareusers.map(function(i){return i.id}).indexOf(userId)>-1)
+          Doc.update({_id: fileId}, {shareusers: f.shareusers.filter(function(i){ return i.id!=userId} ) }).exec();
 
       //update share users -- allowed for owner
-        if (shareusers && f.userid == req.user._id){
+        if (shareusers && f.userid == userId){
             Doc.update({_id: fileId}, {shareusers:  (shareusers) }).exec();
-            console.log(req.user.email + " shared " + f.title + " with " +  shareusers);
+
+            for (var i in shareusers)
+              User.update (
+                  {_id: new ObjectID(shareusers[i].id)},
+                  {$push: {'notifications': {
+                    'type':'doc_share',
+                    'fileId': fileId,
+                    'title': f.title,
+                    'owner': req.session.user.name
+                  }}}
+              ).exec();
+
+            console.log(req.session.user.email + " shared " + f.title + " with " +  JSON.stringify(shareusers));
 
               //TODO append file to share user's index if not existing and create an event
               //  User.update({_id: u._id}, {$push: {index: {"id": f._id, "title": f.title, "type": "file"} }},  {safe: true, upsert: true}).exec();
@@ -168,10 +199,14 @@ app.post('/update',  function(req, res) {
 //TODO shared docs & public
 //takes a search string, search all user's docs text content
 app.get('/search', auth, function(req, res) {
+  //TODO files shared with teams i'm on, public files in users tree and speeches
 
-  var q = req.query.q;
+  var q = req.query.q, userId = req.session.user._id;
 
-  Doc.find({"userid": req.user._id, "text": {"$regex": q, "$options": "i" }}).sort('title').exec(function (err, files) {
+  Doc.find({
+      $or: [{"userid": userId, "text": {"$regex": q, "$options": "i" }},
+       {  "share": "specific", "shareusers": { $elemMatch: {"id": userId} }, "text": {"$regex": q, "$options": "i" }     }]
+  }).sort('title').exec(function (err, files) {
         if (!files)
             return res.json([]);
 
@@ -188,7 +223,7 @@ app.get('/search', auth, function(req, res) {
 
 //input doc id, delete doc by removing ownership
 app.get('/delete', auth, function(req, res){
-    Doc.update({_id: req.query.id, userid: req.user._id}, {userid: "trash_"+ req.user._id }).exec(function(e, f){
+    Doc.update({_id: req.query.id, userid: req.session.user._id}, {userid: "trash_"+ req.session.user._id }).exec(function(e, f){
       return res.end();
 
     });
@@ -198,7 +233,7 @@ app.get('/delete', auth, function(req, res){
 
 //auth
 function auth(req, res, next) {
-  if (!req.isAuthenticated())
+  if (!req.session.user)
     return res.send("Login required");
   return next();
 }

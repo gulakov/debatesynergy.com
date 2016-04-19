@@ -1,17 +1,13 @@
 function Timer() {
 
   //configure initial time values
-  var count = 8 * 60, options = {
-    "times_r": 5,
-    "times_c": 8,
-    "times_x": 3,
-    "times_p": 8
-  };
+  var timeset = (u.options && u.options.debatetype == 2) ? [9,6,10] : (u.options && u.options.debatetype == 3) ? [6, 7, 4] : [8,5,8];
+  var count = timeset[0] * 60;
 
-  $("#btn-timer-aff, #btn-timer-neg").html(options.times_p);
-  $("#btn-timer-crossx").html(options.times_x);
-  $("#btn-timer-constructive").html(options.times_c);
-  $("#btn-timer-rebuttal").html(options.times_r);
+  $("#btn-timer-crossx").html("3");
+  $("#btn-timer-constructive").html(timeset[0]);
+  $("#btn-timer-rebuttal").html(timeset[1]);
+  $("#btn-timer-aff, #btn-timer-neg").html(timeset[2]);
   $("#count").val(toTime(count));
 
 
@@ -74,7 +70,8 @@ function Timer() {
 
   //prep buttons set new time and class of time display as button's id
   $("#btn-timer-aff, #btn-timer-neg, #btn-times-container > div").click(function() {
-    count = toNumber($(this).html()) || 0;
+    count = toNumber($(this).text()) || 0;
+    if (count==10) count = 10*60;
     $("#count").val(toTime(count)).attr("class", this.id);
   })
 

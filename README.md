@@ -1,10 +1,9 @@
-
-DebateSynergy.com is a free open-source web app for the high school and college debate community, enabling users to make custom plugins and suggest features. Built with Node.js and MongoDB, using jQuery & Bootstrap interface to format user's research files and manage files with a filetree, and using socket.io to livestream debate rounds to the room, as the user scrolls speech.
+DebateSynergy.com free open-source web app enables high school and college debate teams to store online research and stream debate rounds. Users can make custom extensions to the interface, built using jQuery & Bootstrap interface to format user's research files and manage files with a filetree,  server built with Node.js and MongoDB to store files and Google OAuth for login,  and using socket.io to livestream debate rounds to the room, as the user scrolls speech.
 
 
 ```
 #Linux server setup
-sudo apt-get install -y nodejs npm nodejs-legacy mongodb screen build-essential python git 
+sudo apt-get install -y nodejs npm mongodb screen
 git clone https://github.com/gulakov/debatesynergy.com
 cd debatesynergy.com
 npm install

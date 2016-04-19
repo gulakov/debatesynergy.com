@@ -12,16 +12,16 @@ module.exports = function(_io) {
 
 //auth
 function auth(req, res, next) {
-  if (!req.isAuthenticated())
+  if (!req.session.user)
     return res.send("Login required");
   return next();
 }
 
 
 //return all rounds accepted by this user
-app.get('/', function(req, res, next) {
+app.get('/', auth, function(req, res, next) {
 
-  var userId = req.user._id;
+  var userId = req.session.user._id;
 
   Round.find({
       $or: [{
@@ -35,20 +35,11 @@ app.get('/', function(req, res, next) {
       }, {
         "judges": { $elemMatch: {"id": userId, "status": true} }
       }]
-    },
-    //{sort: [['date', -1]]}, // not returning
-    function(e, foundRounds) {
+    }).sort( { 'date_created': -1 } ).exec(function(err, foundRounds) {
+      if (err)console.log(err);
 
-      return res.send(foundRounds);
+      return res.json(foundRounds.map(function(i){ return {_id:i._id, aff1:i.aff1, aff2:i.aff2, neg1:i.neg1, neg2:i.neg2, judges:i.judges, date_created:i.date_created }; }));
 
-
-      var roundsAccepted = foundRounds.filter(function(i) {
-        return ((i.aff1 == email && i.status_aff1) ||
-          (i.aff2 == email && i.status_aff2) ||
-          (i.neg1 == email && i.status_neg1) ||
-          (i.neg2 == email && i.status_neg2) ||
-          (i.judges == email && i.status_judges));
-      });
 
       //return res.json(roundsAccepted);
     })
@@ -109,11 +100,25 @@ app.get('/create', auth, function(req, res) {
         var people = foundUsers[0].name + " " + foundUsers[1].name + " vs " + foundUsers[2].name + " " + foundUsers[3].name + " judged by " +
           foundUsers.slice(4).map(function(i) {  return i.name  }).join(", ");
 
-        for (var i in foundUsersFull)
+        for (var i in foundUsersFull){
+          //notify if logged in
           io.to("/#" + foundUsersFull[i].socket).emit('round_youAreInvited', {
             roundId: newRoundJson._id,
             people: people
           });
+
+          //pending notify if logged out
+          User.update (
+              {_id: foundUsersFull[i]._id},
+              {$push: {'notifications': {
+                'type':'round_youAreInvited',
+                'roundId': newRoundJson._id.toString(),
+                'people': people
+              }}},
+              function() {}
+          )
+        }
+
 
         return res.json({
           roundId: newRoundJson,
@@ -127,8 +132,17 @@ app.get('/create', auth, function(req, res) {
 
 app.all('/accept', auth, function(req,  res) {
 
-  var userId = req.user._id;
+  var userId = req.session.user._id;
   var roundId = req.query.roundId;
+
+  //remove pending notify
+  User.update (
+      {_id: new ObjectID(userId)},
+      {$pull: {'notifications': {
+        type:'round_youAreInvited',
+        'roundId': roundId,
+      }}}).exec();
+
 
   Round.findById(roundId).exec(function(e, roundJSON) {
     if (!roundJSON)
@@ -195,7 +209,7 @@ app.all('/accept', auth, function(req,  res) {
     });
 
 
-    //return res.end(roundId);
+    return res.end(roundId);
   });
 
 });
@@ -203,8 +217,8 @@ app.all('/accept', auth, function(req,  res) {
 
 app.post('/update', auth, function(req, res) {
 
-  var userId = req.user._id;
-  var userEmail = req.user.email;
+  var userId = req.session.user._id;
+  var userEmail = req.session.user.email;
   var roundId = req.body.roundId;
   var sanitizeHtml = require("sanitize-html");
 
@@ -252,7 +266,7 @@ app.post('/update', auth, function(req, res) {
         email: usersToPing[i]
       }, function(e, f) {
 
-        if (!e && f != "undefined" && req.user._id != f._id)
+        if (!e && f != "undefined" && req.session.user._id != f._id)
           io.to("/#" + f.socket).emit('round_newTextForPartner', {
             round: f
           });
@@ -279,7 +293,7 @@ app.get('/updateScroll', auth, function(req, res) {
 
     var roundId = req.body.roundId;
 
-    var userEmail = req.user.email;
+    var userEmail = req.session.user.email;
 
 
     if (speechName == "speech1AC")
@@ -361,7 +375,7 @@ app.get('/updateScroll', auth, function(req, res) {
         for (var i in usersToPing)
             User.findOne({email: usersToPing[i]}, function (e, f) {
 
-                if (req.user._id != f._id)
+                if (req.session.user._id != f._id)
                     io.to("/#"+f.socket).emit( 'round_newTextForEnemy', {
                         speechName: speechName,
                         speechPartial: speechPartial
@@ -427,7 +441,7 @@ app.all('/join', auth, function(req, res) {
 
 
   User.findOneAndUpdate({
-    _id: req.user._id
+    _id: req.session.user._id
   }, {
     socket: req.query.socket
   }, function() {});

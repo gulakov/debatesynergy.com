@@ -4,4 +4,4 @@ node_modules/
 public/files/*
 public/server.txt
 config.json
-config.mongo.json
+config.mongo.js

@@ -1,0 +1,26 @@
+2016-04-21T20:25:23.660+0000 I CONTROL  [initandlisten] MongoDB starting : pid=5611 port=27017 dbpath=db 64-bit host=ip-172-31-27-213
+2016-04-21T20:25:23.660+0000 I CONTROL  [initandlisten] db version v3.0.11
+2016-04-21T20:25:23.660+0000 I CONTROL  [initandlisten] git version: 48f8b49dc30cc2485c6c1f3db31b723258fcbf39
+2016-04-21T20:25:23.660+0000 I CONTROL  [initandlisten] build info: Linux ip-10-65-215-98 3.13.0-24-generic #46-Ubuntu SMP Thu Apr 10 19:11:08 UTC 2014 x86_64 BOOST_LIB_VERSION=1_49
+2016-04-21T20:25:23.660+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+2016-04-21T20:25:23.660+0000 I CONTROL  [initandlisten] options: { net: { bindIp: "127.0.0.1" }, storage: { dbPath: "db", journal: { enabled: false }, mmapv1: { smallFiles: true } } }
+2016-04-21T20:25:23.692+0000 I CONTROL  [initandlisten] ** WARNING: You are running this process as the root user, which is not recommended.
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] 
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] 
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is 'always'.
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] 
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is 'always'.
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] 
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] ** WARNING: soft rlimits too low. rlimits set to 3813 processes, 65536 files. Number of processes should be at least 32768 : 0.5 times number of files.
+2016-04-21T20:25:23.693+0000 I CONTROL  [initandlisten] 
+2016-04-21T20:25:23.702+0000 I NETWORK  [initandlisten] waiting for connections on port 27017
+2016-04-21T20:25:27.317+0000 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:46976 #1 (1 connection now open)
+2016-04-21T20:25:31.009+0000 I NETWORK  [conn1] end connection 127.0.0.1:46976 (0 connections now open)
+2016-04-21T20:25:36.821+0000 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:46978 #2 (1 connection now open)
+2016-04-21T20:25:44.210+0000 I NETWORK  [conn2] end connection 127.0.0.1:46978 (0 connections now open)
+2016-04-21T20:27:53.052+0000 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:46986 #3 (1 connection now open)
+2016-04-21T20:27:53.056+0000 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:46988 #4 (2 connections now open)
+2016-04-21T20:32:06.956+0000 I NETWORK  [conn4] end connection 127.0.0.1:46988 (1 connection now open)
+2016-04-21T20:32:06.959+0000 I NETWORK  [conn3] end connection 127.0.0.1:46986 (0 connections now open)

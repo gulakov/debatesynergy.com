@@ -48,7 +48,7 @@
 
 
         <div class="btn-group btn-group-sm">
-          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
             <i class="fa fa-fw fa-ellipsis-h"></i>
           </button>
           <div class="dropdown-menu">
@@ -115,27 +115,45 @@
 
 
   <div id="round" style="display:none">
-    <div id="drag-copy"></div>
-    <ul id="speech-tabs" class="nav nav-pills nav-justified ">
 
-      <li class="nav-item">
+    <div id="round-navbar">
+
         <div id="round-controls" class="btn-group btn-group">
-          <button id="fullscreen" class="btn  btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Full screen on/off"><i class="fa fa-fw fa-arrows-alt"></i></button>
-          <button id="sidebyside" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Side by side view with prior speech"></button>
-          <button id="speechscroll" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Publish text as you scroll to opponents"><i class="fa fa-fw fa-eye"></i></button>
-          <button id="big" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Toggle font size"><i class="fa fa-fw fa-text-height"></i></button>
-        </div>
-      </li>
+            <button id="speechscroll" class="btn btn-secondary" data-placement="bottom" title="Publish text as you scroll to opponents"><i class="fa fa-fw fa-eye"></i></button>
+            <button  id="font-big"  class="btn btn-secondary" data-placement="bottom" title="Embiggen Read Text"><i class="fa fa-fw fa-compress"></i></button>
+            <button id="speech-flow-mode" class="btn btn-secondary" data-placement="bottom" title="Flow-Only Mode"><i class="fa fa-fw fa-edit"></i> </button>
 
-      <li class="nav-item"><a class="nav-link active" href="#speechmain" data-toggle="pill">Main</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech1AC" data-toggle="pill">1AC</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech1NC" data-toggle="pill">1NC</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech2AC" data-toggle="pill">2AC</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech2NC" data-toggle="pill">2NC</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech1NR" data-toggle="pill">1NR</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech1AR" data-toggle="pill">1AR</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech2NR" data-toggle="pill">2NR</a></li>
-      <li class="nav-item"><a class="nav-link" href="#speech2AR" data-toggle="pill">2AR</a></li>
+
+
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"  data-placement="top" title="Page Mode" >
+              <i class="fa fa-fw fa-file-text"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item"  id="fullscreen"><i class="fa fa-fw fa-arrows-alt"></i> Page Mode: Full Screen</a>
+              <a class="dropdown-item"  id="sidebyside" title="Side by side view with prior speech"> Page Mode: Speech Side-by-Side</a>
+
+              <a class="dropdown-item"  id="font-flow" ><i class="fa fa-fw fa-text-compress"></i> Collapse Flow Items</a>
+
+            </div>
+
+
+
+
+        </div>
+
+      <div id="speech-nav-container">
+
+        <div class="speech-nav speech-nav-neg active-nav" id="speechmain-nav">Main</div>
+        <div class="speech-nav speech-nav-aff" id="speech1AC-nav">1AC</div>
+        <div class="speech-nav speech-nav-neg" id="speech1NC-nav">1NC</div>
+        <div class="speech-nav speech-nav-aff" id="speech2AC-nav">2AC</div>
+        <div class="speech-nav speech-nav-neg" id="speech2NC-nav">2NC</div>
+        <div class="speech-nav speech-nav-neg" id="speech1NR-nav">1NR</div>
+        <div class="speech-nav speech-nav-aff" id="speech1AR-nav">1AR</div>
+        <div class="speech-nav speech-nav-neg" id="speech2NR-nav">2NR</div>
+        <div class="speech-nav speech-nav-aff" id="speech2AR-nav">2AR</div>
+      </div>
+
 
       <div id="timer">
         <input id="count" type="text" maxlength="5" />
@@ -154,11 +172,13 @@
           </div>
         </div>
       </div>
-    </ul>
+
+    </div>
 
 
-    <div class="tab-content">
-      <div class="tab-pane active" id="speechmain">
+    <div id="round-content">
+
+      <div class="speechmain active-speech" id="speechmain">
         <select id="judges" type="text" class="form-control input-xlarge username-select" data-placeholder="Judge emails or names"  multiple="multiple"></select>
 
         <div class="row">
@@ -175,27 +195,30 @@
         <button id="roundcreate" type="submit" class="btn btn-primary form-control">Invite</button>
 
         <div id="pastrounds"></div>
+
+        <div id="drag-copy"></div>
+
       </div>
 
-      <div class="tab-pane speech" id="speech1AC" contenteditable="true"></div>
-      <div class="tab-pane speech" id="speech1NC" contenteditable="true"></div>
-      <div class="tab-pane speech" id="speech2AC" contenteditable="true"></div>
-      <div class="tab-pane speech" id="speech2NC" contenteditable="true"></div>
-      <div class="tab-pane speech" id="speech1NR" contenteditable="true"></div>
-      <div class="tab-pane speech" id="speech1AR" contenteditable="true"></div>
-      <div class="tab-pane speech" id="speech2NR" contenteditable="true"></div>
-      <div class="tab-pane speech" id="speech2AR" contenteditable="true"></div>
+      <div class="speech" id="speech1AC" contenteditable="true"></div>
+      <div class="speech" id="speech1NC" contenteditable="true"></div>
+      <div class="speech" id="speech2AC" contenteditable="true"></div>
+      <div class="speech" id="speech2NC" contenteditable="true"></div>
+      <div class="speech" id="speech1NR" contenteditable="true"></div>
+      <div class="speech" id="speech1AR" contenteditable="true"></div>
+      <div class="speech" id="speech2NR" contenteditable="true"></div>
+      <div class="speech" id="speech2AR" contenteditable="true"></div>
 
     </div>
   </div>
 
 
-  <div id="settings" class="modal" tabindex="2" role="dialog" aria-hidden="true">
+  <div id="settings" class="modal" tabindex="2" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+            <span>&times;</span>
             <span class="sr-only">Close</span>
           </button>
           <h4 class="modal-title">Settings</h4>
@@ -244,12 +267,12 @@
   </div>
 
 
-  <div id="file-new-modal" class="modal" tabindex="2" role="dialog" aria-hidden="true">
+  <div id="file-new-modal" class="modal" tabindex="2" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+            <span>&times;</span>
             <span class="sr-only">Close</span>
           </button>
           <h4 class="modal-title">Create New File or Folder</h4>
@@ -276,12 +299,12 @@
 
 
 
-  <div id="file-info-modal" class="modal" tabindex="2" role="dialog" aria-hidden="true">
+  <div id="file-info-modal" class="modal" tabindex="2" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+            <span>&times;</span>
             <span class="sr-only">Close</span>
           </button>
           <h4 class="modal-title">File Information &amp; Sharing</h4>

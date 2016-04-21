@@ -5,14 +5,44 @@ module.exports = app;
 
 app.get('/admin', function(req, res) {
 
+
+
+  request({
+    url: 'https://www.google.com/m8/feeds/contacts/default/full',
+    qs: {
+      alt: "json",
+      v: "3.0",
+      q: req.query.q
+
+    },
+    headers: {
+      'Authorization': 'Bearer ya29..ygIr6a9ANZDNoycmQOu5SnJD_sRkqO4AWJnHgwxwf5TEsszYEnZ32uGsGgkVlxm_7A'
+    }},  function (error, response, body){
+      return res.send(body)
+
+      var body = JSON.parse(body);
+
+      var contacts = body.feed.entry.map(function(i){
+        return  i["gd$email"]  && {name:  i["gd$name"] ? i["gd$name"]["gd$fullName"]["$t"] : "", email: i["gd$email"][0].address }
+      })
+
+      res.json(contacts)
+  })
+
+// + req.session.access_token
+  User.find().sort({'date_created': 'asc'}).exec(function (err, files) {
+    //   return res.json(files);
+ });
+
+  /*
    Doc.find({ userid: { $not: /55926eec0589b40a0f835c80/} } ).sort({'date_updated': 'desc'}).limit(20).exec(function (err, files) {
         return res.json(files.map(function(f){
         	return f._id + " " + f.text.substring(0,500);
         }));
   });
+  */
 
 });
-
 
 
 
@@ -91,7 +121,6 @@ app.get('/readdrive', function(req, res) {
 //takes doc ID, return doc text -- allowed if user is owner, share, or public/publicedit
 app.get('/read', function(req, res) {
     var fileId = req.query.id;
-    res.header("Content-Type", "application/json; charset=utf-8");
 
     Doc.findById(fileId, function (e, f) {
           if (!f)
@@ -108,8 +137,9 @@ app.get('/read', function(req, res) {
                 date_updated: f.date_updated,
                 text: f.text
             });
-        else
-            res.send("Access denied");
+        else{
+            return res.status(401).send("Access denied");
+          }
 
 
     })
@@ -203,17 +233,31 @@ app.get('/search', auth, function(req, res) {
 
   var q = req.query.q, userId = req.session.user._id;
 
+  // SEARCH STRING OF WORD/S, SEPARATED BY NON_ALPHANUMERICS, CASE INSENSITIVE, TO SEARCH MATCHING ALL WORDS, IN ANY ORDER,
+  // EXCEPT TREAT MATCHING SUBSTRING WORDS "IN QUOTES" IN THAT EXACT ORDER
+  q2 = "(?=.*"+q.match(/"([^"]+)"|[\w]+/gi).join(")(?=.*").replace(/\"/g,'')+").+"
+
+  console.log(q2)
+
   Doc.find({
-      $or: [{"userid": userId, "text": {"$regex": q, "$options": "i" }},
-       {  "share": "specific", "shareusers": { $elemMatch: {"id": userId} }, "text": {"$regex": q, "$options": "i" }     }]
-  }).sort('title').exec(function (err, files) {
+      $or: [{"userid": userId, "text": {"$regex": q2, "$options": "gi" }},
+       {  "share": "specific", "shareusers": { $elemMatch: {"id": userId} }, "text": {"$regex": q2, "$options": "gi" }     }]
+  }).sort({'date_updated': 'desc'}).exec(function (err, files) {
         if (!files)
             return res.json([]);
 
+
         return res.json(files.map(function(f){
-          var matchedPosition = f.text.toLowerCase().indexOf(q.toLowerCase());
-          var matchedString = f.text.substring(f.text.lastIndexOf(" ", matchedPosition-40), matchedPosition)
-            + "<b>"+q+"</b>" + f.text.substring(matchedPosition+q.length, f.text.indexOf(" ", matchedPosition+q.length + 40) );
+
+
+            f.text = f.text.replace(/<[^>]*>/gi,'')
+
+
+          var matchedPosition = f.text.toLowerCase().indexOf(q.match(/(\w+)/gi)[0].toLowerCase());
+      //    var matchedString = f.text.substring(f.text.lastIndexOf(" ", matchedPosition-40), matchedPosition)
+      //      + "<b>"+q+"</b>" + f.text.substring(matchedPosition+q.length, f.text.indexOf(" ", matchedPosition+q.length + 40) );
+
+            matchedString = f.text.substring(matchedPosition-100, matchedPosition+100)
            return {id: f._id, text: f.title, matchedString: matchedString };
 
         }));
@@ -234,6 +278,6 @@ app.get('/delete', auth, function(req, res){
 //auth
 function auth(req, res, next) {
   if (!req.session.user)
-    return res.send("Login required");
+    return res.status(401).send("Login required");
   return next();
 }

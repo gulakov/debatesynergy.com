@@ -6,8 +6,10 @@ module.exports = app;
 //redirect to Google OAuth2 approval screen
 app.all('/login', function(req, res, next) {
 
-  var oauth_url = "https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fdebatesynergy.com%2Fuser%2Fauth&scope=profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.install&client_id=" +
-     config.google.client_id + "&access_type=offline"
+  var oauth_url = "https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fdebatesynergy.com%2Fuser%2Fauth&"+
+  "scope=profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.install"+
+  (req.query.contacts?  " https://www.google.com/m8/feeds/" :"" )+
+  "&client_id=" + config.google.client_id + "&access_type=offline"
 
   if (req.query.refresh)
     oauth_url += "&prompt=consent"

@@ -2,8 +2,7 @@ $(document).ready(function() {
 
   //SIDEBAR BUTTONS
 
-  $('button').tooltip();
-
+  $('[title]').tooltip();
 
   //file info modal -- init
   $("#showfileinfo").click(function() {

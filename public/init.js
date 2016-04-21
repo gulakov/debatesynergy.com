@@ -69,6 +69,7 @@ if (u) {
   u = {index: JSON.parse('[{"id":"home","title":"Debate Synergy Manual","type":"ft-file ft-selected","children":[{"id":"home_0","title":"Welcome to Debate Synergy",'+
   '"type":"heading heading-h1"},{"id":"home_1","title":"Manual ","type":"heading heading-h1"},{"id":"home_2","title":"Debate Sidebar Word AddIn ","type":"heading heading-h1"}]}]') };
 
+//    u ={index: JSON.parse(localStorage.getItem("index"))}
 
 };
 
@@ -227,7 +228,7 @@ if(!dragSidebar)
   $("body").on('mousemove touchmove',function(e){
      e.preventDefault();
   })
-  .on('mouseup touchend',function(e){
+  .on('mouseup',function(e){
     $("body").off('mousemove mouseup touchend touchmove');
 
     if (dragSidebar){
@@ -238,6 +239,19 @@ if(!dragSidebar)
         $.post("/user/update", {options: {sidebar: e.pageX }});
     }
   })
+  .on('touchend',function(e){
+    $("body").off('mousemove mouseup touchend touchmove'); //swipe conflict
+
+    if (dragSidebar){
+        dragSidebar = false;
+        e = e.originalEvent.touches ? e.originalEvent.changedTouches[0] : e;
+
+        $("#sidebar").css('max-width',e.pageX+'px');
+        $.post("/user/update", {options: {sidebar_mobile: e.pageX }});
+    }
+  })
+
+
 });
 
 
@@ -692,7 +706,7 @@ function gapiInit() {
 window.docShareAlert = function(msg) {
 
   $("#info").append('<div class="alert alert-success alert-dismissable">' +
-      '<button  class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+      '<button  class="close" data-dismiss="alert">&times;</button>' +
       msg.owner + ' has shared \"' + msg.title + '\" with you. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
       .on('close.bs.alert', '.alert', function () {
           $.get('/user/notify', {fileId:msg.fileId})

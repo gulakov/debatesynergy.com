@@ -52,8 +52,10 @@ function Timer() {
 
   //time string to seconds interger these formats M:SS MM:SS M SS MSS MMSS
   function toNumber(s) {
-    return (parseInt(s.substring(0, s.indexOf(":") > -1 ? s.indexOf(":") : s.length > 1 ? s.length - 2 : 1)) || 0) * 60 +
-      (parseInt(s.substring(s.indexOf(":") > -1 ? s.indexOf(":") + 1 : s.length > 1 ? s.length - 2 : 1)) || 0);
+    var twodots = s.indexOf(":");
+
+    return (parseInt(s.substring(0, twodots > -1 ? twodots : s.length > 1 ? s.length - 2 : 1)) || 0) * 60 +
+      (parseInt(s.substring(twodots > -1 ? twodots + 1 : s.length > 1 ? s.length - 2 : 1)) || 0);
   }
 
 

@@ -6,9 +6,9 @@ module.exports = app;
 
 //serve homepage for single-page app
 app.get('/', function(req, res, next){
-  
+
   //re-login existing user
-  if (req.cookies.autologin && !req.session.user)
+  if (req.headers.cookie && req.headers.cookie.indexOf("autologin")>-1 && !req.session.user)
     return res.redirect('/user/login')
 
   //log unique visitors exclude bots
@@ -44,16 +44,6 @@ app.get('/', function(req, res, next){
 });
 
 
-//route forwards debatesynergy.com/fileId 24-character database uid to home
-app.get(/[a-z0-9]{24}/, function(req, res){
-  //re-login existing user
-  if (req.cookies.autologin && !req.session.user)
-    return res.redirect('/user/login')
-
-  res.sendFile('public/index.html', {root: __dirname.replace("/server","")});
-});
-
-
 //log msword-sidebar unqiue downloads exclude bots
 app.get('/download', function(req, res) {
 
@@ -86,3 +76,96 @@ app.get('/download', function(req, res) {
   });
 
 });
+
+
+
+app.get('/test', function(req,res){
+
+            var fs = require("fs");
+        var JSZip = require("jszip");
+
+          var cheerio = require("cheerio")
+
+
+        var _rez;
+
+        var docx2html = function(docXML, styleXML){
+              var styleDom = cheerio.load(styleXML)
+
+              styleDom = styleDom("styles")
+          return res.send(styleDom.html())
+
+        }
+
+        // read a zip file
+        fs.readFile("server/try.docx", function(err, rez) {
+          if (err) throw err;
+
+           _rez = rez;
+
+           var zip = new JSZip();
+
+            zip.loadAsync(rez).then(function (zip) {
+                return zip.file("word/document.xml").async("string");
+              }).then(function (doc_raw) {
+                
+                    var docXML = doc_raw;
+
+//                      console.log(doc_raw)
+  //                  return res.send(doc_raw)
+
+        
+                    var zip2 = new JSZip();
+
+                    zip2.loadAsync(rez)
+                    .then(function(zip2) {
+                      return zip2.file("word/styles.xml").async("string");
+                    }).then(function (styleXML) {
+
+                      styleXML = styleXML.replace(/<w:/g, '<').replace(/<\/w:/g, '</')
+
+                      docx2html(docXML,styleXML)
+
+//
+  //                    console.log(styleDom.html())
+
+
+                    return res.send("")
+
+
+/*
+
+
+                        var DOMParser = require('xmldom').DOMParser;
+
+              
+
+                    var cheerio = require('cheerio');
+
+
+
+                           //DOM containing available styles and their properties
+                 .replace(/<w:/g, '<').replace(/<\/w:/g, '</')))
+
+
+
+                console.log(1)
+
+                //DOM containing document elements and some formatting
+                var inputDom = cheerio.load(docXML.replace(/<[a-zA-Z]*?:/g, '<').replace(/<\/[a-zA-Z]*?:/g, '</'))('body').find('rStyle');
+
+                console.log(inputDom)
+                */
+
+                  })
+
+
+          })  
+
+
+
+})
+
+
+})
+

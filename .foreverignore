@@ -4,11 +4,10 @@ TODO
 **/.git/**/*
 db
 db/**/*
-**/db/**/*
 node_modules
 node_modules/**/*
-**/node_modules/**/*
 public/*.txt
 nohup.out
 *.md
 mongo.log
+*.log

@@ -9,6 +9,7 @@ $(document).ready(function() {
   //init obj
   Timer();
 
+  /*
 
   $("#showround").click();
 
@@ -20,6 +21,7 @@ $(document).ready(function() {
   $("#speech1NC").html($("#speech1AC").html());
   $("#speech2AC").html('<h1><u><b>2ac afdsaf df');
   $("#speech2NC").html('<h1><u><b>2Nc ==============');
+  */
 
 
   //autofill usernames

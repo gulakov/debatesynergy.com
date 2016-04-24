@@ -18,6 +18,7 @@ exports.Doc = mongoose.model('Doc', new Schema({
     userid: String,
     title: String,
     text: String,
+    url: String,
     share: String,
     shareusers: Array,
     google_sync: Object,
@@ -52,6 +53,17 @@ exports.Team = mongoose.model('Team', new Schema({
     users: Array,
     admins: Array,
     date: {type: Date, default: Date.now}
+}, { versionKey: false }));
+
+
+exports.Topic = mongoose.model('Topic', new Schema({
+    category: Number, 
+    title: String,
+    points: Number,
+    comment_total: Number,
+    posts: Array,
+    date_created: {type: Date, default: Date.now},
+    date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));
 
 

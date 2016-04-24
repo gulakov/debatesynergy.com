@@ -1,11 +1,10 @@
+
 var app = require('express').Router(), model = require('./models');
 var Doc = model.Doc, User = model.User,  ObjectID = require('mongodb').ObjectID;
 var request = require('request');
 module.exports = app;
 
 app.get('/admin', function(req, res) {
-
-
 
   request({
     url: 'https://www.google.com/m8/feeds/contacts/default/full',
@@ -118,20 +117,39 @@ app.get('/readdrive', function(req, res) {
 });
 
 
+
+app.get('/read/:fileId', function(req, res) {
+    var fileId = req.params.fileId;
+
+    Doc.findOne({_id:fileId}, function(e,f){
+      res.json(f)
+    })
+
+})
+
 //takes doc ID, return doc text -- allowed if user is owner, share, or public/publicedit
 app.get('/read', function(req, res) {
     var fileId = req.query.id;
 
-    Doc.findById(fileId, function (e, f) {
-          if (!f)
+
+
+    Doc.findOne({$or: [ {"_id": fileId.length == 24 ? fileId : null},  
+			{"url":  fileId.replace(/[\W_]+/g," ").toLowerCase() }, 
+			{"title": {"$regex": fileId.replace(/\+/g,' '), "$options": "i" }} ] },
+    function (e, f) {
+
+        if (!f)
           return  res.send("Not found");
 
-         if (f.share=="public"  || req.session.user && (f.userid == req.session.user._id || req.session.user && f.shareusers.map(function(i){return i.id}).indexOf(req.session.user._id)>-1 ) )
+                
+
+         if (f.share=="public"  || (req.session.user && (f.userid == req.session.user._id || req.session.user && f.shareusers && f.shareusers.map(function(i){return i.id}).indexOf(req.session.user._id)>-1 ) ))
             res.json({
                 id: f._id,
                 userid: f.userid,
                 title: f.title,
-                share: f.share,
+                url: f.url,
+            		share: f.share,
                 shareusers: f.shareusers,
                 date_created: f.date_created,
                 date_updated: f.date_updated,
@@ -147,18 +165,34 @@ app.get('/read', function(req, res) {
 
 //takes optional doc title, create a blank doc and return its ID
 app.get('/create', auth, function(req, res) {
+    
+	     function docurl(url){
 
-    Doc.create({
-        title: req.query.title || "New File",
-        userid: req.session.user._id,
-        text: ""
-    }, function (e, f) {
-        return res.json(f._id);
-    });
+                Doc.find({url:url}, function(e,f){
+                //if url is already taken, recurse to random ints added
+                        return f.length ? docurl(url+Math.floor(Math.random()*10)) : url;
+
+
+                	})
+        	}
+
+         var url = docurl( req.query.title.replace(/[\W_]+/g," ").toLowerCase() );
+
+		
+	    Doc.create({
+	        title: req.query.title || "New File",
+      	  	url: url,
+		userid: req.session.user._id,
+	      	  text: ""
+	    }, function (e, f) {
+     	  	 return res.json(f._id);
+	    });
 });
+
 
 //takes doc id and updated text, title, or shared, performs needed update
 app.post('/update',  function(req, res) {
+
 
   var userId = req.session.user ? req.session.user._id : false;
   var fileId = req.body.id;
@@ -167,6 +201,7 @@ app.post('/update',  function(req, res) {
   var share = req.body.share;
   var shareusers = req.body.shareusers;
   var shareusers_remove_me = req.body.shareusers_remove_me;
+   
 
   Doc.findOne({_id: fileId}, function (e, f) {
 
@@ -182,8 +217,25 @@ app.post('/update',  function(req, res) {
       }
 
       //update doc title -- allowed for owner
-      if (title && f.userid == userId)
-          Doc.update({_id: fileId}, {title: title, date_updated: Date.now() }).exec();
+      if (title && f.userid == userId){
+	
+        	function docurl(url){
+        		
+        		Doc.find({url:url}, function(e,f){
+                        //if url is already taken, recurse to random ints added
+        			if(!f.length || (f.length && f[0]._id == fileId))
+                  Doc.update({_id: fileId}, {title: title, url: url, date_updated: Date.now() }).exec(function(e,f){
+                    return res.send(url);
+                  });
+              else
+                    return docurl(url+Math.floor(Math.random()*10)) 
+        		})	
+        	}
+
+
+        	 docurl( title.replace(/[\W_]+/g,"").toLowerCase() );
+
+	}
 
       //update share level -- allowed for owner
       if (share && f.userid == userId)
@@ -221,7 +273,7 @@ app.post('/update',  function(req, res) {
 
 
 
-      return res.end();
+     // return res.end();
 
     });
 });

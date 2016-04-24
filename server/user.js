@@ -6,10 +6,10 @@ module.exports = app;
 //redirect to Google OAuth2 approval screen
 app.all('/login', function(req, res, next) {
 
-  var oauth_url = "https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fdebatesynergy.com%2Fuser%2Fauth&"+
-  "scope=profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.install"+
-  (req.query.contacts?  " https://www.google.com/m8/feeds/" :"" )+
-  "&client_id=" + config.google.client_id + "&access_type=offline"
+  var oauth_url = "https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2F"+
+    req.headers.host + "%2Fuser%2Fauth&" +
+    "scope=profile%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.install"+
+    (req.query.contacts ? " https://www.google.com/m8/feeds/" : "") + "&client_id=" + config.google.client_id + "&access_type=offline"
 
   if (req.query.refresh)
     oauth_url += "&prompt=consent"
@@ -57,8 +57,7 @@ app.all('/auth', function(req, res, next) {
         'Authorization': 'Bearer ' + access_token
       }},  function (error, response, userinfo){
 
-          console.log(userinfo);
-
+        
           var userinfo = JSON.parse(userinfo);
           if (userinfo.error) //unauthorized
             return res.redirect('/')
@@ -75,7 +74,7 @@ app.all('/auth', function(req, res, next) {
                 if (!u.auth && refresh_token)
                   User.update({_id:u._id}, {auth: refresh_token}).exec()
 
-                req.session.user = u;
+                req.session.user = {_id: u._id, email: u.email, auth: auth};
 
                 console.log("Login: " + u.name + " " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString());
 
@@ -131,36 +130,44 @@ app.get('/reauth', function(req, res) {
 
   var token = req.session.access_token;
 
-  var refresh_token = req.session.user.auth;
+  User.findOne({_id: req.session.user._id},
+  function(err, u){
 
-  if (!refresh_token)
-    res.redirect("/user/login?refresh=true")
+    var refresh_token = u.auth;
 
-  request({
-    uri: 'https://www.googleapis.com/oauth2/v4/token',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    form: {
-       refresh_token: refresh_token,
-       client_id: config.google.client_id,
-       client_secret: config.google.client_secret,
-       grant_type: "refresh_token"
-     }
-   }, function (error, response, body){
+    if (!refresh_token)
+      res.redirect("/user/login?refresh=true")
 
-      var body = JSON.parse(body);
-      if (body.error) //unauthorized
-        return res.redirect('/')
+    request({
+      uri: 'https://www.googleapis.com/oauth2/v4/token',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      form: {
+         refresh_token: refresh_token,
+         client_id: config.google.client_id,
+         client_secret: config.google.client_secret,
+         grant_type: "refresh_token"
+       }
+     }, function (error, response, body){
 
-      req.session.access_token = body.access_token;
+        var body = JSON.parse(body);
+        if (body.error) //unauthorized
+          return res.redirect('/')
 
-      return res.redirect(req.query.next || '/')
+        req.session.access_token = body.access_token;
+
+        return res.redirect(req.query.next || '/')
 
 
 
-    })
+      })
+
+
+  })
+
+
 
 
 });

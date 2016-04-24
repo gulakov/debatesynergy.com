@@ -1,4 +1,42 @@
 //var u = {};
+
+
+
+(function( win ){
+	var doc = win.document;
+	
+	// If there's a hash, or addEventListener is undefined, stop here
+	if(!win.navigator.standalone && !location.hash && win.addEventListener ){
+		
+		//scroll to 1
+		win.scrollTo( 0, 1 );
+		var scrollTop = 1,
+			getScrollTop = function(){
+				return win.pageYOffset || doc.compatMode === "CSS1Compat" && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
+			},
+		
+			//reset to 0 on bodyready, if needed
+			bodycheck = setInterval(function(){
+				if( doc.body ){
+					clearInterval( bodycheck );
+					scrollTop = getScrollTop();
+					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
+				}	
+			}, 15 );
+		
+		win.addEventListener( "load", function(){
+			setTimeout(function(){
+				//at load, if user hasn't scrolled more than 20 or so...
+				if( getScrollTop() < 20 ){
+					//reset to hide addr bar at onload
+					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
+				}
+			}, 0);
+		}, false );
+	}
+})( this );
+
+
 var local;
 
 //save file before closing tab
@@ -22,9 +60,6 @@ $(document).ready(function() {
 
 //if user logged in, initiallize settings and index
 if (u) {
-
-  //minimize unread by default
-  $("#ft-minimize-unread").click();
 
   var customCSS = $("<style>").appendTo('head');
   customCSS.html(u.custom_css)
@@ -63,34 +98,31 @@ if (u) {
   //google sign in
   $("#auth").show()
 
-  //round panel
-  $("#showround").click()
 
-  u = {index: JSON.parse('[{"id":"home","title":"Debate Synergy Manual","type":"ft-file ft-selected","children":[{"id":"home_0","title":"Welcome to Debate Synergy",'+
-  '"type":"heading heading-h1"},{"id":"home_1","title":"Manual ","type":"heading heading-h1"},{"id":"home_2","title":"Debate Sidebar Word AddIn ","type":"heading heading-h1"}]}]') };
+      //show round panel + manual index, unless it's a public file
+  if (location.pathname.length<2) {
 
-//    u ={index: JSON.parse(localStorage.getItem("index"))}
+    $("#showround").click();
+
+    $("#ft-minimize-unread").click();
+
+    u = {index: JSON.parse('[{"id":"home","title":"Debate Synergy Manual","type":"ft-file ft-selected","children":[{"id":"home_0","title":"Welcome to Debate Synergy",'+
+    '"type":"heading heading-h1"},{"id":"home_1","title":"Manual ","type":"heading heading-h1"},{"id":"home_2","title":"Debate Sidebar Word AddIn ","type":"heading heading-h1"}]}]') };
+  } else
+    u = {index:[]}
 
 };
 
 //init filetree
 ft.init($('#filetree'), u.index);
 
-//click file tree last selected
-if ($('.ft-selected').length){
-  var fileId = $('.ft-selected').closest('.ft-item:has(.ft-file)').find('.ft-file').attr('id')
-  ft.loadFile(fileId, function(){
-
-
-    $('.ft-selected').click();
-    $("#loading-screen").remove()
-  })
-}else {
-  $('.ft-item:first').click();
-}
 
 //reset scrolls
 window.scrollTo(0,0)
+
+
+  //minimize unread by default
+  $("#ft-minimize-unread").click();
 
 
 
@@ -100,7 +132,9 @@ window.scrollTo(0,0)
 function loadHash() {
   var id = location.pathname.substr(1);
 
-  if (id && $('#' + id).length && ft.selected.id != id) {
+  console.log(id);
+
+  if (id && u.index && u.index.filter(function(i){ return i.id == id}).length && ft.selected.id != id) {
     $('#' + id).click();
   } else if (id == "home") {
       ft.loadFile(id)
@@ -108,13 +142,32 @@ function loadHash() {
     $("#doc-home").show()
   } else if (id){
       $(".doc").hide();
-    ft.loadFile(id)
+    ft.loadFile(decodeURIComponent(id))
   }
 }
 
+//$(window).trigger('popstate')
 $(window).on('popstate', loadHash);
-if (location.pathname.length > 3)
+if (location.pathname.length > 3){ //load if file id/name in url
   loadHash();
+} else if ($('.ft-selected').length){ //click file tree last selected from filetree
+  var fileId = $('.ft-selected').closest('.ft-item:has(.ft-file)').find('.ft-file').attr('id')
+  ft.loadFile(fileId, function(){
+
+
+    $('.ft-selected').click();
+    $("#loading-screen").remove()
+  })
+} else if (u.index[0].id=="home"){ //guest home page
+  $('.ft-item:first').click();
+  $("#showround").click();
+  window.scrollTo(0,0)
+} else {
+  $('.ft-item:first').click();
+}
+
+
+
 
 
 

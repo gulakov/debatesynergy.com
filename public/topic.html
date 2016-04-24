@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--Copyright (c) 2015 Alex Gulakov alexgulakov@gmail.com. https://github.com/gulakov/debatesynergy.com -->
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+  <meta name="theme-color" content="#AACFE7">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Debate Synergy</title>
+  <base href="/">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css"/>
+  <link rel="stylesheet" href="debatestyle.css"/>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.0.0/jszip.min.js" async defer></script>
+  <script src="https://apis.google.com/js/client.js?onload=gapiInit" async defer></script>
+
+
+</head>
+<body>
+
+<div id="forum-panel">
+
+    <div id="topic-list"></div>
+
+
+    <div id="topic-create">
+
+      <input id="topic-create-title" type="text" class="form-control" />
+
+      <div if="topic-create-text" contenteditable="true"></div>
+      <button class="btn btn-submit" id="topic-submit">Submit</button>
+
+
+    </div>
+
+</div>
+
+
+<div id="post-panel">
+
+<div id="topic-title"></div>
+
+<div id="topic-posts"></div>
+
+
+
+
+</div>
+<script type="text/javascript">
+
+
+$.getJSON("/topic/list",  {count: 25, start: 0, category: 0}, function(topics){
+
+  for (var i in topics){
+
+
+
+    var topic_html = "<div class='topic' id='topic" + topics[i]._id+ "'>" + topics[i].title + "</div>";
+
+
+
+    $("#topic-list").append(topic_html);
+
+
+  }
+
+
+})
+
+
+
+$("#topic-submit").click(function(){
+
+  var topic_title = $("#topic-create-title").val();
+
+  var topic_text = $("#topic-create-text").text();
+
+
+  $.get("/topic/create", {title: topic_title, text: topic_text})
+})
+
+
+
+$("#topic-list").on("click", ".topic", function(){
+
+  var topicId = $(this).closest(".topic").attr("id").substring(5);
+
+
+  $.get("/topic/read", {id:topicId}, function(posts){
+
+      $("#topic-title").html(posts.title)
+
+
+      //$("#topic-title").html(posts.title)
+  })
+
+
+})
+
+
+
+
+</script>
+
+
+
+
+</body>
+</html>

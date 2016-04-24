@@ -5,3 +5,5 @@ public/files/*
 public/server.txt
 config.json
 config.mongo.js
+*.log
+

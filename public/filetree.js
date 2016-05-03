@@ -90,11 +90,123 @@ init: function(el, json) {
 
 
 
+  $("body")
+  .on("click", ".ft-item", function(e){
+
+
+    return;
+
+     var id = $(this).find(".ft-name").attr('id').split("_");
+     var fileId = id[0], partial = id[1] || 0;
+     var name = $(this).find(".ft-name").text();
+     if(!partial) return
+
+
+      ft.ongoingXhrFilePartialId = fileId
+
+
+       if (ft.ongoingXhrFilePartialId != fileId)
+       return
+
+     $.ajax({
+       xhr: function() {
+         var xhr = new window.XMLHttpRequest();
+         xhr.addEventListener("progress", function(evt) {
+          // console.log( ft.ongoingXhrFilePartialId + " " +  fileId)
+             if (ft.ongoingXhrFilePartialId != fileId)
+               xhr.abort();
+
+
+         }, false);
+
+         return xhr;
+       },
+       url: "/doc/read",
+       data: {id: fileId, partial: partial, name: name},
+       success: function(docJSON){
+
+
+
+              setTimeout(function(){
+            ///    if (ft.ongoingXhrFilePartialId != fileId)
+            //    return
+          if (docJSON.text.length < 300) return
+
+
+          partial  = $("<div class='doc-partial' contenteditable>"+docJSON.text+"</div>")
+
+          partial.css("position", "absolute").css("top","0").css("left", "300px")
+
+          partial.appendTo(".doc:visible")
+
+          $(".doc:visible > *").hide();
+
+
+          partial.show() //.hide().fadeIn("fast", function () {       })
+
+
+        //  ft.loadFile(ft.ongoingXhrFilePartialId)
+
+
+                }, 1000)
+        }})
+
+
+
+
+  })
+
+
+
 
   $("#filetree").scroll(function(){
     this.scrollLeft=0;
   })
 
+
+
+
+
+        // on scroll, update selected header index
+        //TODO slowwww bc uplaoded
+      $("#docs").on("scroll", ".doc:visible", function(e){
+      //  if (window.off) return;
+
+
+//        var h = $("#docs").height()/3;
+
+        var h = $("#filetree").offset().top + window.innerHeight*.2 + 30;
+
+
+        var elem = document.elementFromPoint($("#docs").offset().left +20, h)
+
+        var heading = $(elem).closest(".chunk>*").eq(0).prevUntil("h1,h2,h3").last().prev()
+
+        var list = $(".doc:visible").find("h1, h2, h3");
+
+        for (var i = 0; i < list.length; i++)
+          if (list[i].textContent.length > 2 && list.is(heading))
+            break;
+
+        $(".ft-selected").removeClass("ft-selected");
+        $("#" + ft.selected.id + "_" + i).parent().prev().addClass("ft-selected");
+
+        if (i == list.length)
+          $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
+
+      //  if ($(".ft-selected")[0] && document.body.scrollIntoViewIfNeeded)
+        //  $(".ft-selected")[0].scrollIntoView(true);
+
+        if ($(".ft-selected")[0]){
+          $(".ft-selected")[0].scrollIntoView();
+          if ( $(".ft-selected").offset().top < window.innerHeight/2)
+            $("#filetree")[0].scrollTop -= window.innerHeight*.2
+
+         // $("#filetree")[0].scrollTop = $(".ft-selected").position().top-window.innerHeight/2+75
+        }
+
+       // }
+      });
 
 
 
@@ -109,7 +221,8 @@ init: function(el, json) {
 
   //update triggered only when needed
   ft.updateNeeded = false;
-/*
+
+/* //disabled, makes typing slow
   if (typeof MutationObserver != "undefined")
     new MutationObserver(function(m) {
       ft.updateNeeded = true;
@@ -123,7 +236,7 @@ init: function(el, json) {
   $("#docs").keyup(function(e){
     ft.updateNeeded = true;
     if ($(window.getSelection().anchorNode).closest("h1,h2,h3").length)
-      ft.update();
+      ft.updateNeeded = true;
 
   })
 
@@ -286,11 +399,12 @@ loadFile: function(id, callback) {
   ft.ongoingXhrId = id;
 
   //don't reload same file
-  if ( $(".doc:visible").length && $(".doc:visible").attr("id").substring(4) == id && ft.selected.id == id )
+   if ( $(".doc:visible").length && $(".doc:visible").attr("id").substring(4) == id && ft.selected.id == id )
     return;
 
   //hide current doc
-  $(".doc:visible").hide() //.slideUp();
+  //TODO partial
+   $(".doc:visible").hide() //.slideUp();
 
   //show selected doc if it's loaded before
   var prevDoc = $("#doc-" + id);
@@ -313,53 +427,6 @@ loadFile: function(id, callback) {
       return;
   }
 
-
-  function onScroll(){
-      // on scroll, update selected header index
-      //TODO slowwww
-    $(".doc:visible").on("scroll",  function(e) {
-      if (window.off) return;
-
-
-
-
-     // return
-
-     // if(!skipScroll){
-
-    //  if( $('body').scrollTop() ) $('body').scrollTop(0)
-
-
-
-      var list = $(".doc:visible").find("h1, h2, h3");
-
-      for (var i = 0; i < list.length; i++)
-        if (list[i].textContent.length > 2 && list[i].getBoundingClientRect().bottom > 300)
-          break;
-
-      $(".ft-selected").removeClass("ft-selected");
-      $("#" + ft.selected.id + "_" + i).parent().prev().addClass("ft-selected");
-
-      if (i == list.length)
-        $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
-
-    //  if ($(".ft-selected")[0] && document.body.scrollIntoViewIfNeeded)
-      //  $(".ft-selected")[0].scrollIntoView(true);
-
-      if ($(".ft-selected")[0]){
-        $(".ft-selected")[0].scrollIntoView();
-        if ( $(".ft-selected").offset().top < window.innerHeight/2)
-          $("#filetree")[0].scrollTop -= window.innerHeight/2
-
-       // $("#filetree")[0].scrollTop = $(".ft-selected").position().top-window.innerHeight/2+75
-      }
-
-     // }
-    });
-
-  };
-
-  onScroll();
 
 
   $(".glyphicon-refresh").removeClass("glyphicon-refresh glyphicon-spin");
@@ -418,11 +485,10 @@ loadFile: function(id, callback) {
     data: {id: id},
     error: function(r) {
       if (r.responseText=="Access denied")
-          $("#info").append('<div class="alert alert-danger alert-dismissable">' +
-              '<button  class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-            'Access denied to file id ' + id +  '.' + (($("#filetree #"+id).length) ? ' Remove from file tree?':'') + ' <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
+          alert('Access denied to file <b>' + id +  '</b>.' +
+          (($("#filetree #"+id).length) ? ' Remove from file tree? <button data-dismiss="alert" class="btn btn-xs btn-primary">OK</button>':''),
+          "failure", null, !$("#filetree #"+id).length )
               .on('click', ".btn-primary", function() {
-
                   if ($("#filetree #"+id).length){
                     $("#filetree #"+id).closest('.ft-item').remove();
                     return;
@@ -437,9 +503,9 @@ loadFile: function(id, callback) {
 
       if (r == "Not found"){
 
-          $("#info").append('<div class="alert alert-danger alert-dismissable">' +
-              '<button  class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-            'File \"' + id +  '\" is not found.' + (($("#filetree #"+id).length) ? ' Remove from file tree?':'') + ' <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
+        alert('File <b>' + id +  '</b> is not found.' + ($("#filetree #"+id).length ?
+            ' Remove from file tree?' + ' <button data-dismiss="alert" class="btn btn-xs btn-primary">OK</button>' : ''),
+            "failure", null, !$("#filetree #"+id).length)
               .on('click', ".btn-primary", function() {
 
                   if ($("#filetree #"+id).length){
@@ -451,12 +517,18 @@ loadFile: function(id, callback) {
         return;
       }
 
+      //TODO
+    //  $(".doc:visible").hide()
+    //  $(".doc-partial").hide()
+
+
 
       $("#"+ft.selected.id).parent().css("background", "").addClass('ft-visible');
 
 
       //set as selected doc object and change URL without reloading apge
       ft.selected = r;
+      ft.selected.id = ft.selected._id
 
       if (typeof history.pushState == "undefined") //ie9
         location.hash=ft.selected.id;
@@ -492,8 +564,6 @@ loadFile: function(id, callback) {
             var doc_div = $("<div>").addClass("doc").attr("id", "doc-" + ft.selected.id).attr('contenteditable',true);
 
 
-
-
             doc_div.html(ft.selected.text)
 
 
@@ -504,16 +574,6 @@ loadFile: function(id, callback) {
           $(".doc:visible").hide()
 
             doc_div.appendTo("#docs").show() //slideDown();
-              /*
-              setTimeout(function(){
-                new MediumEditor('.doc', {
-                    paste: {
-                        cleanPastedHTML: true,
-                        forcePlainText: false
-                    }
-                });
-
-              }, 100);*/
 
 
         }
@@ -521,7 +581,6 @@ loadFile: function(id, callback) {
         delete ft.selected.text;
         $("#doc-" + ft.selected.id).data("info", ft.selected);
 
-        onScroll();
 
 
       if($("#"+ft.selected.id).hasClass("collapsed"))
@@ -538,7 +597,7 @@ loadFile: function(id, callback) {
           u.index.push( {
             "id": ft.selected.id,
             "title": ft.selected.title,
-            "type": "ft-file ft-selected public"})
+            "type": "ft-file ft-selected"})
 
         //  if (u.index[0].id=="home")
         //    delete u.index[0];
@@ -637,20 +696,10 @@ toJSON: function(startLevel) {
 
 //upload tree index to server
 updateIndex: function() {
-  if (window.off)return;
-
-  if (local) {
-    localStorage.debate = JSON.stringify(u.index);
-
-    ft.selected.text = $(".doc:visible").html().replace(/\'/g, '&#39;');
-    localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
-  } else if (u.index.length && u.name)  //upload user as object to POST
-    $.ajax({
-        url: '/user/update',
-        data: {userid: u._id, index:u.index},
-        contentType: "application/x-www-form-urlencoded",
-        type: 'POST'
-    });
+ if (u.index.length && u.name)
+      $.post({url: '/user/update',
+        data : JSON.stringify({userid: u._id, index: u.index}),
+        contentType : 'application/json'})
 
 },
 
@@ -693,25 +742,18 @@ update: function() {
       }
 
 
-
-
-
-  	//backup for offline cache
-  //	localStorage.debate = JSON.stringify(u.index);
-  //  localStorage["debate_" + ft.selected.id] = JSON.stringify(ft.selected);
-
-
-
-
     //recreate index -- but only for the current doc to update its headings
     $("#"+ ft.selected.id).parent().find(".ft-list").remove()
     ft.populate( $("#"+ ft.selected.id).parent(), headingList);
+  /*  */
 
     //upload doc
-    $.post('/doc/update', {
-      text: encodeURIComponent($(".doc:visible:first").html()),
-      id: ft.selected.id
-    });
+    $.post({url: '/doc/update', contentType : 'application/json',
+      data : JSON.stringify({
+          text: $(".doc:visible").html(),
+          id: ft.selected.id
+      })})
+
 
     //5s counter
     ft.updateNeeded = false;

@@ -1,20 +1,103 @@
+
+
+
+window.docShareAlert = function(msg) {
+
+  $("#info").append('<div class="alert alert-success alert-dismissable">' +
+      '<button  class="close" data-dismiss="alert">&times;</button>' +
+      msg.owner + ' has shared \"' + msg.title + '\" with you. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
+      .on('close.bs.alert', '.alert', function () {
+          $.get('/user/notify', {fileId:msg.fileId})
+
+      })
+      .on('click', ".btn-primary", function() {
+        ft.click(msg.fileId )
+        window.location.pathname="/"+msg.fileId;
+      })
+
+
+}
+
+window.alert = function(message, alertclass, container, autofade) {
+  var alert = $('<div class="alert-' + (alertclass || "info") + '">' +
+    (autofade ? '' : '<span class="close"></span>') + (message || "") + '</div>');
+
+  container = container || '#sidebar';
+  $(container).css("position", "relative");
+  $($(container + ">.alert-position")[0] ||
+    $("<div class='alert-position'>").prependTo(container)).prepend(alert);
+
+  if (autofade)
+    alert.hide().fadeIn(300).delay(1500).closeAlert()
+  else
+    alert.find('.close').click(function() {
+      $(this).parent().closeAlert()
+    })
+	return alert;
+}
+jQuery.fn.closeAlert = function() {
+  this.animate({
+    "opacity": 0,
+    "margin-top": "-50px",
+    "display": "none"
+  }, "fast").delay(300, function() {
+    this.remove()
+  });
+}
+
+
+
 $(document).ready(function() {
+
+
+
+  //modal closing
+
+  $(".modal").css("left", ($("#sidebar").width()+35) +"px")
+
+  $(".modal").each(function(){
+    $(this).prepend('<span class="close">');
+  })
+  $(".modal:last").after('<div class="modal-overlay">')
+  $(".modal-overlay, .close").click(function (e) {
+      $(".modal").hide();
+  })
+
+
+//key shorcuts UHB
+
+
+  $(document).keydown(function(e){
+    if (getSelection().isCollapsed) return;
+
+if (e.which==66 ) {
+    document.execCommand('bold');  e.preventDefault()
+}
+if (e.which==72 ) {
+    $("#superreadcard").click();  e.preventDefault()
+}
+if (e.which==85 ) {
+    document.execCommand('underline');  e.preventDefault()
+}
+})
+
+$(".btn").click(function(){ $(this).blur() })
 
   //SIDEBAR BUTTONS
 
-  $('[title]').tooltip();
+  // $('[title]').tooltip();
 
   //file info modal -- init
   $("#showfileinfo").click(function() {
 
     if (!ft.selected.id) {
-      alert("Select a file to view its information.");
+      alert("Select a file to view its information.", "warning", null, true);
       return;
     }
 
 
 
-    $("#file-info-modal").modal('show');
+    $("#modal-file").show();
 
 
     $("#file-info-title").text(ft.selected.title)
@@ -136,12 +219,12 @@ $('#share-select').select2({
     ft.updateIndex();
 
 
-    $("#file-info-modal").modal('hide');
+    $("#modal-file").hide();
   })
 
 
   //file info modal -- save title, sharing
-  $("#file-info-modal-submit").click(function(){
+  $("#modal-file-submit").click(function(){
       var sharetype = $("#file-share-by-owner input:checked").attr('id').substring(6);
 
         $.post('/doc/update', {
@@ -156,7 +239,7 @@ $('#share-select').select2({
         $("#" + ft.selected.id).closest('.ft-item').addClass(sharetype)
 
 
-          $("#file-info-modal").modal('hide');
+          $("#modal-file").hide();
 
   })
 
@@ -210,7 +293,7 @@ $('#share-select').select2({
     }
 
 
-          $("#settings").modal('show');
+          $("#settings").show();
 
 
 
@@ -221,7 +304,7 @@ $('#share-select').select2({
 
 
   $('#settings_logout').click(function() {
-    document.location.pathname = '/user/logout';
+    document.location.pathname = '/logout';
   });
 
   $('#btn-settings-save').click(function() {
@@ -234,7 +317,7 @@ $('#share-select').select2({
       location.reload();
     });
 
-    $("#settings").modal('hide');
+    $("#settings").hide();
 
 
   });
@@ -269,16 +352,80 @@ $('#share-select').select2({
   })
 
 
-  $("#superreadcard").click(function() {
+  $("body").on("mouseup", ".highlight-mode", function(e) {
+  //console.log(e);
 
-    var selectionContents = window.getSelection().getRangeAt(0).cloneContents();
-    var div = $("<span>").append(selectionContents);
+  var selectionContents = window.getSelection().getRangeAt(0).cloneContents();
+  var div = $("<span>").append(selectionContents);
 
-    var colorToUse = "white";
-    if (div.find("*[style*='yellow']").length == 0 && $(window.getSelection().anchorNode.parentNode).closest("*[style*=background-color]").css("background-color") != "rgb(255, 255, 0)")
+//  if (     window.highlightSelect == div.html() ) return;
+
+  window.highlightSelect = div.html();
+
+  var colorToUse = "white";
+
+  //if inside selection there is any text range with non-white bg
+  if(!div.find("*[style*=background-color]:not(*[style*=white])").length)
       colorToUse = "yellow";
 
-    document.execCommand('backColor', false, colorToUse);
+    ///if inside parent thats all highlighted -- white
+  var parentColor = $(window.getSelection().anchorNode.parentNode).closest("*[style*=background-color]").css("background-color");
+
+  if ( parentColor && parentColor  != "rgb(255, 255, 255)")
+    colorToUse = "white";
+
+  console.log( div.html() )
+  document.execCommand('backColor', false, colorToUse);
+
+
+  //when highlighting United States only highlight US
+  /*
+  setTimeout(function(){
+  if (colorToUse == "yellow"){
+    if (  $(getSelection().anchorNode).closest("*").html().search(/( the |United States)/i) > -1)
+
+    $(getSelection().anchorNode).closest("*").html(
+      $(getSelection().anchorNode).closest("*").html().replace(/United States/g,
+      'U<span style="background-color: white;">nited </span>S<span style="background-color: white;">tates</span>')
+
+      .replace(/>the/gi,'> the').replace(/the</gi,'the <')
+      .replace(/(^| )the( |$)/gi,
+      '<span style="background-color: white;"> the </span>')
+
+
+      )
+
+  }
+
+
+}, 500)*/
+
+
+  getSelection().collapseToEnd()
+
+
+});
+
+
+
+  $("#superreadcard").click(function() {
+
+
+    $("#docs").on("mouseenter", function(){
+      $("#docs").off("mouseenter")
+
+      if ($("#superreadcard").hasClass("enabled"))
+          $("#sw")[0].play()
+    })
+
+    $(this).toggleClass("enabled")
+    $("#docs, .speech").toggleClass("highlight-mode").trigger("mouseup");
+
+
+
+  //  if ( 'ontouchstart' in window && $(window).width() < 700)
+  //    $(".doc").attr("contenteditable", !$(this).hasClass("enabled"))
+
   })
 
 
@@ -301,7 +448,7 @@ $('#share-select').select2({
 
 
   /// ... end button dropdown menu
-  $('.dropdown-toggle').dropdown()
+  //$('.dropdown-toggle').dropdown()
 
 
     $("#ft-collapse-btn").click(function() {
@@ -398,7 +545,7 @@ $('#share-select').select2({
 
   $("#file-new").click(function() {
 
-    $("#file-new-modal").modal('show');
+    $("#modal-file-new").show();
 
 
     $("#file-new-modal").on('shown.bs.modal', function() {
@@ -480,12 +627,15 @@ $('#share-select').select2({
       $(".ft-name:last").click();
     }
 
-    $("#file-new-modal").modal('hide');
+    $("#modal-file-new").hide();
 
   });
 
 
     $("#import_googledrive").click(function() {
+
+      $('head').append('  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.0.0/jszip.min.js" async defer></script>'+
+      '  <script src="https://apis.google.com/js/client.js?onload=gapiInit" async defer></script>')
 
       var filePickerResponse = function(pickedFilesData) {
 
@@ -555,7 +705,7 @@ $('#share-select').select2({
         .build();
       picker.setVisible(true);
 
-        $("#file-new-modal").modal('hide');
+        $("#file-new-modal").hide();
 
 
     });

@@ -11,11 +11,13 @@ function auth(req, res, next) {
 
 app.get('/read', auth, function(req, res) {
 
-    Topic.findOne({_id: req.query.id}, function (e, f) {
+
+    Topic.findOne({_id: req.query.id}).populate('owner')
+    .exec( function (e, f) {
         if (!f)
           return  res.json("Not found");
 
-       
+
             res.json(f);
        })
 });
@@ -38,7 +40,7 @@ app.get('/create', auth, function(req, res) {
     Topic.create({
         title: req.query.title,
         text: text,
-        ownerid: req.session.user._id
+        owner: req.session.user._id
     }, function (e, f) {
         return res.json(f._id);
     });

@@ -5,25 +5,28 @@
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
   <meta name="theme-color" content="#AACFE7">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes">
+
   <title>Debate Synergy</title>
   <base href="/">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"/>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"/> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css"/>
   <link rel="stylesheet" href="debatestyle.css"/>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.0.0/jszip.min.js" async defer></script>
-  <script src="https://apis.google.com/js/client.js?onload=gapiInit" async defer></script>
 
   <script src="user/index.js"></script>
+
+<!--  <script src="ds.min.js"></script>-->
+
   <script src="buttons.js"></script>
   <script src="round.js" ></script>
   <script src="timer.js" ></script>
@@ -32,7 +35,7 @@
 </head>
 <body>
     <div id="sidebar">
-      <a id="auth" href="/user/login">Sign In</a>
+      <a id="auth" href="/login">Sign In</a>
       <div id="controls" class="btn-group btn-group-sm">
 
         <div class="form-search form-inline form-group-sm">
@@ -43,7 +46,7 @@
         <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="block" title="Heading"><i class="fa fa-fw fa-header"></i></button>
         <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="read" title="Bold"><i class="fa fa-fw fa-bold"></i></button>
         <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="readcard" title="Read text"><i class="fa fa-fw fa-underline"></i></button>
-        <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="superreadcard" title="Super read text"><i class="fa fa-fw fa-star"></i></button>
+        <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="superreadcard" title="Super read text"> </button>
         <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="format-remove" title="Clear formatting"><i class="fa fa-fw fa-eraser"></i></button>
         <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="file-new" title="New File"><i class="fa fa-fw fa-plus-square"></i></button>
         <button data-toggle="tooltip" data-placement="bottom" class="btn btn-sm btn-secondary" id="showfileinfo" title="File Info &amp; Sharing"><i class="fa fa-fw fa-share-alt"></i></button>
@@ -96,7 +99,8 @@
         <li> Toggle font sizes, to show either: normal font sizes, bold and underlined text larger, and bold and highlighted text larger.
         <li> The timer keeps track of prep and can be manually set.
         <li> <a onClick="window.open('https://chrome.google.com/webstore/detail/debate-synergy-15-timer/noecbaibfhbmpapofcdkgchfifmoinfj?hl=en')"  href="#" target="_blank">Debate Synergy Chrome extension</a> makes Debate Synergy always available.
-        <li> Works well on Chrome / Firefox on laptop &amp; mobile. Mobile swipe to show/hide sidebar.
+          <li> Easily share your files with the community and use short urls like debate.cards/prezpowers, massive collaboration across the debate community will create the awesome synergy key to unlocking the maximum combined depth of research on the topic possible
+          <li> Works well on Chrome / Firefox on laptop &amp; mobile. Mobile swipe to show/hide sidebar.
         <li> Feature ideas? contact@debatesynergy.com alexgulakov@gmail.com
       </ul>
 
@@ -109,7 +113,7 @@
       <a onClick="$.get('/download');window.open('https://github.com/gulakov/DebateSidebarWordAddIn/releases/download/2.0.0/Debate.Sidebar.Word.AddIn.Setup.exe')" style="font-weight:bold">
         Download Debate Sidebar Word AddIn <br/>
 
-         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQcAAAEHCAMAAACUdXOVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RUJEMDM1RkMxQUJFMTFFNTlFRTdDQTlBMUFDMkY2RUYiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RUJEMDM1RkIxQUJFMTFFNTlFRTdDQTlBMUFDMkY2RUYiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkRFODA1QzA1RkY0MDExRTRCMTU3QzA5QTkyOEZFNTFCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkRFODA1QzA2RkY0MDExRTRCMTU3QzA5QTkyOEZFNTFCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+8QJpYQAAADBQTFRF/fWpnJ2cw///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">
+         <img id="word-debate-sidebar">
       </a>
 
     </div>
@@ -216,170 +220,136 @@
   </div>
 
 
-  <div id="settings" class="modal" tabindex="2" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-            <span class="sr-only">Close</span>
-          </button>
-          <h4 class="modal-title">Settings</h4>
-        </div>
-        <div class="modal-body">
+
+  <div id="settings" class="modal">
+  <div class="modal-header">Settings</div>
 
 
-          <label><h4>Team </h4></label>:
-          <label>Debate Type:</label>
-          <label class="radio-inline"><input type="radio" name="debatetype" class="debatetype" value="1"> Policy</label>
-          <label class="radio-inline"><input type="radio" name="debatetype" class="debatetype" value="2"> College Policy</label>
-          <label class="radio-inline"><input type="radio" name="debatetype" class="debatetype" value="3"> LD</label>
-          <br>
-          <div id="existing-teams">
-          </div>
-         <div class=" well form-inline ">
-
-            <input id="team-name" class="form-control" placeholder="Team name" />  <button id="settings_save" type="button" class="btn btn-primary">Add</button>
-            <select id="team-members-select"  multiple="multiple" class="form-control" placeholder="Team members" ></select>
-
-
-          </div>
-
-
-          <br>
-          <label>Custom Plugins: </label>
-          <br> Learn to program:
-          <a target="_blank" href="http://www.codecademy.com/en/tracks/web">HTML&amp;CSS</a>
-          <a target="_blank" href="http://www.codecademy.com/en/tracks/javascript">Javascript</a>
-          <a target="_blank" href="https://learn.jquery.com/about-jquery/">jQuery</a>
-          <a target="_blank" href="http://getbootstrap.com/components/">Bootstrap</a>
-          <a target="_blank" href="https://github.com/gulakov/debatesynergy.com">Source Code</a>
-
-          <textarea id="custom-js" class="form-control" rows="7" placeholder="Insert JavaScript code to extend Debate Synergy"></textarea>
-          <textarea id="custom-css" class="form-control" rows="7" placeholder="Insert CSS to customize default styles &#10;b{font-weight: bold;} &#10;u{  text-decoration: underline;} &#10;*[background-color]{text-decoration: underline;  background-color: yellow;}&#10;h1{font-size: 24pt;  text-align: center; text-decoration: underline;}"></textarea>
-
-
-        </div>
-        <div class="modal-footer">
-          <button id="settings_logout" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"> Logout </button>
-          <button id="btn-settings-save" type="button" class="btn btn-secondary" >Save</button>
-
-        </div>
-      </div>
+    <label><h4>Team </h4></label>:
+    <label>Debate Type:</label>
+    <label class="radio-inline"><input type="radio" name="debatetype" class="debatetype" value="1"> Policy</label>
+    <label class="radio-inline"><input type="radio" name="debatetype" class="debatetype" value="2"> College Policy</label>
+    <label class="radio-inline"><input type="radio" name="debatetype" class="debatetype" value="3"> LD</label>
+    <br>
+    <div id="existing-teams">
     </div>
-  </div>
+   <div class=" well form-inline ">
+
+      <input id="team-name" class="form-control" placeholder="Team name" />  <button id="settings_save" type="button" class="btn btn-primary">Add</button>
+      <select id="team-members-select"  multiple="multiple" class="form-control" placeholder="Team members" ></select>
 
 
-  <div id="file-new-modal" class="modal" tabindex="2" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-            <span class="sr-only">Close</span>
-          </button>
-          <h4 class="modal-title">Create New File or Folder</h4>
-        </div>
-        <div class="modal-body">
-          <label class="radio-inline">
-            <input type="radio" name="filetype" class="filetype" value="file" checked="true"> File</label>
-          <label class="radio-inline">
-            <input type="radio" name="filetype" class="filetype" value="folder"> Folder</label>
-          <label class="radio-inline">
-            <input type="button" class="btn btn-info" id="import_googledrive" value="Import from Google Drive"> </label>
-          <br>
-          <label>Name:
-            <input id="filename" class="form-control" autofocus> </label>
-
-        </div>
-        <div class="modal-footer">
-          <button id="file-new-modal-submit" type="submit" class="btn btn-primary">Create</button>
-        </div>
-      </div>
     </div>
-  </div>
+
+
+    <br>
+    <label>Custom Plugins: </label>
+    <br>
+    <a target="_blank" href="https://www.codecademy.com/learn/jquery">Learn to code websites</a>
+    <a target="_blank" href="https://developers.google.com/web/tools/chrome-devtools/iterate/inspect-styles/?hl=en">Chrome Tools</a>
+    <a target="_blank" href="https://github.com/gulakov/debatesynergy.com">Source Code</a>
+
+    <textarea id="custom-js" class="form-control" rows="7" placeholder="Insert JavaScript code to extend Debate Synergy"></textarea>
+    <textarea id="custom-css" class="form-control" rows="7" placeholder="Insert CSS to customize default styles &#10;b{font-weight: bold;} &#10;u{  text-decoration: underline;} &#10;*[background-color]{text-decoration: underline;  background-color: yellow;}&#10;h1{font-size: 24pt;  text-align: center; text-decoration: underline;}"></textarea>
+
+
+    <button id="settings_logout" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"> Logout </button>
+    <button id="btn-settings-save" type="button" class="btn btn-secondary" >Save</button>
+
+</div>
+
+
+
+<div id="modal-file-new" class="modal">
+
+    <div class="modal-header">Create New File or Folder</div>
+
+    <label class="radio-inline">
+      <input type="radio" name="filetype" class="filetype" value="file" checked="true"> File</label>
+    <label class="radio-inline">
+      <input type="radio" name="filetype" class="filetype" value="folder"> Folder</label>
+    <label class="radio-inline">
+      <input type="button" class="btn btn-info" id="import_googledrive" value="Import from Google Drive"> </label>
+    <br>
+    <label>Name:
+      <input id="filename" class="form-control" autofocus> </label>
+
+    <button id="file-new-modal-submit" type="submit" class="btn btn-primary">Create</button>
+
+</div>
 
 
 
 
-  <div id="file-info-modal" class="modal" tabindex="2" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            <span>&times;</span>
-            <span class="sr-only">Close</span>
-          </button>
-          <h4 class="modal-title">File Information &amp; Sharing</h4>
-        </div>
-        <div class="modal-body">
+<div id="modal-file" class="modal">
 
-          <div class="card">
+  <div class="modal-header">File Information &amp; Sharing</div>
 
-                <div class="input-group">
-                    <div class="input-group-addon"> <i class="fa fa-fw fa-heading"></i>Title</div>
-                    <span id="file-info-title"></span>
-                </div>
+    <div class="card">
 
-                <div class="input-group">
-                    <div class="input-group-addon"> <i class="fa fa-fw fa-user"></i>Owner</div>
-                    <span id="file-info-owner"></span>
-                </div>
-
-
-                <div class="input-group">
-                    <div class="input-group-addon"> <i class="fa fa-fw fa-history"></i>Modified</div>
-                    <span id="file-info-modified"></span>
-                </div>
-
-                <div class="input-group">
-                    <div class="input-group-addon"> <i class="fa fa-fw fa-history"></i>Created</div>
-                    <span id="file-info-created"></span>
-                </div>
-
-                <div class="input-group">
-                    <div class="input-group-addon"> <i class="fa fa-fw fa-number"></i>Words</div>
-                    <span id="file-info-words"></span>
-                </div>
-
+          <div class="input-group">
+              <div class="input-group-addon"> <i class="fa fa-fw fa-heading"></i>Title</div>
+              <span id="file-info-title"></span>
           </div>
 
-                <div id="file-share-by-owner" class="btn-group input-group" data-toggle="buttons">
-                    <div class="input-group-addon"> <i class="fa fa-fw fa-share"></i>Share</div>
-
-                  <label class="btn btn-primary active">
-                    <input type="radio" name="share" id="share-none" autocomplete="off" checked> <i class="fa fa-fw fa-lock"></i> Private
-                  </label>
-                  <label class="btn btn-primary">
-                    <input type="radio" name="share" id="share-team" autocomplete="off"> <i class="fa fa-fw fa-users"></i> Team
-                  </label>
-                  <label class="btn btn-primary">
-                    <input type="radio" name="share" id="share-public" autocomplete="off"> <i class="fa fa-fw fa-gift"></i>Public View-Only
-                  </label>
-                  <label class="btn btn-primary">
-                    <input type="radio" name="share" id="share-specific" autocomplete="off"  data-toggle="collapse" data-target="#share-specific-select"> <i class="fa fa-fw fa-user-plus"></i>  Specific
-                  </label>
-
-              </div>
-
-              <div class="input-group collapse" id='share-specific-select'>
-                  <div class="input-group-addon"> <i class="fa fa-fw fa-user-plus"></i> </div>
-                     <select id="share-select" multiple="multiple"></select>
-                </div>
+          <div class="input-group">
+              <div class="input-group-addon"> <i class="fa fa-fw fa-user"></i>Owner</div>
+              <span id="file-info-owner"></span>
+          </div>
 
 
-              <br>
+          <div class="input-group">
+              <div class="input-group-addon"> <i class="fa fa-fw fa-history"></i>Modified</div>
+              <span id="file-info-modified"></span>
+          </div>
 
-        </div>
-        <div class="modal-footer">
+          <div class="input-group">
+              <div class="input-group-addon"> <i class="fa fa-fw fa-history"></i>Created</div>
+              <span id="file-info-created"></span>
+          </div>
 
-          <button type="button" class="btn btn-danger ft-delete">Delete</button>
-          <button id="file-info-modal-submit" type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </div>
+          <div class="input-group">
+              <div class="input-group-addon"> <i class="fa fa-fw fa-number"></i>Words</div>
+              <span id="file-info-words"></span>
+          </div>
+
     </div>
-  </div>
 
+          <div id="file-share-by-owner" class="btn-group input-group" data-toggle="buttons">
+              <div class="input-group-addon"> <i class="fa fa-fw fa-share"></i>Share</div>
+
+            <label class="btn btn-primary active">
+              <input type="radio" name="share" id="share-none" autocomplete="off" checked> <i class="fa fa-fw fa-lock"></i> Private
+            </label>
+            <label class="btn btn-primary">
+              <input type="radio" name="share" id="share-team" autocomplete="off"> <i class="fa fa-fw fa-users"></i> Team
+            </label>
+            <label class="btn btn-primary">
+              <input type="radio" name="share" id="share-public" autocomplete="off"> <i class="fa fa-fw fa-gift"></i>Public View-Only
+            </label>
+            <label class="btn btn-primary">
+              <input type="radio" name="share" id="share-specific" autocomplete="off"  data-toggle="collapse" data-target="#share-specific-select"> <i class="fa fa-fw fa-user-plus"></i>  Specific
+            </label>
+
+        </div>
+
+        <div class="input-group collapse" id='share-specific-select'>
+            <div class="input-group-addon"> <i class="fa fa-fw fa-user-plus"></i> </div>
+               <select id="share-select" multiple="multiple"></select>
+          </div>
+
+
+        <br>
+
+
+    <button type="button" class="btn btn-danger ft-delete">Delete</button>
+    <button id="file-info-modal-submit" type="submit" class="btn btn-primary">Save</button>
+
+</div>
+
+
+
+<audio id="sw" autobuffer="autobuffer"> <source src="data:audio/mp3;base64,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" /> </audio>
 
 
 </body>

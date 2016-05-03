@@ -1,13 +1,17 @@
-
+document.elementFromPoint for scrol
+www fwd
+4c tokens
+filetree html
 prepop user with contacts google
-http://lab.lepture.com/editor/
+http://lab.lepture.com/editor/4
 speeches should be paginated with a slideshow slideout
 detect cards and on hover literally have them cardable
-
+opt in gmail importer of all your email attch
 tablets use stylus just swipe over text to underline  it, maybe also disable keyboard cause its slow and annoying
 
 rooms for socket
 update only when needed - get diff or p's especially for coauthor of doc/speech
+ds.com/myfile#15 for headings - possibly as they scrolll but with 10s delay of updating
 
 style customization gui for user
 one button to control all views
@@ -29,7 +33,7 @@ sync flowing
 anchor links in flowing
 flow in their speech in blue /red
 
-
+chrome ext: hindsight- on google search, auto goto 1, but sidebar all results on target page to switch to 2 3 easily
 gauth cors error? maybe server-rize
 read/super read mode as buttons on hover of card in speech to indicate what was read
 

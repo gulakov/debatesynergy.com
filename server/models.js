@@ -19,6 +19,7 @@ exports.Doc = mongoose.model('Doc', new Schema({
     title: String,
     text: String,
     url: String,
+    token: String,
     share: String,
     shareusers: Array,
     google_sync: Object,
@@ -57,7 +58,8 @@ exports.Team = mongoose.model('Team', new Schema({
 
 
 exports.Topic = mongoose.model('Topic', new Schema({
-    category: Number, 
+    category: Number,
+    owner: { type: String, ref: 'User' },
     title: String,
     points: Number,
     comment_total: Number,

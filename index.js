@@ -20,6 +20,8 @@ http.createServer(config.force_https ? function (req, res) {
 
 
 //https certificates
+
+//https certificates
 var server = https.createServer({
     SNICallback: function(hostname, callback) {
       if (!fs.existsSync('../letsencrypt/live/'+hostname))
@@ -32,7 +34,7 @@ var server = https.createServer({
     }}, app).listen(443, function(){
   console.log("SERVER STARTED " + (new Date().toLocaleString()));
 });
-    
+
 var io = require('socket.io')(server);
 
 
@@ -62,9 +64,9 @@ app.use(subdomain('admin', subRouter));
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 app.use(session({secret: config.cookie, resave: true, saveUninitialized: false, cookie: {
-  secure: true,
-  expires: new Date(Date.now() + 60 * 10000000), // plus 1 minute
-  maxAge: new Date(Date.now() + 60 * 10000000) //1 minute
+  secure: true, key: "user",
+
+  maxAge: new Date(Date.now() + 60 * 100000000) //1 minute
 },
   store: new MongoStore({
     mongooseConnection: mongoose.connection,
@@ -73,10 +75,18 @@ app.use(session({secret: config.cookie, resave: true, saveUninitialized: false, 
     autoRemove: 'disabled'})
 }));
 
-
 // gzip download speed
 app.use(require('compression')())
 
+app.get('*', function (req, res, next) {
+    req.session.foobar = Date.now();
+    next();
+})
+
+//Google API
+app.use(require('./server/google'));
+//testing dev
+app.use(require('./TEST'));
 
 //server routes
 app.use('/user', require('./server/user'));
@@ -97,13 +107,19 @@ app.use(function (err, req, res, next) {
 })
 
 
+//route forwards /fileId database uid to /index.html
+app.get(/[a-z0-9]+\.html$/i, function(req, res){
+ 	return res.send(req.url);
+
+  res.sendFile('public/index.html', {root: __dirname.replace("/server",""), maxAge: config.cache ? 1000 * 3600 * 24 : 0 });
+});
 
 
 //route forwards /fileId database uid to /index.html
-app.get(/[a-z0-9]+/, function(req, res){
+app.get(/[a-zA-Z0-9]+/, function(req, res){
   //re-login existing user
   if (req.headers.cookie && req.headers.cookie.indexOf("autologin")>-1 && !req.session.user)
-    return res.redirect('/user/login')
+    return res.redirect('/login')
 
-  res.sendFile('public/index.html', {root: __dirname.replace("/server","")});
+  res.sendFile('public/index.html', {root: __dirname.replace("/server",""), maxAge: config.cache ? 1000 * 3600 * 24 : 0 });
 });

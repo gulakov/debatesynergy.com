@@ -5,9 +5,11 @@ var socket;
 $(document).ready(function() {
 
   //init sockets for rounds
-  initSockets();
-  //init obj
-  Timer();
+  setTimeout( function(){
+    initSockets();
+    //init obj
+    Timer();
+  }, 5000)
 
   /*
 
@@ -726,10 +728,10 @@ if (socket)
   socket.on('error', function() {
 
       console.log("end")
-    location.reload(true);
+  //  location.reload(true);
 
   setTimeout(function() {
-    location.reload(true);
+  //  location.reload(true);
 
   }, 100);
 })
@@ -775,24 +777,6 @@ if (socket)
 
 })
 
-window.roundInviteAlert = function(msg) {
-
-  $("#info").append('<div class="alert alert-success alert-dismissable">' +
-      '<button  class="close" data-dismiss="alert">&times;</button>' +
-      'You have been invited into a round with ' + msg.people + '. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
-    .find(".btn-primary").click(function() {
-
-      r = {
-        _id: msg.roundId
-      };
-
-      $.get("/round/accept", {
-        roundId: msg.roundId
-      }, startRound);
-
-    })
-
-}
 
 
 $(window).on('beforeunload', function() {

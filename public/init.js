@@ -2,39 +2,6 @@
 
 
 
-(function( win ){
-	var doc = win.document;
-	
-	// If there's a hash, or addEventListener is undefined, stop here
-	if(!win.navigator.standalone && !location.hash && win.addEventListener ){
-		
-		//scroll to 1
-		win.scrollTo( 0, 1 );
-		var scrollTop = 1,
-			getScrollTop = function(){
-				return win.pageYOffset || doc.compatMode === "CSS1Compat" && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
-			},
-		
-			//reset to 0 on bodyready, if needed
-			bodycheck = setInterval(function(){
-				if( doc.body ){
-					clearInterval( bodycheck );
-					scrollTop = getScrollTop();
-					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
-				}	
-			}, 15 );
-		
-		win.addEventListener( "load", function(){
-			setTimeout(function(){
-				//at load, if user hasn't scrolled more than 20 or so...
-				if( getScrollTop() < 20 ){
-					//reset to hide addr bar at onload
-					win.scrollTo( 0, scrollTop === 1 ? 0 : 1 );
-				}
-			}, 0);
-		}, false );
-	}
-})( this );
 
 
 var local;
@@ -51,12 +18,40 @@ $( window ).on('beforeunload', function() {
     //$("body").scrollTop(0)
   })
 
-//logged out, but can force login re-auth
-if (!u && document.cookie.indexOf("debatesynergylogin=") > -1) {
-  //window.location.pathname = '/auth';
-}
+
 
 $(document).ready(function() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	$.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+
+						console.log((settings))
+
+             }
+    });
+
+
 
 //if user logged in, initiallize settings and index
 if (u) {
@@ -65,7 +60,7 @@ if (u) {
   customCSS.html(u.custom_css)
 
   var customJS = $("<script id='custom_script'>").html(u.custom_js);
-  customJS.appendTo('body');
+  customJS.appendTo('head');
 
   if (u.options && u.options.sidebar)
       $("#sidebar").css('max-width', u.options.sidebar+'px');
@@ -90,7 +85,6 @@ if (u) {
       docShareAlert(u.notifications[n])
 
 
-  $('head').append('<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=gapiInit"></script>')
 
 
 } else { //no user, show default page
@@ -118,8 +112,15 @@ ft.init($('#filetree'), u.index);
 
 
 //reset scrolls
-window.scrollTo(0,0)
+setInterval(function () { return;
 
+
+
+
+
+	window.scrollTo(0,200)
+
+}, 2000)
 
   //minimize unread by default
   $("#ft-minimize-unread").click();
@@ -142,7 +143,7 @@ function loadHash() {
     $("#doc-home").show()
   } else if (id){
       $(".doc").hide();
-    ft.loadFile(decodeURIComponent(id))
+    ft.loadFile(decodeURIComponent(id).replace(/[\W]+/g,''))
   }
 }
 
@@ -156,7 +157,10 @@ if (location.pathname.length > 3){ //load if file id/name in url
 
 
     $('.ft-selected').click();
-    $("#loading-screen").remove()
+
+
+				    $('.ft-selected')[0].scrollIntoView();
+
   })
 } else if (u.index[0].id=="home"){ //guest home page
   $('.ft-item:first').click();
@@ -309,6 +313,86 @@ if(!dragSidebar)
 
 
 
+
+
+
+window.smartScroll = function(){
+
+
+
+
+
+						var h = $(window).height() ;
+
+		      var plist = $(".doc:visible > .chunk > *");
+
+
+		      for (var i = 0; i < plist.length; i++)
+		        if (plist[i].getBoundingClientRect().bottom > h - 30)
+		          break;
+
+							console.log(
+						plist.eq(i) )
+				//	plist.eq(i).css("color", "yellow")
+
+					var rangelist = plist.eq(i).find("span,b,u");
+
+		      for (var i = 0; i < rangelist.length; i++)
+		        if (rangelist[i].getBoundingClientRect().top > h -20)
+		          break;
+
+
+
+
+					rangelist.eq(i-1).addClass("scroll-marker")
+					//rangelist.eq(i).addClass("scroll-marker")
+
+					console.log(		$(".scroll-marker").offset());
+
+
+								setTimeout(function() {
+
+									bottom = 	$(window).height() - $(".scroll-marker")[0].getBoundingClientRect().bottom, right = $(window).width() -	$(".scroll-marker")[0].getBoundingClientRect().right
+
+
+												var line = $("<div class='scroll-diagonal'>").css("bottom",bottom+"px").css("right",right+"px");
+
+											$(".doc:visible").animate({
+									 scrollTop: $(".doc:visible").scrollTop() + 	$(".scroll-marker:first").offset().top - 2
+							 }, 'fast');
+
+
+												var top = 	$(".scroll-marker")[0].getBoundingClientRect().top, left = 	$(".scroll-marker")[0].getBoundingClientRect().left
+
+
+												line.css("top",top+"px").css("left",left+"px");
+
+
+
+											line.appendTo("body")
+
+
+															console.log(		$(".scroll-marker").offset());
+
+											setTimeout(function() {
+
+
+												$(".scroll-marker").removeClass("scroll-marker")
+
+												$(".scroll-diagonal").remove()
+
+											}, 400)
+
+
+								}, 300)
+
+
+
+}
+
+
+
+
 //window.off=true;
 window.chunk=true;
 
@@ -318,23 +402,113 @@ $(window).keydown(function(e) {
 if(e.which==83&&e.ctrlKey){
   e.preventDefault();
 
-  window.off=false;
+//  window.off=false;
   ft.update();
-  ft.updateIndex();
+//  ft.updateIndex();
 //  window.off=1
   ;
 
 }
 
 
+if(e.keyCode==121) { e.preventDefault();
+
+
+
+
+
+
+
+							var h = $(window).height() ;
+
+			      var plist = $(".doc:visible > .chunk > *");
+
+
+			      for (var i = 0; i < plist.length; i++)
+			        if (plist[i].getBoundingClientRect().bottom > h - 30)
+			          break;
+
+								console.log(
+							plist.eq(i) )
+					//	plist.eq(i).css("color", "yellow")
+
+						var rangelist = plist.eq(i).find("span,b,u");
+
+			      for (var i = 0; i < rangelist.length; i++)
+			        if (rangelist[i].getBoundingClientRect().top > h -20)
+			          break;
+
+
+
+
+						rangelist.eq(i-1).addClass("scroll-marker")
+						//rangelist.eq(i).addClass("scroll-marker")
+
+						console.log(		$(".scroll-marker").offset());
+
+
+									setTimeout(function() {
+
+										bottom = 	$(window).height() - $(".scroll-marker")[0].getBoundingClientRect().bottom, right = $(window).width() -	$(".scroll-marker")[0].getBoundingClientRect().right
+
+
+													var line = $("<div class='scroll-diagonal'>").css("bottom",bottom+"px").css("right",right+"px");
+
+												$(".doc:visible").animate({
+										 scrollTop: $(".doc:visible").scrollTop() + 	$(".scroll-marker:first").offset().top - 2
+								 }, 'fast');
+
+
+													var top = 	$(".scroll-marker")[0].getBoundingClientRect().top, left = 	$(".scroll-marker")[0].getBoundingClientRect().left
+
+
+													line.css("top",top+"px").css("left",left+"px");
+
+
+
+												line.appendTo("body")
+
+
+																console.log(		$(".scroll-marker").offset());
+
+												setTimeout(function() {
+
+
+													$(".scroll-marker").removeClass("scroll-marker")
+
+													$(".scroll-diagonal").remove()
+
+												}, 400)
+
+
+									}, 300)
+
+
+
+
+
+
+
+
+
+
+
+
+ }
+
+
 
 if (e.keyCode >= 112 && e.keyCode < 120) { //F1-F8
+
   e.preventDefault();
   $("#controls button")[e.keyCode - 112].click();
 } else if (e.keyCode == 27) //ESC
   $("#searchtext").select2("open");
 
 })
+
+
+
 
 function pasteHtmlAtCaret(html) {
     sel = getSelection()
@@ -366,7 +540,7 @@ function pasteHtmlAtCaret(html) {
 
 //EDITOR PASTE SPECIAL -- paste plain text except debate formatting
 //TODO it's all bold if ur in bold place >> smart unformatting
-$("#docs")[0].addEventListener("paste", function(e) {
+$("#docs")[0].addEventListener("paste", function(e) { return;
     //disable default paste
     e.preventDefault();
 
@@ -716,6 +890,10 @@ function gapiInit() {
 
 
 
+
+
+
+/*
       var recognition = new webkitSpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
@@ -746,7 +924,7 @@ function gapiInit() {
       };
       recognition.start();
 
-
+*/
 
 
     }
@@ -754,24 +932,6 @@ function gapiInit() {
   })
 
 
-
-
-window.docShareAlert = function(msg) {
-
-  $("#info").append('<div class="alert alert-success alert-dismissable">' +
-      '<button  class="close" data-dismiss="alert">&times;</button>' +
-      msg.owner + ' has shared \"' + msg.title + '\" with you. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
-      .on('close.bs.alert', '.alert', function () {
-          $.get('/user/notify', {fileId:msg.fileId})
-
-      })
-      .on('click', ".btn-primary", function() {
-        ft.click(msg.fileId )
-        window.location.pathname="/"+msg.fileId;
-      })
-
-
-}
 
 
 
@@ -807,3 +967,30 @@ window.docShareAlert = function(msg) {
         ft.init($('#filetree'), u.index);
 
     }*/
+
+
+
+		/*! jquery-awesome-cursor - v0.3.1 - 2016-04-23
+		* https://jwarby.github.io/jquery-awesome-cursor
+		* Copyright (c) 2016 ; Licensed MIT */
+		!function(a,b){"function"==typeof define&&define.amd?define(["jquery"],b):b("object"==typeof exports?require("jquery"):a.jQuery)}(this,function(a){"use strict";function b(b,c){-1===a.inArray(c,["horizontal","vertical","both"])&&a.error("Flip value must be one of horizontal, vertical or both");var d,e=a("<canvas />")[0];return e.width=b.width,e.height=b.height,d=e.getContext("2d"),"horizontal"!==c&&"both"!==c||(d.translate(b.width,0),d.scale(-1,1)),"vertical"!==c&&"both"!==c||(d.translate(0,b.height),d.scale(1,-1)),d.drawImage(b,0,0,b.width,b.height),e}var c=function(b,c){var d=0,e=0;return"string"!=typeof b&&a.error("Hotspot value is not a string and could not be parsed"),"number"!=typeof c&&a.error("Cursor size must be a number"),b.split(" ").forEach(function(a){switch(a){case"center":d=c/2,e=c/2;break;case"top":e=0;break;case"bottom":e=c-1;break;case"left":d=0;break;case"right":d=c-1}}),[d,e]};a.fn.extend({awesomeCursor:function(d,e){e=a.extend({},a.fn.awesomeCursor.defaults,e),"string"==typeof d&&d||a.error("First parameter must be the icon name, e.g. 'pencil'"),e.size="string"==typeof e.size?parseInt(e.size,10):e.size,"string"==typeof e.hotspot&&(e.hotspot=c(e.hotspot,e.size)),e.hotspot=a.map(e.hotspot,function(a){return Math.min(e.size-1,Math.max(0,a))});var f=function(a,b){return"string"==typeof b?b.replace(/%s/g,a):"function"==typeof b?b(a):a}(d,e.font.cssClass),g=a("<i />",{"class":f,style:"display: inline; font-size: "+e.size+"px;"}),h=a("<div />",{style:"position: absolute; left: -9999px; top: -9999px;"}).append(g);a("body").append(h);var i,j,k,l=window.getComputedStyle(g[0],":before").getPropertyValue("content"),m=g[0].getBoundingClientRect(),n=a("<canvas />")[0],o=Math.max(m.width,m.height);return g.remove(),e.outline&&(o+=2),e.rotate?(o=Math.ceil(Math.sqrt(Math.pow(o,2)+Math.pow(o,2))),i=(o-e.size)/2,n.width=o,n.height=o,k=n.getContext("2d"),k.translate(n.width/2,n.height/2),k.rotate(e.rotate*Math.PI/180),k.translate(-n.width/2,-n.height/2),e.hotspot[0]+=e.hotspot[0]!==n.width/2?i:0,e.hotspot[1]+=e.hotspot[1]!==n.height/2?i:0):(n.height=o,n.width=o,k=n.getContext("2d")),l=l.replace(/['"]/g,""),k.fillStyle=e.color,k.font=e.size+"px "+e.font.family,k.textAlign="center",k.textBaseline="middle",k.fillText(l,o/2,o/2),e.outline&&(k.lineWidth=.5,k.strokeStyle=e.outline,k.strokeText(l,o/2,o/2)),e.flip&&(n=b(n,e.flip)),j=n.toDataURL("image/png"),a(this).css("cursor","").css("cursor",["url("+j+")",e.hotspot[0],e.hotspot[1],",","auto"].join(" ")),this}}),a.fn.awesomeCursor.defaults={color:"#000000",size:18,hotspot:[0,0],flip:"",rotate:0,outline:null,font:{family:"FontAwesome",cssClass:"fa fa-%s"}}});
+
+
+
+		function roundInviteAlert(msg) {
+
+		    alert('You have been invited into a round with ' + msg.people +
+		    '. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button>', 'success')
+		    .find(".btn-primary").click(function() {
+
+		      r = {
+		        _id: msg.roundId
+		      };
+
+		      $.get("/round/accept", {
+		        roundId: msg.roundId
+		      }, startRound);
+
+		    })
+
+		}

@@ -1,13 +1,15 @@
 {
   "name": "debatesynergy.com",
   "description": "DebateSynergy.com web app enables high school and college debate teams to store online research and stream debate rounds.",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "scripts": {
     "start": "forever --minUptime=10 --spinSleepTime=2000 -e server.log -o server.log -a -v -w .",
-    "start-nohup": "nohup forever --minUptime=10 --spinSleepTime=2000 -v -w . >> server.log &",
-    "mongo": "killall mongod &>/dev/null && mkdir -p db && rm -f db/mongod.lock && nohup mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1  >> mongo.log  2>&1 &",
-    "admin": "nohup node node_modules/mongo-express/app.js &>/dev/null",
-    "setup": " npm install forever -g && mv node_modules/mongo-express/config.default.js node_modules/mongo-express/config.js"
+    "server": "  nohup npm start >/dev/null 2>&1 &",
+    "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1  >> mongo.log  2>&1 &  ",
+    "setup": "npm install forever -g && sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\`` && mv node_modules/mongo-express/config.default.js node_modules/mongo-express/config.js",
+    "log": "tail -50f ~/debatesynergy/server.log",
+    "min": "cd public && minify -o ds.min.js buttons.js filetree.js init.js round.js timer.js",
+    "p80": "sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\``"
   },
   "dependencies": {
     "body-parser": "^1.12.4",

@@ -1,5 +1,14 @@
 <html>
 <head>
+
+
+  <title>Debate Synergy</title>
+  <base href="/">
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css"/>
 <script>
 window.scrollTo(0,1);
 
@@ -124,13 +133,29 @@ hi
 <br><br>
 <br><br>
 <script>
-setTImeout(function(){
+setTimeout(function(){
 window.scrollTo(0,1);
 
 }, 1000)
 
 
-      document.body.requestFullscreen();
+$("body").click(enterFullscreen)
+
+// Note: FF nightly needs about:config full-screen-api.enabled set to true.
+function enterFullscreen() {
+  elem = $("body")
+  console.log("enterFullscreen()");
+  if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+  } else {
+    if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else {
+      elem.requestFullscreen();
+    }
+  }
+}
+
 
 </script>
 </body>

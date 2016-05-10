@@ -17,4 +17,5 @@ sudo npm start
 
 
 [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RPK6PTFJ6ZJFC) 
-2010-2016 Alex Gulakov alexgulakov@gmail.com MIT Open Source License
+
+2010-2016 Alex Gulakov alexgulakov@gmail.com 

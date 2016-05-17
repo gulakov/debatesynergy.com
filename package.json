@@ -1,15 +1,17 @@
 {
-  "name": "debatesynergy.com",
+  "name": "debatesynergy",
   "description": "DebateSynergy.com web app enables high school and college debate teams to store online research and stream debate rounds.",
   "version": "2.2.0",
   "scripts": {
-    "start": "forever --minUptime=10 --spinSleepTime=2000 -e server.log -o server.log -a -v -w .",
-    "server": "  nohup npm start >/dev/null 2>&1 &",
-    "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db --smallfiles --nojournal --bind_ip=127.0.0.1  >> mongo.log  2>&1 &  ",
-    "setup": "npm install forever -g && sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\`` && mv node_modules/mongo-express/config.default.js node_modules/mongo-express/config.js",
-    "log": "tail -50f ~/debatesynergy/server.log",
+    "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -e server.log -o server.log -a -v -w . >/dev/null 2>&1 &",
+    "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db --smallfiles --nojournal --quiet  >> mongo.log  2>&1 &  ",
+    "stop": "sudo killall -9 node nodejs",
+    "setup": "npm install forever -g && sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\`` && mv node_modules/mongo-express/config.default.js config.mongo.js",
+    "log": "tail -200f ~/debatesynergy/server.log ",
     "min": "cd public && minify -o ds.min.js buttons.js filetree.js init.js round.js timer.js",
-    "p80": "sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\``"
+    "p80": "sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\``",
+    "ssl": "echo \"letsencrypt certonly --standalone --config-dir ~/letsencrypt --agree-tos --email contact@debatesynergy.com --domains debatesynergy.com #change\"",
+    "config": "echo \"{db:{user:'',password:'',dbname:''},google:{client_id:'',client_secret:'',redirect_uri:''},cookie:'',cache:0,force_https:1};\" >> config.json"
   },
   "dependencies": {
     "body-parser": "^1.12.4",
@@ -29,6 +31,7 @@
     "type": "git",
     "url": "https://github.com/gulakov/debatesynergy.com"
   },
+  "engines" : { "node" : ">6.0.0" },
   "private": true,
   "license": "MIT"
 }

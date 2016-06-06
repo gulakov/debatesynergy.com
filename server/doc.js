@@ -1,98 +1,79 @@
-var app = require('express').Router(), {Doc, User} = require('./models'), config = require('../config'),
-request = require('request'), ObjectID = require('mongodb').ObjectID;
-module.exports = app;
-
-
-
-//takes callback from "Open With" in Google Drive to create/open file and sync
-app.get('/readdrive', function(req, res) {
-  var state = JSON.parse(req.query.state),
-  fileId = state.exportIds || state.ids;
-
-
-  //takes fileId, request google doc file metadata
-  req.google({url: 'drive/v2/files/' + fileId}, docInfo => {
-
-     if (!docInfo.exportLinks)
-        return res.json(docInfo)
-        console.log(
-        docInfo.exportLinks["text/html"])
-
-      //takes google doc, returns file HTML
-      request({url: docInfo.exportLinks["text/html"],  headers: {
-         'Authorization': 'Bearer ' + req.session.access_token
-       }}, (e,r,docHTML) => {
-
-
-                //updated google doc HTML with new HTML
-               req.google({
-                 url: 'upload/drive/v2/files/'+fileId,
-                 method: 'PUT',
-                 qs: {
-                   uploadType: 'media'
-                 },
-                 form:  docHTML.replace(/(and)/gi,'Gulakov'),
-                 headers: {
-                   'Content-Type': 'application/vnd.google-apps.document'
-                 }},  ({alternateLink}) =>
-                   res.redirect(alternateLink)
-                 )
-
-
-        });
-
-  })
-
-
-});
+module.exports = app = require('express').Router(), {Doc, User} = require('./models');
+var request = require('request'), fs = require('fs');
 
 
 //takes doc ID, return doc text -- allowed if user is owner, share, or public/publicedit
 app.get('/read', function(req, res) {
     var fileId = req.query.id;
 
+
     var userId = req.session.user ? req.session.user._id : "";
 
     Doc.findOne({$or: [ {"_id": fileId.length == 24 ? fileId : null},
       {"token":  fileId },
 			{"url":  fileId.replace(/[\W_]+/g," ").toLowerCase() },
-			{"title": {"$regex": fileId.replace(/\+/g,' '), "$options": "i" }} ] }, (e, f)=>{
+			{"title": {"$regex": "^"+fileId.replace(/\+/g,' ')+"$", "$options": "i" }} ] }, (e, f)=>{
 
         if (!f)
-            return res.send("Not found");
+            return res.status(404).send("Not found");
 
         //to read file, must be owner or share user, or file is public
         if (f.share!="public" && f.userid != userId && !f.shareusers.filter(i => i.id==userId).length)
           return res.status(401).send("Access denied");
 
 
-            if (req.query.partial || req.query.name){
 
 
-              var partialByName = f.text.substr(f.text.toLowerCase().indexOf(">"+req.query.name.toLowerCase()+"<")-20)
-
-              partialByName = partialByName.substr(partialByName.search(/(<h1>|<h2>|<h3>)/i))
+                      //    console.log(Object.keys(req.session))
 
 
-              partialByName  = partialByName.substr(0, 100 + partialByName.substr(100).search(/(<h1>|<h2>|<h3>)/i) )
-
-
-            //  partialtext = f.text.split(/(<h1>|<h2>|<h3>)/gi).slice(Math.floor(req.query.partial)/2,  Math.floor(req.query.partial)/2+3).join("")
-
-
-            //let public = (({name})=>({name}))(private);
-
-              let {_id: id, userid, title, url} = f;
-
-              res.json({id, userid, title, url, text: partialByName});
-
-
-
-
-            } else{
+          //  } else{
                 f['id']=f._id; //both ways work
-                return res.json(f);
-            }
+
+                //send file objects
+                 res.json(f);
+
+
+
+
+
+                  var partial = req.query.partial || false;
+
+                  var partialByName = partial ? f.text.substr(f.text.toLowerCase().search( ">"+partial.toLowerCase()+"<" )-20)
+                                      : f.text.substr(0,10000);
+
+
+
+                  partialByName = partialByName.substr(partialByName.search(/(<h1>|<h2>|<h3>)/i))
+
+
+                  var endBlock = partialByName.substr(500).search(/(<h1>|<h2>|<h3>)/i);
+
+                  if (endBlock>-1)
+                    partialByName  = partialByName.substr(0, 500 + endBlock)
+
+
+                //  partialtext = f.text.split(/(<h1>|<h2>|<h3>)/gi).slice(Math.floor(req.query.partial)/2,  Math.floor(req.query.partial)/2+3).join("")
+
+
+                //let public = (({name})=>({name}))(private);
+
+                  var {_id: id, userid, title, url} = f;
+
+
+                  User.findOne({_id: req.session.user._id}, (err, u)=>{
+
+                      console.log(u.socket)
+
+                      io.to(u.socket).emit('doc_partial',
+                          {id, userid, title, url, text: partialByName});
+
+                  })
+
+
+
+
+
 
 
 
@@ -112,15 +93,12 @@ app.get('/create', auth, function(req, res) {
     var uniqueness = (url) => Doc.find({url}, (e,f) => f.length ? uniqueness( url+Math.random().toString(36).slice(2)[0] ) : resolve(url) )
     uniqueness( title.replace(/[\W_]+/g,"").toLowerCase() )
 
-  }).then(url =>  new Promise(resolve => {
+  }).then(url => new Promise(resolve => {
 
-    var utoken = (token) => Doc.find({token}, (e,f) => f.length ? utoken() : resolve({url, token}) )
-    utoken( Math.random().toString(36).slice(2).substr(0,4))
+    var utoken = (token=Math.random().toString(36).slice(2).substr(0,4)) => Doc.find({token}, (e,f) => f.length ? utoken() : resolve({url, token}) )
+    utoken()
 
   })).then(({url, token}) =>{
-
-        console.log(token);
-            console.log(url);
 
         Doc.create({ url, token, title, text: "", userid: req.session.user._id },
             (e, f) => res.send(f) )
@@ -131,7 +109,7 @@ app.get('/create', auth, function(req, res) {
 
 });
 
-
+//TODO must check last up date of fiel tree in request , to prevent race between tabs
 //takes doc id and updated text, title, or shared, performs needed update
 app.all('/update',  function(req, res) {
   var userId = req.session.user ? req.session.user._id : false;
@@ -145,8 +123,8 @@ app.all('/update',  function(req, res) {
       if (text && (f.userid == userId || isShareUser ) ){
         res.end();
         text = require('sanitize-html')(text, {
-          allowedTags: ['h1', 'h2', 'h3', 'h4', 'span', 'p', 'ul', 'li', 'u', 'b', 'i', 'br'],
-          allowedAttributes: { 'span': ['style'] },
+          allowedTags: ['h1', 'h2', 'h3', 'h4', 'p', 'ul', 'li', 'u', 'b', 'i', 'br']
+          // allowedAttributes: { 'span': ['style'] },
         });
         Doc.update({_id: fileId}, {text, date_updated: Date.now() }).exec(function(e,f){
 
@@ -185,7 +163,7 @@ app.all('/update',  function(req, res) {
 
             for (var i in shareusers)
               User.update (
-                  {_id: new ObjectID(shareusers[i].id)},
+                  {_id: shareusers[i].id},
                   {$push: {'notifications': {
                     type:'doc_share',
                     fileId,
@@ -255,7 +233,6 @@ app.get('/delete', auth, function(req, res){
 });
 
 
-
 app.get('/:fileId', function(req, res) {
     var fileId = req.params.fileId;
 
@@ -264,12 +241,3 @@ app.get('/:fileId', function(req, res) {
     })
 
 })
-
-
-
-//auth
-function auth(req, res, next) {
-  if (!req.session.user)
-    return res.status(401).send("Login required");
-  return next();
-}

@@ -1,0 +1,75 @@
+
+/*flow*/
+
+
+.flow{
+	width: 98%;
+	color: blue;
+	position: relative;
+	font-size: 14pt;
+}
+
+.flow-text{
+	width: 90%;
+	overflow: hidden;
+	margin-left: 40px;
+	outline: 0px solid transparent;
+	border:0;
+	color: blue;
+	font-weight: bold;
+	font-size: 13pt;
+    resize: none;
+
+}
+
+.flow-toggle{
+	position: absolute;
+	top:0;
+	left: 0;
+	height: 30px;
+	width: 30px;
+	color: lightblue;
+	opacity: .3;
+	cursor: pointer;
+
+}
+
+.flow-collapsed{
+	color: blue;
+	opacity: 1;
+
+}
+
+.flow-link:hover{
+	color: blue;
+	opacity: 1;
+	cursor: pointer;
+}
+.flow-link{
+	position: absolute;
+	top:0;
+	right: 0;
+	transform: rotate(-45deg);
+	color: lightblue;
+	opacity: .3;
+}
+
+.active-link{
+	color: blue;
+	opacity: 1;
+}
+
+.flow-link-selecting-mode > *:hover {
+	background-color: lightblue;
+	cursor: alias;
+}
+
+.scroll-marker{
+  background-color: lightblue;
+}
+
+.scroll-diagonal {
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='lightblue' /></svg>");
+    background-size: 100% 100%, auto;
+    position: absolute;
+}

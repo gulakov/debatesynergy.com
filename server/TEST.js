@@ -1,8 +1,12 @@
-var app = require('express').Router(), {User,Doc} = require('./server/models'),
-request = require('request'), config = require('./config');
-module.exports = app;
+module.exports = app = require('express').Router(), {User,Doc} = require('./models');
+var request = require('request');
 
 
+app.get('/t', function(req, res) {
+  var id = "J6-7t9giyks7MlqiVX9TkqczB5pVY9HG"
+
+
+})
 
 app.get('/drivelist', function(req, res) {
 
@@ -49,7 +53,10 @@ app.use("/contact", function (req, res, next) {
 
 app.use("/test", function (req, res, next) {
 
+  console.log(req.session.user)
+  return res.send()
 
+/*
   req.google({
     url: 'https://www.google.com/m8/feeds/contacts/default/full',
     qs: {
@@ -67,19 +74,19 @@ app.use("/test", function (req, res, next) {
 
       res.json(contacts)
   })
+*/
+
+})
 
 
-// + req.session.access_token
-  User.find().sort({'date_created': 'asc'}).exec(function (err, files) {
-    //   return res.json(files);
- });
 
-  /*
+app.use("/latest", function (req, res, next) {
+
+
    Doc.find({ userid: { $not: /55926eec0589b40a0f835c80/} } ).sort({'date_updated': 'desc'}).limit(20).exec(function (err, files) {
         return res.json(files.map(function(f){
         	return f._id + " " + f.text.substring(0,500);
         }));
   });
-  */
 
 });

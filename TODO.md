@@ -8,7 +8,7 @@ speeches should be paginated with a slideshow slideout
 detect cards and on hover literally have them cardable
 opt in gmail importer of all your email attch
 tablets use stylus just swipe over text to underline  it, maybe also disable keyboard cause its slow and annoying
-
+highlighter mixed content should do a %50 split
 rooms for socket
 update only when needed - get diff or p's especially for coauthor of doc/speech
 ds.com/myfile#15 for headings - possibly as they scrolll but with 10s delay of updating
@@ -33,17 +33,26 @@ sync flowing
 anchor links in flowing
 flow in their speech in blue /red
 
-chrome ext: hindsight- on google search, auto goto 1, but sidebar all results on target page to switch to 2 3 easily
+chrome ext: hindsight- on google search, auto goto 1, but sidebar all results on target page to switch to 2 3 easily -- team bookmark share
 gauth cors error? maybe server-rize
 read/super read mode as buttons on hover of card in speech to indicate what was read
 
 ctrl+click select par, shift for block, 2speech
-
+debate
+research
+exchange
+articles with
+multi-user
 caselist uploading
 
 chrome ext: 'send to debate' for pages, googlebooks ocr, timer sync, aylien text analysis, load from cache event in real app
+
+show title in gray oval on doc loading
 
 ==FUTURE==
  team management and reddit style forums. paid files. best cards rank board. mind mapping mode for files and flows/speeches  
  spectate on going rounds. view all rounds going on at a tournament. record video from one source and audio from 4 debaters with soundcloud style comments, sync that and even slow down. livestream a/v alongside text.
  ai that predicts what to read on topics based on past speech linkages, or a crowd-sourced mind map of all args/cards how to answer them. recongition to debaters from coaching panel to surpervise stats
+radar recom algo from debaters with assoc research, facts flow ac text shorthand
+
+use csp to prevent users from inline js in doc

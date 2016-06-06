@@ -1,6 +1,5 @@
-var app = require('express').Router(), {User,Doc} = require('./models'),
-request = require('request'), config = require('../config');
-module.exports = app;
+module.exports = app = require('express').Router(), {User,Doc} = require('./models');
+var request = require('request');
 
 
 //call Google APIs, with setting of access_token and refreshing it if expired
@@ -14,8 +13,8 @@ app.use(function (req, res, next) {
 
       request({
         url: (url.startsWith("http")?'':'https://www.googleapis.com/')+url,
-        method, qs,  form, headers
-      },(error, response, body)=>{
+        method, qs, form, headers
+      }, (error, response, body)=>{
         try {
           var body = JSON.parse(body);
         } catch(e) {
@@ -46,8 +45,8 @@ app.use(function (req, res, next) {
                 },
                 form: {
                    refresh_token: refresh_token,
-                   client_id: config.google.client_id,
-                   client_secret: config.google.client_secret,
+                   client_id: google.client_id,
+                   client_secret: google.client_secret,
                    grant_type: "refresh_token"
                  }
                },  (error, response, body)=>{
@@ -86,9 +85,9 @@ app.all('/login', function(req, res, next){
 
     var params = {
       response_type: "code",
-      redirect_uri: "https://" + host + "/user/auth",
+      redirect_uri: "https://" + "debatesynergy.com" + "/user/auth",
       scope: "profile email https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install",
-      client_id: config.google.client_id,
+      client_id: google.client_id,
       access_type: "offline"
     };
 
@@ -110,7 +109,7 @@ app.all('/login', function(req, res, next){
 
 //Google OAuth2 callback to login or create new user
 app.all('/user/auth', function(req, res, next) {
-  var {client_id, client_secret} = config.google, {code} = req.query;
+  var {code} = req.query, {client_id, client_secret} = google;
 
   //exchange code for access_token
   req.google({
@@ -118,11 +117,10 @@ app.all('/user/auth', function(req, res, next) {
     method: 'POST',
     form: {
        code, client_id, client_secret,
-       redirect_uri: "https://" + req.headers.host + "/user/auth",
+       redirect_uri: "https://" + "debatesynergy.com" + "/user/auth",
        grant_type: "authorization_code"
      }
   }, oauth_res=>{
-
 
     //refresh available if explicitly requested
     var {access_token, refresh_token} = oauth_res;
@@ -136,7 +134,7 @@ app.all('/user/auth', function(req, res, next) {
           var {name, email, picture} = userinfo;
 
           //remember to auto-login user through Google in future sessions
-          res.cookie('autologin', 'true', { maxAge: 1000 * 3600 * 24 * 30 });
+          // res.cookie('autologin', 'true', { maxAge: 1000 * 3600 * 24 * 30 });
 
 
           User.findOne({email}, function(err, u){
@@ -149,6 +147,8 @@ app.all('/user/auth', function(req, res, next) {
 
                 if (refresh_token)
                   User.update({_id:u._id}, {auth: refresh_token}).exec()
+
+
 
                 return res.redirect(req.query.state || "/")
 
@@ -178,7 +178,7 @@ app.all('/user/auth', function(req, res, next) {
 
                             if (refresh_token)
                               User.update({_id:u._id}, {auth: refresh_token}).exec()
-                              
+
                           return res.redirect("/")
                        });
 
@@ -199,11 +199,54 @@ app.all('/user/auth', function(req, res, next) {
 
 
 
-//end user's session and remove autologin
+//end user's session and remove cookie
 app.get('/logout', function(req, res) {
-  req.session.destroy();
+    req.session.destroy();
+    res.cookie("connect.sid", "", { maxAge: 0 });
+    return res.redirect("/")
+});
 
-  res.cookie('autologin', 'true', { maxAge: '0' });
 
-  return res.redirect("/")
+
+
+//takes callback from "Open With" in Google Drive to create/open file and sync
+app.get('/readdrive', function(req, res) {
+  var state = JSON.parse(req.query.state),
+  fileId = state.exportIds || state.ids;
+
+
+  //takes fileId, request google doc file metadata
+  req.google({url: 'drive/v2/files/' + fileId}, docInfo => {
+
+     if (!docInfo.exportLinks)
+        return res.json(docInfo)
+        console.log(
+        docInfo.exportLinks["text/html"])
+
+      //takes google doc, returns file HTML
+      request({url: docInfo.exportLinks["text/html"],  headers: {
+         'Authorization': 'Bearer ' + req.session.access_token
+       }}, (e,r,docHTML) => {
+
+
+                //updated google doc HTML with new HTML
+               req.google({
+                 url: 'upload/drive/v2/files/'+fileId,
+                 method: 'PUT',
+                 qs: {
+                   uploadType: 'media'
+                 },
+                 form:  docHTML.replace(/(and)/gi,'Gulakov'),
+                 headers: {
+                   'Content-Type': 'application/vnd.google-apps.document'
+                 }},  ({alternateLink}) =>
+                   res.redirect(alternateLink)
+                 )
+
+
+        });
+
+  })
+
+
 });

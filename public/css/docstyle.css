@@ -1,0 +1,180 @@
+highlighted text, only if also underlined, gets bg color
+mark>u,u>mark{
+  background: yellow;
+}
+
+
+
+.highlight-mode{
+  cursor: url("/img/highlight.ico") 0 0, auto;
+}
+.highlight-mode *[style*='background-color']:not(*[style*=white]) {
+
+    cursor: url("/img/highlight-off.ico") 0 0 , auto;
+}
+
+#docs{
+  flex: 2;
+  overflow: auto;
+
+    padding-left: 20%;
+    margin: 0px;
+}
+
+
+.doc, .doc  *, #round .tab-pane:focus, .ft-name:focus, .btn, .btn:focus {
+  outline: 0px solid transparent;
+}
+.doc, #round .speech-tabs {
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  line-height: 120%;
+	word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.doc{
+  _display: flex;
+  _flex-direction: column;
+}
+.chunk{
+  _flex: 1;
+}
+
+
+
+
+
+/* DOCUMENT STYLES */
+
+h1 {
+
+    line-height: 100%;
+    font-weight: 500;
+  font-size: 24pt;
+  text-align: center;
+  text-decoration: underline;
+  margin: 0;
+  margin-top: 10px;
+}
+h2 {
+  font-weight: 500;
+    line-height: 100%;
+  font-size: 20pt;
+  text-align: center;
+  text-decoration: underline;
+}
+h3 {
+  font-weight: 500;
+    line-height: 100%;
+  font-size: 16pt;
+  text-align: center;
+  text-decoration: underline;
+}
+h4 {
+  font-size: 13pt;
+  margin: 0;
+  margin-top: 4px;
+}
+b {
+  font-weight: bold;
+  line-height: 130% ;
+}
+u {
+  text-decoration: underline;
+}
+p{
+  margin-top: 5px;
+}
+.readcardsuper {
+  text-decoration: underline;
+  background-color: yellow;
+}
+.size-mode-1  {
+  font-size: 6pt;
+
+}
+
+
+
+.size-mode-1 b, .size-mode-1 u,
+
+ .size-mode-1 *[style*=background-color]:not(*[style*=white]) u,
+ .size-mode-1 *[style*=background-color]:not(*[style*=white]) b
+ {
+  font-size: 12pt;
+  line-height: 14pt;
+
+}
+
+
+.size-mode-1 *[style*=background-color]:not(*[style*=white]) {
+  font-size: 6pt;
+  background-color: white !important;
+}
+
+
+
+.size-mode-1 *[style*=background-color]:not(*[style*=white]) b  ,
+.size-mode-1 b *[style*=background-color]:not(*[style*=white]) ,
+.size-mode-1 *[style*=background-color]:not(*[style*=white]) u  ,
+.size-mode-1 u *[style*=background-color]:not(*[style*=white]) ,
+.size-mode-1 u[style*=background-color]:not(*[style*=white]),
+.size-mode-1 b[style*=background-color]:not(*[style*=white])
+ {
+  font-size: 12pt;
+  line-height: 14pt;
+  background-color: yellow !important;
+}
+
+
+/*
+.size-mode-1 *[style*=background-color]>*:not(u){
+    font-size: 3pt;
+    background-color: white !important;
+}
+
+
+.size-mode-1 b, .size-mode-1 u,  .size-mode-1 *[style*=background-color]:not(*[style*=white])>u {
+  font-size: 12pt;
+  line-height: 14pt;
+}
+
+
+.size-mode-1 *[style*=background-color]>*:not(u){
+    font-size: 6pt;
+    line-height: 6pt;
+    background-color: white !important;
+}
+*/
+
+.size-mode-1 b {
+  font-size: 12pt;
+}
+.size-mode-1 h4{
+line-height: 22pt;
+  margin-top: 20px;
+  display:inline-block
+}
+
+.size-mode-2  {
+  font-size: 6pt;
+}
+.size-mode-2 b, .size-mode-2 u {
+  font-size: 24pt;
+  line-height: 28pt;
+}
+.size-mode-3  {
+  font-size: 6pt;
+}
+.size-mode-3 h4>b, .size-mode-3 p>b, .size-mode-3 p>u:nth-child(1)>b, .size-mode-3 *[style*="background-color"] {
+  font-size: 24pt;
+  line-height: 28pt;
+
+}
+
+.active-card {
+    font-size: 12pt !important;
+    line-height: 100%;
+}

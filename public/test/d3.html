@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Zoomable Treemaps with Color</title>
+<style>
+#scalablechart {
+  width: 100%;
+  height: 100%;
+  background: #ddd;
+}
+
+text {
+  pointer-events: none;
+}
+
+.grandparent text {
+  font-weight: bold;
+}
+
+rect {
+  fill: none;
+  stroke: #fff;
+}
+
+rect.parent,
+.grandparent rect {
+  stroke-width: 2px;
+}
+
+.grandparent rect {
+  fill: orange;
+}
+
+.grandparent:hover rect {
+  fill: #ee9700;
+}
+
+.children rect.parent,
+.grandparent rect {
+  cursor: pointer;
+}
+
+.children rect.parent {
+  fill: #bbb;
+  fill-opacity: .5;
+}
+
+.children:hover rect.child {
+  fill: #bbb;
+}
+</style>
+
+<p id="scalablechart">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+
+  <script src="user/index.js"></script>
+
+<script>
+
+
+// CONVERT FLAT HEADING INDEX TO NESTED
+
+
+var docs = u.index;
+
+var newIndex = []
+
+var prevD = 1;
+
+
+for (var doc in docs){
+
+    var heads = docs[doc].children;
+    var newheads =[];
+
+    for (var h in heads){
+
+      //console.log(heads[h].type)
+
+      var d = parseInt(heads[h].type.substr(-1));
+
+     // console.log(d)
+
+
+      var newh = {name:heads[h].title, children:[], value: 100,  };
+
+      if (d==3){
+
+
+        try{
+        newheads[newheads.length-1].children[   newheads[newheads.length-1].children.length-1   ].children.push(newh)
+        }
+        catch(e){
+
+
+      //  if (!newheads.length)
+        //    newheads.push(newh)
+
+         try{
+        newheads[newheads.length-1].children.push(newh)
+           }
+        catch(e){}
+
+
+        }
+
+      } else if (d==2){
+     //   if (!newheads.length)
+       //     newheads.push(newh)
+        try{
+        newheads[newheads.length-1].children.push(newh)
+           }
+        catch(e){}
+
+      } else if (d==1){
+
+        newheads.push(newh)
+
+      }
+
+      prevD = d;
+
+
+    }
+
+
+    if (newheads.length)
+    newIndex.push({name:docs[doc].title,children:newheads})
+}
+
+
+
+var root = {name:'user', children : newIndex }
+
+console.log(JSON.stringify(root));
+
+
+root = {
+name: "Sitemap",
+children: [
+
+  {"name":"prez powers","children":[{"name":"Pres Powers DA – MSDI","children":[{"name":"1NC","children":[{"name":"1NC","children":[],"value":100}],"value":100},{"name":"Uniqueness","children":[{"name":"UQ – Pres Powers High Now","children":[],"value":100},{"name":"UQ – Flex Now","children":[],"value":100},{"name":"UQ – AT: USA Freedom Act","children":[],"value":100}],"value":100},{"name":"Links","children":[{"name":"Link – Expansive Surveillance Power","children":[],"value":100},{"name":"Link – FISA","children":[],"value":100},{"name":"Link – NSA Surveillance","children":[],"value":100},{"name":"Link – Surveillance","children":[],"value":100},{"name":"Link – Surveillance 4th Gen War","children":[],"value":100},{"name":"Link – Tech","children":[],"value":100},{"name":"Link – Terrorism","children":[],"value":100},{"name":"Link – Warrantless Surveillance","children":[],"value":100}],"value":100},{"name":"Internal Links","children":[{"name":"Spills Overs","children":[],"value":100},{"name":"Broad Authorization Key","children":[],"value":100},{"name":"Congressional Support Key","children":[],"value":100},{"name":"Surveillance Restrictions Spill Over","children":[],"value":100},{"name":"Flex Key to Fight Wars","children":[],"value":100},{"name":"AT: Congress Solves","children":[],"value":100},{"name":"Press Powers Key","children":[],"value":100}],"value":100},{"name":"Impacts","children":[{"name":"2NC Impact Calc","children":[],"value":100},{"name":"Rogue Nations","children":[],"value":100},{"name":"Credibility","children":[],"value":100},{"name":"Terrorism","children":[],"value":100},{"name":"War","children":[],"value":100},{"name":"4th Gen Warfare","children":[],"value":100}],"value":100}],"value":100},{"name":"UQ – Flex Now","children":[],"value":100}],"value":100}],"value":100}
+  ,
+{
+name: "International Relations",
+children: [
+{
+name: "Systemic Theory",
+children: [
+{
+name: "Great Powers",
+value: 3938,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Systemic Politics",
+value: 743,
+url: "http://polisci.osu.edu"
+}
+]
+},
+{
+name: "International Conflict",
+children: [
+{
+name: "Systemic Politics",
+value: 3416,
+url: "http://google.com"
+},
+{
+name: "Causal Complexity",
+value: 3416,
+url: "http://bing.com"
+},
+{
+name: "Deadly Doves",
+value: 3416,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Politcal Irrelevance",
+value: 3416,
+url: "http://polisci.osu.edu"
+},
+{
+name: "The Fog of Peace: Uncertainty, War, and the Resumption of International Crises, <i>manuscript</i>",
+value: 3416,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Greed or Opportunity? Refining our Understanding of the Origins of Civil Wars, <i>manuscript</i>",
+value: 3416,
+url: "http://polisci.osu.edu"
+}
+]
+},
+{
+name: "Foreign Policy",
+children: [
+{
+name: "The Myth of American Isolationism",
+value: 3416,
+url: "http://polisci.osu.edu"
+}
+]
+},
+{
+name: "Courses",
+children: [
+{
+name: "IS 201",
+value: 3416,
+url: "http://polisci.osu.edu"
+},
+{
+name: "PS 544",
+value: 3416,
+url: "http://polisci.osu.edu"
+},
+{
+name: "PS 848",
+value: 3416,
+url: "http://polisci.osu.edu"
+}
+]
+},
+{
+name: "Dataverse",
+children: [
+{
+name: "Dataverse",
+value: 3416,
+url: "http://polisci.osu.edu"
+}
+]
+}
+]
+},
+{
+name: "Political Methodology",
+children: [
+{
+name: "Theory and Methdology",
+children: [
+{
+name: "Interactions and Causal Complexity",
+value: 3938,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Theory and Methodology",
+value: 743,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Software",
+value: 743,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Courses",
+value: 743,
+url: "http://polisci.osu.edu"
+}
+]
+},
+{
+name: "Insteractions and Causal Cmplexity",
+children: [
+{
+name: "Hypothesis Testing and Multiplicative Interation Terms",
+value: 3938,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Causal Complexity",
+children: [
+{
+name: "Causal Complexity and the Study of Politics",
+value: 3938,
+url: "http://polisci.osu.edu"
+},
+{
+name: "Political Irrelevance",
+value: 743,
+url: "http://polisci.osu.edu"
+},
+{
+name: "boolean3 package for R",
+value: 743,
+url: "http://polisci.osu.edu"
+}
+]
+}
+]
+},
+{
+name: "Software",
+children: [
+{
+name: "boolean3 package for R",
+value: 3938,
+url: "http://polisci.osu.edu"
+}
+]
+},
+{
+name: "Courses",
+children: [
+{
+name: "PS 4781",
+value: 3938,
+url: "http://polisci.osu.edu"
+},
+{
+name: "PS 867",
+value: 743,
+url: "http://polisci.osu.edu"
+},
+{
+name: "PS 846",
+value: 743,
+url: "http://polisci.osu.edu"
+}
+]
+}
+]
+}
+]
+}
+
+</script>
+
+<script>
+
+
+var el = document.getElementById('scalablechart');
+
+var margin = {top: 20, right: 0, bottom: 0, left: 0},
+    height = 500 - margin.top - margin.bottom,
+    formatNumber = d3.format(",d"),
+    transitioning;
+
+setSize(svg, el);
+
+function setSize(child, parent) {
+    width = parent.clientWidth;
+    window.console.log('set width: ' + width );
+    $("#scalablechart").empty();
+    dothis();
+
+}
+
+var that = this;
+window.addEventListener('resize', function (e) {
+    that.setSize(svg, el);
+});
+
+var svg;
+
+function dothis() {
+
+var margin = {top: 20, right: 0, bottom: 0, left: 0},
+/*    width = 1160,*/
+    height = 500 - margin.top - margin.bottom,
+    formatNumber = d3.format(",d"),
+    transitioning;
+
+var x = d3.scale.linear()
+    .domain([0, width])
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .domain([0, height])
+    .range([0, height]);
+
+var treemap = d3.layout.treemap()
+    .children(function(d, depth) { return depth ? null : d._children; })
+    .sort(function(a, b) { return a.value - b.value; })
+    .ratio(height / width * 0.5 * (1 + Math.sqrt(5)))
+    .round(false);
+
+
+var svg = d3.select("#scalablechart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.bottom + margin.top)
+    .style("margin-left", -margin.left + "px")
+    .style("margin.right", -margin.right + "px")
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .style("shape-rendering", "crispEdges");
+
+
+
+var grandparent = svg.append("g")
+    .attr("class", "grandparent");
+
+grandparent.append("rect")
+    .attr("y", -margin.top)
+    .attr("width", width)
+    .attr("height", margin.top);
+
+grandparent.append("text")
+    .attr("x", 6)
+    .attr("y", 6 - margin.top)
+    .attr("dy", ".75em");
+
+
+
+
+
+  initialize(root);
+  accumulate(root);
+  layout(root);
+  display(root);
+
+  function initialize(root) {
+    root.x = root.y = 0;
+    root.dx = width;
+    root.dy = height;
+    root.depth = 0;
+  }
+
+
+   // Aggregate the values for internal nodes. This is normally done by the
+  // treemap layout, but not here because of our custom implementation.
+  // We also take a snapshot of the original children (_children) to avoid
+  // the children being overwritten when when layout is computed.
+  function accumulate(d) {
+    return (d._children = d.children)
+        ? d.value = d.children.reduce(function(p, v) { return p + accumulate(v); }, 0)
+        : d.value;
+  }
+
+  // Compute the treemap layout recursively such that each group of siblings
+  // uses the same size (1×1) rather than the dimensions of the parent cell.
+  // This optimizes the layout for the current zoom state. Note that a wrapper
+  // object is created for the parent node for each group of siblings so that
+  // the parent’s dimensions are not discarded as we recurse. Since each group
+  // of sibling was laid out in 1×1, we must rescale to fit using absolute
+  // coordinates. This lets us use a viewport to zoom.
+  function layout(d) {
+    if (d._children) {
+      treemap.nodes({_children: d._children});
+      d._children.forEach(function(c) {
+        c.x = d.x + c.x * d.dx;
+        c.y = d.y + c.y * d.dy;
+        c.dx *= d.dx;
+        c.dy *= d.dy;
+        c.parent = d;
+        layout(c);
+      });
+    }
+  }
+
+  function display(d) {
+    grandparent
+        .datum(d.parent)
+        .on("click", transition)
+      .select("text")
+        .text(name(d));
+
+    var g1 = svg.insert("g", ".grandparent")
+        .datum(d)
+        .attr("class", "depth");
+
+    var g = g1.selectAll("g")
+        .data(d._children)
+      .enter().append("g");
+
+    g.filter(function(d) { return d._children; })
+        .classed("children", true)
+        .on("click", transition);
+
+    g.selectAll(".child")
+        .data(function(d) { return d._children || [d]; })
+      .enter().append("rect")
+        .attr("class", "child")
+        .call(rect);
+
+    g.append("rect")
+        .attr("class", "parent")
+        .call(rect)
+      .append("title")
+        .text(function(d) { return formatNumber(d.value); });
+
+    g.append("text")
+        .attr("dy", ".75em")
+        .text(function(d) { return d.name; })
+        .call(text);
+
+    function transition(d) {
+      if (transitioning || !d) return;
+      transitioning = true;
+
+      var g2 = display(d),
+          t1 = g1.transition().duration(750),
+          t2 = g2.transition().duration(750);
+
+      // Update the domain only after entering new elements.
+      x.domain([d.x, d.x + d.dx]);
+      y.domain([d.y, d.y + d.dy]);
+
+      // Enable anti-aliasing during the transition.
+      svg.style("shape-rendering", null);
+
+      // Draw child nodes on top of parent nodes.
+      svg.selectAll(".depth").sort(function(a, b) { return a.depth - b.depth; });
+
+      // Fade-in entering text.
+      g2.selectAll("text").style("fill-opacity", 0);
+
+      // Transition to the new view.
+      t1.selectAll("text").call(text).style("fill-opacity", 0);
+      t2.selectAll("text").call(text).style("fill-opacity", 1);
+      t1.selectAll("rect").call(rect);
+      t2.selectAll("rect").call(rect);
+
+      // Remove the old node when the transition is finished.
+      t1.remove().each("end", function() {
+        svg.style("shape-rendering", "crispEdges");
+        transitioning = false;
+      });
+    }
+
+    return g;
+  }
+
+  function text(text) {
+    text.attr("x", function(d) { return x(d.x) + 6; })
+        .attr("y", function(d) { return y(d.y) + 6; });
+  }
+
+  function rect(rect) {
+    rect.attr("x", function(d) { return x(d.x); })
+        .attr("y", function(d) { return y(d.y); })
+        .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
+        .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); });
+  }
+
+  function name(d) {
+    return d.parent
+        ? name(d.parent) + "." + d.title
+        : d.title;
+  }
+
+
+
+}
+
+
+
+
+
+</script>

@@ -1,21 +1,41 @@
-var app = require('express').Router(),
-  model = require('./models');
+module.exports = app = require('express').Router(), {User, Round} = require('./models');
+var request = require('request');
 
-var io, User = model.User,
-  ObjectID = require('mongodb').ObjectID,
-  Round = model.Round;
-module.exports = function(_io) {
-  //pass io from app.js
-  io = _io;
-  return app;
-};
+//init socket.io and save socket id to user db
+io.on('connection', function (socket) {
 
-//auth
-function auth(req, res, next) {
-  if (!req.session.user)
-    return res.send("Login required");
-  return next();
-}
+  var sessionID = socket.request.headers.cookie;
+  if (!sessionID)
+    return;
+    
+  sessionID = sessionID.substr(sessionID.search('connect.sid=s%3A')+16);
+  sessionID = sessionID.substr(0, sessionID.indexOf("."));
+
+  mongoose.connection.db.command({find: "sessions", "filter": {"_id":sessionID} }, function(e,f){
+    if (!f.cursor.firstBatch.length) return;
+    var session = JSON.parse(f.cursor.firstBatch[0].session)
+
+    User.update({  _id: session.user._id  }, {  socket: socket.id }).exec();
+
+  })
+
+
+  socket.on('test', function ({fileId}) {
+    console.log(fileId);
+
+    model.Doc.findOne( {"url": fileId }, (e, f)=>{
+
+      socket.emit('show_file', f);
+
+    })
+
+
+  });
+
+
+});
+
+
 
 
 //return all rounds accepted by this user
@@ -137,7 +157,7 @@ app.all('/accept', auth, function(req,  res) {
 
   //remove pending notify
   User.update (
-      {_id: new ObjectID(userId)},
+      {_id: userId},
       {$pull: {'notifications': {
         type:'round_youAreInvited',
         'roundId': roundId,
@@ -188,7 +208,7 @@ app.all('/accept', auth, function(req,  res) {
 
 
     Round.update({
-      "_id": new ObjectID(roundId),
+      "_id": roundId,
       "judges":  { $elemMatch: {"id": userId} }
     }, {
       $set: {
@@ -434,17 +454,4 @@ app.get('/resend', auth, function(req, res) {
 
   return res.end();
 
-});
-
-
-app.all('/join', auth, function(req, res) {
-
-
-  User.findOneAndUpdate({
-    _id: req.session.user._id
-  }, {
-    socket: req.query.socket
-  }, function() {});
-
-  res.end();
 });

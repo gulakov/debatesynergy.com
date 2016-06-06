@@ -2,6 +2,7 @@
   "name": "debatesynergy",
   "description": "DebateSynergy.com web app enables high school and college debate teams to store online research and stream debate rounds.",
   "version": "2.2.0",
+  "main": "server.js",
   "scripts": {
     "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -e server.log -o server.log -a -v -w . >/dev/null 2>&1 &",
     "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db --smallfiles --nojournal --quiet  >> mongo.log  2>&1 &  ",

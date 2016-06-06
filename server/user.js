@@ -1,7 +1,5 @@
-var app = require('express').Router(), {User,Doc} = require('./models'),
-request = require('request'), config = require('../config');
-module.exports = app;
-
+module.exports = app = require('express').Router(), {User,Doc} = require('./models');
+var request = require('request');
 
 
 //return the entire user object including file index for logged in user, or false if guest
@@ -15,7 +13,7 @@ app.all('/', function(req, res, next) {
         })
 });
 
-app.all('/index.js', function(req, res, next) {
+app.all('/index.js', function(req, res) {
 
     if (!req.session.user)
         res.send(`var u = false;`);
@@ -32,8 +30,8 @@ app.all('/update', auth, function(req, res) {
   var {userid="", index, custom_js, custom_css, options={}} = req.body!={} ? req.body : req.query;
 
   //if user has two tabs open with different indexes or accounts, prevent race
-  if (userid != req.session.user._id)
-    return res.send("User ID does not match");
+  //if (userid != req.session.user._id)
+    //return res.send("User ID does not match");
 
   if (index)
     User.update({_id: userid}, {index, date_updated: Date.now()} ).exec();
@@ -90,23 +88,6 @@ app.get('/search', function(req, res) {
 });
 
 
-//URL takes /user/sample@email.com, returns data for that user
-app.get('/:id?', function(req, res) {
-    User.findOne( { $or:[ {email: req.params.id}, {_id: req.params.id}] }, function(error, user) {
-        if(user)
-        	res.json({id:user._id, email: user.email, name: user.name, socket: user.socket});
-        else
-        	res.send("No user found")
-    })
-});
-
-//ensures user is logged in
-function auth(req, res, next) {
-  if (!req.session.user)
-    return res.send("Login required");
-  next();
-}
-
 
 
 //repopulate current user's index with all files in database belonging to that user, losing folders
@@ -128,4 +109,14 @@ app.all('/recover', function(req, res, next) {
 
   });
 
+});
+
+//URL takes /user/sample@email.com, returns data for that user
+app.get('/:id?', function(req, res) {
+    User.findOne( { $or:[ {email: req.params.id}, {_id: req.params.id}] }, function(error, user) {
+        if(user)
+        	res.json({id:user._id, email: user.email, name: user.name, socket: user.socket});
+        else
+        	res.send("No user found")
+    })
 });

@@ -1,67 +1,7 @@
 
 
-
-window.docShareAlert = function(msg) {
-
-  $("#info").append('<div class="alert alert-success alert-dismissable">' +
-      '<button  class="close" data-dismiss="alert">&times;</button>' +
-      msg.owner + ' has shared \"' + msg.title + '\" with you. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>')
-      .on('close.bs.alert', '.alert', function () {
-          $.get('/user/notify', {fileId:msg.fileId})
-
-      })
-      .on('click', ".btn-primary", function() {
-        ft.click(msg.fileId )
-        window.location.pathname="/"+msg.fileId;
-      })
-
-
-}
-
-window.alert = function(message, alertclass, container, autofade) {
-  var alert = $('<div class="alert-' + (alertclass || "info") + '">' +
-    (autofade ? '' : '<span class="close"></span>') + (message || "") + '</div>');
-
-  container = container || '#sidebar';
-  $(container).css("position", "relative");
-  $($(container + ">.alert-position")[0] ||
-    $("<div class='alert-position'>").prependTo(container)).prepend(alert);
-
-  if (autofade)
-    alert.hide().fadeIn(300).delay(1500).closeAlert()
-  else
-    alert.find('.close').click(function() {
-      $(this).parent().closeAlert()
-    })
-	return alert;
-}
-jQuery.fn.closeAlert = function() {
-  this.animate({
-    "opacity": 0,
-    "margin-top": "-50px",
-    "display": "none"
-  }, "fast").delay(300, function() {
-    this.remove()
-  });
-}
-
-
-
 $(document).ready(function() {
 
-
-
-  //modal closing
-
-  $(".modal").css("left", ($("#sidebar").width()+35) +"px")
-
-  $(".modal").each(function(){
-    $(this).prepend('<span class="close">');
-  })
-  $(".modal:last").after('<div class="modal-overlay">')
-  $(".modal-overlay, .close").click(function (e) {
-      $(".modal").hide();
-  })
 
 
 //key shorcuts UHB
@@ -224,7 +164,7 @@ $('#share-select').select2({
 
 
   //file info modal -- save title, sharing
-  $("#modal-file-submit").click(function(){
+  $("#file-info-modal-submit").click(function(){
       var sharetype = $("#file-share-by-owner input:checked").attr('id').substring(6);
 
         $.post('/doc/update', {
@@ -352,30 +292,56 @@ $('#share-select').select2({
   })
 
 
+/*
+
+
+      var selectionContents = getSelection().getRangeAt(0).cloneContents();
+      var div = $("<mark>").append(selectionContents);
+
+    //  if (     window.highlightSelect == div.html() ) return;
+
+      window.highlightSelect = div.html();
+
+      var colorToUse = "white";
+
+      //if inside selection there is any text range with non-white bg
+      if(!div.find("*[style*=background-color]:not(*[style*=white])").length)
+          colorToUse = "yellow";
+
+        ///if inside parent thats all highlighted -- white
+      var parentColor = $(window.getSelection().anchorNode.parentNode).closest("*[style*=background-color]").css("background-color");
+
+      if ( parentColor && parentColor  != "rgb(255, 255, 255)")
+        colorToUse = "white";
+
+      //console.log( div.html() )
+      document.execCommand('backColor', false, colorToUse);
+*/
+
   $("body").on("mouseup", ".highlight-mode", function(e) {
   //console.log(e);
 
-  var selectionContents = window.getSelection().getRangeAt(0).cloneContents();
-  var div = $("<span>").append(selectionContents);
+      var selectionContents = getSelection().getRangeAt(0).cloneContents();
+      var div = $("<mark>").append(selectionContents);
 
-//  if (     window.highlightSelect == div.html() ) return;
+    //  if (     window.highlightSelect == div.html() ) return;
 
-  window.highlightSelect = div.html();
+      window.highlightSelect = div.html();
 
-  var colorToUse = "white";
+      var colorToUse = "white";
 
-  //if inside selection there is any text range with non-white bg
-  if(!div.find("*[style*=background-color]:not(*[style*=white])").length)
-      colorToUse = "yellow";
+      //if inside selection there is any text range with non-white bg
+      if(!div.find("*[style*=background-color]:not(*[style*=white])").length)
+          colorToUse = "yellow";
 
-    ///if inside parent thats all highlighted -- white
-  var parentColor = $(window.getSelection().anchorNode.parentNode).closest("*[style*=background-color]").css("background-color");
+        ///if inside parent thats all highlighted -- white
+      var parentColor = $(window.getSelection().anchorNode.parentNode).closest("*[style*=background-color]").css("background-color");
 
-  if ( parentColor && parentColor  != "rgb(255, 255, 255)")
-    colorToUse = "white";
+      if ( parentColor && parentColor  != "rgb(255, 255, 255)")
+        colorToUse = "white";
 
-  console.log( div.html() )
-  document.execCommand('backColor', false, colorToUse);
+      //console.log( div.html() )
+      document.execCommand('backColor', false, colorToUse);
 
 
   //when highlighting United States only highlight US
@@ -408,7 +374,7 @@ $('#share-select').select2({
 
 
 
-  $("#superreadcard").click(function() {
+  $("#format-highlight").click(function() {
 
 
     $("#docs").on("mouseenter", function(){
@@ -451,9 +417,8 @@ $('#share-select').select2({
   //$('.dropdown-toggle').dropdown()
 
 
-    $("#ft-collapse-btn").click(function() {
-
-        $(".ft-file.ft-name:not(.collapsed)").siblings(".ft-icon").click()
+    $("#ft-collapse").click(function(){
+        $(".file:not(.collapsed)").addClass('collapsed')
     })
 
 
@@ -518,22 +483,12 @@ $('#share-select').select2({
 
 
   $("#showround").click(function() {
-    if ($("#round").is(":visible")) {
-      $("#round, #timer").hide();
-      /*
-      if ($(document).width() < 700)
-        $("#docs").css("width", "65%");
-      else
-      */
+    $("#round").toggle();
 
-    } else {
-      $("#round, #timer").show();
+    $("#docs").css("padding-right", $("#round").is(":visible") ? "45%" : 0)
+
+    if(  $("#round").is(":visible") )
       round_init()
-
-
-
-    }
-
 
   });
 
@@ -574,24 +529,11 @@ $('#share-select').select2({
       }
 
 
-      if (local) {
-        var id = "local" + Math.floor((10000 * Math.random()));
 
-        fileData.id = id;
-
-        localStorage["debate_" + id] = JSON.stringify(fileData);
-
-        u.index.push(fileData);
-
-        ft.populate(ft.root, u.index);
+        $.get("/doc/create", fileData, function(newFileJSON) {
 
 
-
-      } else {
-        $.get("/doc/create", fileData, function(id) {
-
-
-          fileData.id = id;
+          fileData.id = newFileJSON._id;
 
 
 
@@ -603,7 +545,6 @@ $('#share-select').select2({
 
 
         })
-      }
 
 
 
@@ -633,10 +574,43 @@ $('#share-select').select2({
 
 
     $("#import_googledrive").click(function() {
+        $("#modal-file-new").hide();
 
-      $('head').append('  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.0.0/jszip.min.js" async defer></script>'+
-      '  <script src="https://apis.google.com/js/client.js?onload=gapiInit" async defer></script>')
+        if (window.google)
+          launchGoogleFilePicker()
+        else
+          $('head').append('<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.0.0/jszip.min.js" ></script>'+
+          '<script src="https://apis.google.com/js/client.js?onload=gapiInit" ></script>')
 
+
+
+
+
+    });
+
+
+    //gapi drive load
+    window.gapiInit = function() {
+      //CLIENT BROWSER API KEY
+      gapi.key = 'AIzaSyDgdM5CpdzE3dLHD877L8fB3PyxVpV7pY4';
+      gapi.client.setApiKey(gapi.key);
+      gapi.auth.authorize({
+        client_id: '675454780693-7n34ikba11h972dgfc0kgib0id9gudo8.apps.googleusercontent.com',
+        scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive'],
+        immediate: true
+      }, function(res) {
+        console.log(res)
+        gapi.authToken = res.access_token;
+        gapi.client.load('drive', 'v2', function() {});
+        gapi.load('picker', {
+          callback: launchGoogleFilePicker
+        });
+      });
+    }
+
+
+
+    function launchGoogleFilePicker(){
       var filePickerResponse = function(pickedFilesData) {
 
         if (pickedFilesData.action != "picked") return;
@@ -644,6 +618,7 @@ $('#share-select').select2({
         gapi.client.drive.files.get({
           'fileId': pickedFilesData.docs[0].id
         }).execute(function(resp) {
+
           $.ajax({
             url: resp.exportLinks["text/html"],
             type: 'GET',
@@ -653,25 +628,27 @@ $('#share-select').select2({
             success: function(fileHtml) {
 
               //create new
-              $.get("/doc/create", {title: $("#filename").val()    }, function(id) {
+              $.get("/doc/create", {title: resp.title }, function(newFile) {
 
                 u.index.push({
                   "type": "ft-file ft-selected",
                   "title": resp.title,
-                  "id": id
+                  "id": newFile._id
                 });
 
                 ft.populate(ft.root, u.index);
-                ft.loadFile(id, function() {
+                ft.loadFile(newFile._id, function() {
+                  //TODO FIX
                   //paste google doc html into new doc
-                  $(".doc:visible").html(fileHtml).find("span, u").each(function() {
-                    })
+                  //$(".doc:visible").append("<div contenteditable class='chunk'>")
+                   $(".doc:visible .chunk").html(fileHtml).find("span, u").each(function() {
 
-                  /*  if ($(this).css('font-weight') == 'bold')
+
+                    if ($(this).css('font-weight') == 'bold')
                       $(this).wrap('<b>');
 
-                //    if ($(this).css('text-decoration') == 'underline')
-                  //    $(this).wrap('<u>');
+                   if ($(this).css('text-decoration') == 'underline')
+                     $(this).wrap('<u>');
 
                     if ($(this).css('background-color') != 'rgba(0, 0, 0, 0)' && $(this).css('background-color') != 'transparent')
                       $(this).wrap('<span style="background-color: yellow;">');
@@ -681,35 +658,35 @@ $('#share-select').select2({
 
 
 
-                //  $(".doc style").remove()*/
+                      $(".doc style").remove()
 
+                  })
+
+
+                  ft.update();
                 });
 
               })
 
-            }
+              }
+            });
           });
-        });
 
-      };
+        };
 
-      var view = new google.picker.View(google.picker.ViewId.DOCUMENTS);
-      view.setMimeTypes("application/vnd.google-apps.document");
+        var view = (new google.picker.View(google.picker.ViewId.DOCUMENTS));
+        view.setMimeTypes("application/vnd.google-apps.document");
 
-      var picker = new google.picker.PickerBuilder()
-        .enableFeature(google.picker.Feature.NAV_HIDDEN)
-        .addView(view)
-        .setOAuthToken(authToken)
-        .setDeveloperKey(apiKey)
-        .setCallback(filePickerResponse)
-        .build();
-      picker.setVisible(true);
+        new google.picker.PickerBuilder()
+          .enableFeature(google.picker.Feature.NAV_HIDDEN)
+          .addView(view)
+          .setOAuthToken(gapi.authToken)
+          .setDeveloperKey(gapi.key)
+          .setCallback(filePickerResponse)
+          .build()
+          .setVisible(true);
 
-        $("#file-new-modal").hide();
-
-
-    });
+    } //end file picker
 
 
-
-});
+}); //end dom

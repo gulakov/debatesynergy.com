@@ -1,0 +1,24 @@
+CACHE MANIFEST
+# default 18rem
+
+CACHE:
+/
+/index.html
+https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css
+https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css
+https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js
+https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.full.min.js
+/user/index.js
+/buttons.js
+/round.js
+/timer.js
+/filetree.js
+/init.js
+/debatestyle.css
+
+NETWORK:
+/s/
+*
+
+FALLBACK:
+/ /

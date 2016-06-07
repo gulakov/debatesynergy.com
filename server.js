@@ -127,7 +127,6 @@ app.use(function(req, res, next) {
     res.removeHeader("ETag");
 
     app.disable("etag");
-    res.setHeader('Access-Control-Allow-Origin', '*')
 
   next();
 });
@@ -142,7 +141,7 @@ global.auth = function (req, res, next) {
 //Google API
 app.use(require('./server/google'));
 //testing dev
-app.use(require('./server/TEST'));
+// app.use(require('./server/TEST'));
 
 //server routes
 app.use('/user', require('./server/user'));
@@ -153,7 +152,7 @@ app.use('/', require('./server/home'));
 
 
 //frontend files
-app.use(require('serve-static')(__dirname + '/public', {  maxAge: config.cache ? 1000 * 3600 * 24 : 0  }))
+app.use(require('serve-static')(__dirname + '/public', {  maxAge: 0 ? 1000 * 3600 * 24 : 0  }))
 
 
 app.use(function (err, req, res, next) {

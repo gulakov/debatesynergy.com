@@ -59,15 +59,9 @@ button+*:not(button){
   content: "\25bd";
 }
 
-.dropdown:not(:hover) .dropdown-menu{
-
-  top: 0px !important;
-  opacity: 0;
-
-  transform: translate(0%, -100%);
-  transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
-}
-.dropdown-menu{
+.dropdown-menu{ /*showing*/
+  height: 500px;
+  width: 150px;
   position: absolute;
   left:0;
   z-index: 1000;
@@ -75,6 +69,18 @@ button+*:not(button){
   transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
   opacity: 1;
 }
+
+.dropdown:not(:hover) .dropdown-menu{ /* hidden*/
+
+  top: 0px !important;
+  height: 0px;
+  width: 0px !important;
+  opacity: 0;
+
+  transform: translate(0%, -100%);
+  transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+}
+
 .dropdown-menu button{
   margin-left: 0;
   text-align: left;

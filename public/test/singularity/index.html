@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+
+
+@font-face {
+  font-family: 'Flynn';
+  src:  url('Flynn.woff2') format('woff2');
+}
+
+
+	.node {
+    cursor: pointer;
+  }
+
+  .overlay{
+      background-color:#EEE;
+  }
+
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node text {
+    font-size:10px;
+    font-family:sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+
+  .templink {
+    fill: none;
+    stroke: darkblue;
+    stroke-width: 3px;
+
+  }
+
+  .ghostCircle.show{
+      display:block;
+  }
+
+  .ghostCircle, .activeDrag .ghostCircle{
+       display: none;
+  }
+
+  body{margin:0;
+    overflow: hidden;}
+
+  image{
+opacity: .1;
+  }
+
+
+  image#astro{
+opacity: .3;
+  }
+
+  image#tree, image#tree2{
+    opacity: .9;
+  }
+
+  image#tree:hover, image#tree2:hover{
+    opacity: 1;
+    stroke: red;
+    border: 1px solid red;
+    cursor: pointer;
+
+  }
+
+
+tspan{
+  font-family: Flynn;
+  stroke-width: 1px;
+  stroke: darkblue;
+  fill: #7DA8FF;
+  letter-spacing: 1px;
+  opacity: .7;
+}
+
+body *{
+  cursor: url(./space.ico) 0 0, nw-resize !important;
+}
+</style>
+</head><body>
+    <div id="tree-container">
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.js"></script>
+
+<script src=".//d3.v3.min.js"></script>
+
+  <script src="https://debatesynergy.com/user/index.js"></script>
+<script src=".//dndTree.js"></script>
+</body></html>

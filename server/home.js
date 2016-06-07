@@ -7,12 +7,13 @@ var request = require('request'), fs = require('fs');
 //Docx is dead. Long live dhtml: the new debate file standard!
 
 //route forwards /fileId database uid to /index.html
-app.get(/[a-zA-Z0-9]+\.html/, function(req, res){
+app.get(/[a-zA-Z0-9\/]+\.html/, function(req, res){
   //re-login existing user
 
     var {url} = req;
 
-    if (url.startsWith('/html'))
+
+    if (url.startsWith('/html')|| url.startsWith('/test'))
 
         return fs.createReadStream(__dirname.replace("/server","")+"/public"+url).pipe(res, {end: true});;
 
@@ -60,7 +61,6 @@ app.get(/[a-zA-Z0-9]+\.html/, function(req, res){
 
     //config.cache ? 1000 * 3600 * 24 : 0
 });
-
 
 
 
@@ -141,4 +141,18 @@ app.get('/download', function(req, res) {
       Download.create({ip,sys,geo});
   })
 
+});
+
+
+
+/****** FINAL ****/
+
+//route forwards /fileId database uid to /index.html
+app.get(/\/[a-z0-9]+/, function(req, res, next ){
+
+  if (req.url.indexOf(".")>0||req.url.indexOf("/",1)>0)
+    return next()
+
+  //re-login existing user
+      return fs.createReadStream(__dirname.replace("/server","")+"/public/index.html").pipe(res, {end: true});;
 });

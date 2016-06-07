@@ -39,7 +39,7 @@ opacity: .8;
 </head>
 <body>
 
-  <script src="/user/index.js"></script>
+  <script src="user/index.js"></script>
 
 <script>
 //FAST File Arrangement in System Tree
@@ -65,7 +65,8 @@ for (var doc in docs){
 
       //console.log(heads[h].type)
 
-      var d = parseInt((heads[h].type.match(/\d/)||[])[0])
+      var d = parseInt(heads[h].type.substr(-1));
+
      // console.log(d)
 
 

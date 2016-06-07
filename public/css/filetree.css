@@ -19,7 +19,7 @@ aside ul{
 /* FILETREE */
 
 #filetree {
-  flex: 2
+  flex: 2;
   overflow: auto;
   overflow-x: hidden;
 }

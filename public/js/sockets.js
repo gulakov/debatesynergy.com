@@ -53,7 +53,7 @@ socket.on('error', function(e) {
 
 
     socket.on('doc_partial', function(docJSON){
-      console.log(docJSON)
+      // console.log(docJSON)
 
 
   // if (docJSON.text.length < 300) return

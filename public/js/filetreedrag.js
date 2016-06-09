@@ -1,8 +1,7 @@
-
+/* ENABLE FILE & HEADING DRAGGING */
 
 $(document).ready(function(){
 
-  /* ENABLE FILE & HEADING DRAGGING */
 
   $('#filetree').on("dragstart", function(e) {
       ft.dragging = $(e.target).closest('nav');

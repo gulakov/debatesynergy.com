@@ -322,12 +322,82 @@ $('#share-select').select2({
   //console.log(e);
 
       var selectionContents = getSelection().getRangeAt(0).cloneContents();
-      var div = $("<mark>").append(selectionContents);
 
-    //  if (     window.highlightSelect == div.html() ) return;
+      //alert user if selection doesn't contain u/b text that's eligible for highlighting
+      if (!selectionContents.querySelector("b,u") && selectionContents.textContent.length > 50)
+        alert("Only bold or underlined text in selection gets highlighted.", "warning", null, true)
 
-      window.highlightSelect = div.html();
+      var firstNode = getSelection().anchorNode.parentNode;
 
+      var isHighlighted = firstNode.closest("mark")
+
+
+      $("#docs").toggleClass('strikeToggleMode')
+
+     $("mark").each(function(){
+      //  this.outerHTML=this.outerHTML.replace(/mark>/g,'strike>')
+     })
+
+      document.execCommand('italic')
+
+
+      $("strike").each(function(){
+        // this.outerHTML=this.outerHTML.replace(/strike>/g,'mark>')
+      })
+
+
+
+            $("#docs").toggleClass('strikeToggleMode')
+
+          $("#docs *[style*='font-style: italic']").css('font-style','normal').wrap('<i>')
+
+        getSelection().collapseToStart()
+
+         return;
+
+        var selectionContents = $("<span>").append(selectionContents ).html()
+
+
+        if (isHighlighted){
+
+          var aOff = getSelection().anchorOffset;
+          var aText = getSelection().anchorNode.textContent;
+          getSelection().anchorNode.textContent =
+              aText.substring(0,aOff) + "</mark>" + aText.substring(aOff);
+
+              var selHtml = getSelection().anchorNode.parentNode.innerHTML;
+
+              //  getSelection().anchorNode.parentNode.innerHTML =
+              //   selHtml.replace('&gt;','>').replace('&lt;','<')
+
+
+          //endNode
+
+
+          var aOff = getSelection().focusOffset;
+          var aText = getSelection().focusNode.textContent;
+          getSelection().focusNode.textContent =
+              aText.substring(0,aOff) + "<mark>" + aText.substring(aOff);
+
+              var selHtml = getSelection().focusNode.parentNode.innerHTML;
+
+
+
+               var par = $(getSelection().focusNode.parentNode)
+                par.closest("section").html(
+                    par.closest("section").html().replace(/&gt;/g,'>').replace(/&lt;/g,'<')
+                  )
+
+        }else{
+          selectionContents = "<mark>"+selectionContents+"</mark>";
+
+
+            pasteHtmlAtCaret(selectionContents)
+      }
+
+
+
+      /*
       var colorToUse = "white";
 
       //if inside selection there is any text range with non-white bg
@@ -342,6 +412,7 @@ $('#share-select').select2({
 
       //console.log( div.html() )
       document.execCommand('backColor', false, colorToUse);
+      */
 
 
   //when highlighting United States only highlight US
@@ -384,7 +455,7 @@ $('#share-select').select2({
           $("#sw")[0].play()
     })
 
-    $(this).toggleClass("enabled")
+    $(this).toggleClass("active")
     $("#docs, .speech").toggleClass("highlight-mode").trigger("mouseup");
 
 

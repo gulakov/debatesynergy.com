@@ -57,7 +57,14 @@ if (u) {
 };
 
 //init filetree
-ft.init($('#filetree'), u.index);
+if (u.index=="local"){
+  // filetree.innerHTML = localStorage.index;
+  // u.index=ft.toJSON()
+
+
+}
+
+  ft.init($('#filetree'), u.index);
 
 //RESOURCE DELAYED LOADER
 setTimeout(function(){
@@ -137,18 +144,18 @@ var dist = window.touchStart ? e.originalEvent.changedTouches[0].pageX - window.
 if (dist < -100) {
   $("#sidebar").animate({
     'marginLeft': "-"+$("#sidebar").width()
-  }, 250);
+  }, 0);
   $("#docs").animate({
     'paddingLeft': "0"
-  }, 250);
+  }, 0);
 } else if (dist > 100){
   $("#sidebar").animate({
     'marginLeft': '0'
-  }, 250);
+  }, 0);
 
   $("#docs").animate({
     'paddingLeft': '20%'
-  }, 250);
+  }, 0);
 }
 })
 

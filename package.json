@@ -9,7 +9,7 @@
     "stop": "sudo killall -9 node nodejs",
     "setup": "npm install forever -g && sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\`` && mv node_modules/mongo-express/config.default.js config.mongo.js",
     "log": "tail -200f ~/debatesynergy/server.log ",
-    "min": "cd public && minify -o ds.min.js buttons.js filetree.js init.js round.js timer.js",
+    "min": "cd public/js && minify -o ../min/ds.min.js alerts.js docedit.js filetree.js init.js roundpanel.js sockets.js timer.js controlbuttons.js filetreedrag.js flow.js offline.js search.js worddocx.js",
     "p80": "sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\``",
     "ssl": "echo \"letsencrypt certonly --standalone --config-dir ~/letsencrypt --agree-tos --email contact@debatesynergy.com --domains debatesynergy.com #change\"",
     "config": "echo \"{db:{user:'',password:'',dbname:''},google:{client_id:'',client_secret:'',redirect_uri:''},cookie:'',cache:0,force_https:1};\" >> config.json"

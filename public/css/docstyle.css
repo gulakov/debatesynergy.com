@@ -1,8 +1,13 @@
-highlighted text, only if also underlined, gets bg color
-mark>u,u>mark{
+/*highlighted text, only if also underlined, gets bg color*/
+i>u,u>i,i>b,b>i{
   background: yellow;
 }
 
+#docs:not(.strikeToggleMode) i{
+
+    /*background: yellow;*/
+    font-style: normal;
+}
 
 
 .highlight-mode{

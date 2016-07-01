@@ -320,12 +320,14 @@ $(".btn").click(function(){ $(this).blur() })
 
 
   $("#showround").click(function() {
-    $("#round").toggle();
+  if( $("#round").is(":visible") ){
+        $("#round").hide();
+        $("#docs").css("padding-right", 0)
 
-    $("#docs").css("padding-right", $("#round").is(":visible") ? "45%" : 0)
-
-    if(  $("#round").is(":visible") )
-      round_init()
+    } else {
+      openRoundPanel()
+      $("#docs").css("padding-right", "45%")
+    }
 
   });
 

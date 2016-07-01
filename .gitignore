@@ -1,7 +1,8 @@
 db/
 node_modules/
-public/oldword/*
-public/lib/*
-nohup.out
+public/lib/
+public/min/
+
 server/config*
+*out
 *log

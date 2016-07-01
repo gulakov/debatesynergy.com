@@ -81,6 +81,7 @@ setTimeout(function (){
         $('body').append(resourcesHtml);
 
         initRoundPanel();
+        initRoundActions();
         initTimer();
         initControls();
 

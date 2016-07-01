@@ -1,0 +1,107 @@
+
+/* TIMER */
+
+#timer {
+  height: 60px;
+  width: 120px;
+  z-index: 99999;
+  kbackground-color: #C6D9EE;
+  font-weight: bold;
+
+
+  padding: 0px;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+#timer *{
+  font-family: "debatesynergy-icons";
+  font-style: normal;
+    letter-spacing: 3px;
+}
+#timer:hover {
+  height: 120px;
+}
+#timer:hover #timer-btn-container, #timer:hover #count {
+  display: block;
+  height: 60px;
+}
+#timer-btn-container{
+	cursor: pointer;
+}
+#btn-prep-container, #btn-times-container, #btn-play-container {
+  width: 33%;
+  height: 100%;
+  float: left;
+}
+#count {
+  height: 100%;
+  border: 0px;
+  width: 100%;
+  text-align: center;
+  font-size: 50px;
+  font-weight: bold;
+  vertical-align: middle;
+  background-color: transparent;
+  text-shadow: 1px 1px 2px black, 0 0 1em white, 0 0 0.2em white;
+}
+#btn-timer-aff, #btn-timer-neg {
+  font-size: 15pt;
+  letter-spacing: -2px;
+  height: 50%;
+  font-weight: bold;
+	border-radius: 5px;
+}
+.btn-timer-aff {
+  color: #0044C0;
+}
+.btn-timer-neg {
+  color: #C00000;
+}
+#btn-timer-aff {
+  background-color: #0044C0;
+}
+#btn-timer-aff:hover {
+  background-color: #0051E6;
+}
+#btn-timer-neg {
+  background-color: #C00000;
+}
+#btn-timer-neg:hover {
+  background-color: #E60000;
+}
+#btn-play-container {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 100%;
+  background-position: center center;
+  width: 33%;
+  float: left;
+}
+.play {
+  border-top: 25px solid transparent;
+  border-left: 35px solid blue;
+  border-bottom: 25px solid transparent;
+  border-right: 0px;
+  box-sizing: border-box;
+  margin: 5px;
+}
+.pause {
+  background: red;
+  height: 40px;
+  position: relative;
+  width: 7px;
+  margin-left: 40%;
+  margin-top: 20%
+}
+.pause:after {
+  background: red;
+  content: "";
+  height: 40px;
+  left: 10px;
+  position: absolute;
+  width: 7px;
+}

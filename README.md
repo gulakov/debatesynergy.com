@@ -14,7 +14,7 @@ DebateSynergy.com open-source web app enables debate students to store online re
 - **Google Chrome extension** - offline sync
 
 
-### Install (Ubuntu)
+### Install 
 
 ```
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -

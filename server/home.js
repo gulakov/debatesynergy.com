@@ -77,7 +77,7 @@ app.get('google5b99926759301320.html', function(req, res) {
 
 app.get('/favicon.ico', function(req, res) {
   fs.createReadStream(__dirname.replace("/server", "") +
-    "/public/img/favicon.ico").pipe(res, {
+    "/public/css/icon/favicon.ico").pipe(res, {
     end: true
   });;
 })

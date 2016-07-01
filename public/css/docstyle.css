@@ -13,11 +13,11 @@ i>u,u>i,i>b,b>i{
 
 
 .highlight-mode{
-  cursor: url("/highlight.ico") 0 0, auto;
+  cursor: url("icon/highlight.ico") 0 0, auto;
 }
 .highlight-mode *[style*='background-color']:not(*[style*=white]) {
 
-    cursor: url("/highlight-off.ico") 0 0 , auto;
+    cursor: url("icon/highlight-off.ico") 0 0 , auto;
 }
 
 #docs{

@@ -1,7 +1,7 @@
 db/
 node_modules/
 public/lib/
-public/min/
+public/min/*
 
 server/config*
 *out

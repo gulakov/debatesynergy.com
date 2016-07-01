@@ -1,5 +1,8 @@
 
-$(document).ready(function(){
+$(document).ready(initTimer);
+
+function initTimer(){
+
 
   //configure initial time values
   var timeset = (u.options && u.options.debatetype == 2) ? [9,6,10] : (u.options && u.options.debatetype == 3) ? [6, 7, 4] : [8,5,8];
@@ -95,4 +98,4 @@ $(document).ready(function(){
     $("#count").val(toTime(count));
   })
 
-})
+}

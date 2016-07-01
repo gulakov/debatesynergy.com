@@ -54,6 +54,97 @@ for that matter, </span><u><span>to ourselves</span></u><span>. </span></span></
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 
 <script>
+var isTouch = 'ontouchstart' in window || 'msmaxtouchpoints' in window.navigator;
+
+function Touche(nodes) {
+  // Doing this allows the developer to omit the `new` keyword from their calls to Touche
+  if (!(this instanceof Touche)) {
+    return new Touche(nodes);
+  }
+
+  if (!nodes) {
+    throw new Error('No DOM elements passed into Touche');
+  }
+
+  this.nodes = nodes;
+
+  return this;
+}
+
+// Our own event handler
+Touche.prototype.on = function(event, fn) {
+  var touchend, nodes = this.nodes,
+    len = nodes.length,
+    ev;
+
+  if (isTouch && event === 'click') {
+    touchend = true;
+  }
+
+  ev = function(el, event, fn) {
+    var called, once = function() {
+        if (!called && (called = true)) {
+          fn.apply(this, arguments);
+        }
+      };
+
+    el.addEventListener(event, once, false);
+
+    if (touchend) {
+      el.addEventListener('touchend', once, false);
+    }
+  };
+
+  // NodeList or just a Node?
+  if (len) {
+    while (len--) {
+      ev(nodes[len], event, fn);
+    }
+  } else {
+    ev(nodes, event, fn);
+  }
+
+  return this;
+};
+
+// Expose Touche
+window.Touche = Touche;
+
+// Has the developer used jQuery?
+if (window.jQuery && isTouch) {
+  var originalOnMethod  = jQuery.fn.on,
+      originalOffMethod = jQuery.fn.off;
+
+  var replaceEventName = function (event) {
+    if (event.slice(0, 5) == 'click') {
+      return event.replace('click', 'touchend');
+    }
+    return event;
+  }
+
+  // Change event type and re-apply .on() method
+  jQuery.fn.on = function() {
+    // arguments[0] is the event name if provided
+    if(typeof arguments[0] === "string"){
+      arguments[0] = replaceEventName(arguments[0]);
+    }
+
+    originalOnMethod.apply(this, arguments);
+    return this;
+  };
+
+  // Change event type and re-apply .off() method
+  jQuery.fn.off = function() {
+    // arguments[0] is the event name if provided
+    if(typeof arguments[0] === "string"){
+      arguments[0] = replaceEventName(arguments[0]);
+    }
+
+    originalOffMethod.apply(this, arguments);
+    return this;
+  };
+}
+
 
 
 
@@ -79,7 +170,7 @@ window.addEventListener( "touchmove", function ( event ) {
 
 
 window.sl=false;
-
+/*
 $('div').each(function() {
     var $this = $(this);
     $this.html($this.html()
@@ -89,14 +180,43 @@ $('div').each(function() {
 
 
     // .replace(/(\b[a-z]+[ \,\.\)\(\-\"])/gi, "<span>$1 </span>")
-});
+});*/
 
-$('body').on("touchmove",   function(e) {
 
-        var t = e.originalEvent.changedTouches[0]
+$('body').on("click touchmove",  function(e) {
 
-        //console.log(t)
+        // var t = e.originalEvent.changedTouches[0]
 
+
+
+        s = window.getSelection();
+        var range = s.getRangeAt(0);
+        var node = s.anchorNode;
+        while (range.toString().search(/[ .,]/)  != 0) {
+            range.setStart(node, (range.startOffset - 1));
+        }
+        range.setStart(node, range.startOffset + 1);
+        do {
+            range.setEnd(node, range.endOffset + 1);
+
+        } while (range.toString().search(/[ .,]/) == -1 && range.toString().trim() != '');
+        var t = range.toString().trim();
+
+
+
+
+        var hl = document.createElement("i");
+
+        hl.className = 'c'
+
+        range.surroundContents(hl);
+        console.log(t)
+
+})
+
+
+
+      /*
         var px = t.clientX, py = t.clientY;
 
 
@@ -121,7 +241,7 @@ $('body').on("touchmove",   function(e) {
     }
 );
 
-
+/*
 
 $('body').on("touchstart",   function(e) {
 
@@ -152,31 +272,15 @@ $('body').on("touchstart",   function(e) {
       //  },700)
     }
 );
-
-
-$(window).scroll(function() {
-	window.sl = true;
-    clearTimeout($.data(this, 'scrollTimer'));
-    $.data(this, 'scrollTimer', setTimeout(function() {
-        // do something
-
-        window.sl=false;
-
-    }, 1000));
-});
-
+*/
 
 
 
 </script>
 
 <style>
-body
-{
-  -webkit-user-select: none;
 
-    word-break: break-word;
-}
 .c{
   background-color: #ffff66;
+  font-style: normal;
 }</style>

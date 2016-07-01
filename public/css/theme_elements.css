@@ -7,21 +7,25 @@ body{
   font-size: 11pt;
   display: flex;
   flex-direction: row;
-	font-family: 'Open Sans', 'Verdana', sans-serif;
+	/*font-family: 'Open Sans', 'Verdana', sans-serif;*/
 }
 
-
-
+/*important whether body is scrolled or if its just the doc panel with its own scrollbar*/
+html{
+      height: 100%;
+}
 /*scrollbar chrome*/
 
-
-::-webkit-scrollbar {
+body ::-webkit-scrollbar,
+#docs ::-webkit-scrollbar,
+#filetree ::-webkit-scrollbar,
+.speech ::-webkit-scrollbar {
   width: 10px;
 }
-::-webkit-scrollbar-track {
-  background: none;
-}
-::-webkit-scrollbar-thumb {
+body ::-webkit-scrollbar-thumb,
+#docs ::-webkit-scrollbar-thumb,
+#filetree ::-webkit-scrollbar-thumb,
+.speech ::-webkit-scrollbar-thumb {
   background: rgb(170, 207, 231);
 }
 

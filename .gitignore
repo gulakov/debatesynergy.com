@@ -3,5 +3,5 @@ node_modules/
 public/oldword/*
 public/lib/*
 nohup.out
-config*
+server/config*
 *log

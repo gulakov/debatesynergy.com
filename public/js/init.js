@@ -1,5 +1,6 @@
 $(document).ready(function(){
 
+
 //if user logged in, initiallize settings and index
 if (u) {
 
@@ -37,15 +38,15 @@ if (u) {
 } else { //no user, show default page
 
   //google sign in
-  $("#login").show().click(function(){
+  $('<button type="submit" id="login">Sign In</button>').prependTo("#sidebar").click(function(){
     location.href='/login';
   })
 
 
       //show round panel + manual index, unless it's a public file
   if (location.pathname.length<2) {
+    loadResourcesDelay = 1
 
-    $("#showround").click();
 
     $("#ft-minimize-unread").click();
 
@@ -55,6 +56,10 @@ if (u) {
     u = {index:[]}
 
 };
+
+
+// if (nochromeext)
+$('head').append('<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/noecbaibfhbmpapofcdkgchfifmoinfj">')
 
 //init filetree
 if (u.index=="local"){
@@ -67,15 +72,28 @@ if (u.index=="local"){
   ft.init($('#filetree'), u.index);
 
 //RESOURCE DELAYED LOADER
-setTimeout(function(){
+var loadResourcesDelay = window.loadResourcesDelay || 3000
+setTimeout(function (){
 
-    $.get("/html/interface.panels.html", function(resourcesHtml){
 
-      $('body').append(resourcesHtml)
+      $.get("/html/interface.panels.html", function(resourcesHtml){
 
-    })
+        $('body').append(resourcesHtml);
 
-}, 2000)
+        initRoundPanel();
+        initTimer();
+        initControls();
+
+        //init flow-mode
+        initFlow()
+
+        if (location.pathname.length<2)
+          $("#showround").click();
+
+      })
+
+}, loadResourcesDelay);
+
 
 
 // //reset scrolls
@@ -116,169 +134,19 @@ if (fileId && fileId != "#"){ //load if file id/name in url
 
   $("#docs").load("/html/manual.html")
 
-  $.get("/doc/read",{id:"manual"}, function(html){
-
-   $("#docs").html(html);
-
-  })
+  // $.get("/doc/read",{id:"manual"}, function(html){
+  //
+  //  $("#docs").html(html);
+  //
+  // })
 
   window.scrollTo(0,0)
 
 } else if ($('.selected,.opened').length) //click file tree last selected from filetree
-  $('.selected,.opened').eq(0).click();
+  loadFile($('.selected,.opened').eq(0).attr('id'))
 
 
 
 
 
-
-
-
-
-//MOBILE: swipe to toggle sidebar
-$('body').on('touchstart', function(e) {
-window.touchStart = e.originalEvent.changedTouches[0].pageX;
-}).on('touchend', function(e) {
-var dist = window.touchStart ? e.originalEvent.changedTouches[0].pageX - window.touchStart : 0;
-
-if (dist < -100) {
-  $("#sidebar").animate({
-    'marginLeft': "-"+$("#sidebar").width()
-  }, 0);
-  $("#docs").animate({
-    'paddingLeft': "0"
-  }, 0);
-} else if (dist > 100){
-  $("#sidebar").animate({
-    'marginLeft': '0'
-  }, 0);
-
-  $("#docs").animate({
-    'paddingLeft': '20%'
-  }, 0);
-}
-})
-
-if ($(document).width() < 700) {
-
-}
-
-
-
-
-
-//SIDEBAR resizable
-window.dragSidebar = false;
-$("#sidebar").on('mousemove',function(e){
-  if($(this).width() - e.offsetX < 10)
-      $("body").css('cursor','e-resize');
-  else if(!dragSidebar)
-       $("body").css('cursor','');
-})
-.on('mouseout',function(e){
-if(!dragSidebar)
-    $("body").css('cursor','');
-})
-.on('mousedown touchstart',function(e){
-  var start = e.originalEvent.touches ? e.originalEvent.touches[0].clientX : e.offsetX;
-  if($("#sidebar").width() - start > 20)
-    return;
-
-
-  dragSidebar = true;
-
-  $("body").on('mousemove touchmove',function(e){
-     e.preventDefault();
-  })
-  .on('mouseup',function(e){
-    $("body").off('mousemove mouseup touchend touchmove');
-
-    if (dragSidebar){
-        dragSidebar = false;
-        e = e.originalEvent.touches ? e.originalEvent.changedTouches[0] : e;
-
-        $("#sidebar").css('max-width',e.pageX+'px');
-        $.post("/user/update", {options: {sidebar: e.pageX }});
-    }
-  })
-  .on('touchend',function(e){
-    $("body").off('mousemove mouseup touchend touchmove'); //swipe conflict
-
-    if (dragSidebar){
-        dragSidebar = false;
-        e = e.originalEvent.touches ? e.originalEvent.changedTouches[0] : e;
-
-        $("#sidebar").css('max-width',e.pageX+'px');
-        $.post("/user/update", {options: {sidebar_mobile: e.pageX }});
-    }
-  })
-
-
-});
-
-}) //END DOCUMENT READY
-
-
-
-
-
-var xPos = null;
-var yPos = null;
-window.addEventListener( "touchmove", function ( event ) {
-    var touch = event.touches[ 0 ];
-    oldX = xPos;
-    oldY = yPos;
-    xPos = touch.pageX;
-    yPos = touch.pageY;
-    if ( oldX == null && oldY == null ) {
-        return false;
-    }
-    else {
-        if ( Math.abs( oldX-xPos ) > Math.abs( oldY-yPos ) ) {
-            event.preventDefault();
-            return false;
-        }
-    }
-} );
-
-
-
-/**** KEYBOARD SHORTCUTS ****/
-
-//key shortcuts F1-F8
-$(window).keydown(function(e) {
-
-    if(e.which==83&&e.ctrlKey){
-      e.preventDefault();
-
-    //  window.off=false;
-      ft.update();
-    //  ft.updateIndex();
-    //  window.off=1
-      ;
-
-    }
-
-
-
-
-
-
-    if (e.keyCode >= 112 && e.keyCode < 120) { //F1-F8
-
-      e.preventDefault();
-      $("#controls button")[e.keyCode - 112].click();
-    } else if (e.keyCode == 27) //ESC
-      $("#searchtext").select2("open");
-
-    })
-
-
-
-
-
-//save file before closing tab
-$( window ).on('beforeunload', function() {
-
-//  ft.update();
-});
+})//dom ready

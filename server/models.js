@@ -1,9 +1,11 @@
 var mongoose = require('mongoose'), Schema = mongoose.Schema;
+var mongoosastic = require('mongoosastic');
 
 exports.User = mongoose.model('User', new Schema({
     email:  String,
     name:  String,
     auth: String,
+    picture: String,
     custom_css: String,
     custom_js: String,
     index: Object,
@@ -14,10 +16,10 @@ exports.User = mongoose.model('User', new Schema({
     date_updated: {type: Date, default: Date.now}
 }, { versionKey: false }));
 
-exports.Doc = mongoose.model('Doc', new Schema({
+var Doc =  new Schema({
     userid: String,
-    title: String,
-    text: String,
+    title: { type:String, es_indexed:true },
+    text: { type:String, es_indexed:true },
     url: String,
     token: String,
     share: String,
@@ -25,7 +27,12 @@ exports.Doc = mongoose.model('Doc', new Schema({
     google_sync: Object,
     date_created: {type: Date, default: Date.now},
     date_updated: {type: Date, default: Date.now}
-}, { versionKey: false }));
+}, { versionKey: false })
+
+Doc.plugin(mongoosastic)
+
+exports.Doc = mongoose.model('Doc', Doc);
+
 
 exports.Round = mongoose.model('Round', new Schema({
     aff1: Object,

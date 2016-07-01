@@ -2,10 +2,33 @@ module.exports = app = require('express').Router(), {User,Doc} = require('./mode
 var request = require('request');
 
 
-app.get('/t', function(req, res) {
-  var id = "J6-7t9giyks7MlqiVX9TkqczB5pVY9HG"
+app.all('/t', function(req, res) {
 
 
+
+  var  stream = Doc.synchronize()
+    , count = 0;
+
+  stream.on('data', function(err, doc){
+    count++;
+  });
+  stream.on('close', function(){
+    console.log('indexed ' + count + ' documents!');
+  });
+  stream.on('error', function(err){
+    console.log(err);
+  });
+
+  //
+//   Doc.search ({
+//   query_string: { title: "ggg" }
+// }, { hydrate:true }, function(err,results) {
+//     res.send(results)
+//       o(err)
+//   })
+//  res.send(req.session.access_token)
+  // o(req)
+//  res.end();
 })
 
 app.get('/drivelist', function(req, res) {
@@ -51,7 +74,7 @@ app.use("/contact", function (req, res, next) {
 
 
 
-app.use("/test", function (req, res, next) {
+app.use("/test2", function (req, res, next) {
 
   console.log(req.session.user)
   return res.send()

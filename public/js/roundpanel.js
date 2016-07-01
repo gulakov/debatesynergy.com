@@ -1,6 +1,9 @@
 var r = {}
 
-$(document).ready(function(){
+$(document).ready(initRoundPanel);
+function initRoundPanel(){
+
+
 
   //autofill usernames
   $("#judges, #aff1, #aff2, #neg1, #neg2").select2({
@@ -335,9 +338,7 @@ $(document).ready(function(){
 
 
 
-
-
-});
+};
 
 
 function round_init() {

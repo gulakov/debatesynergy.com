@@ -26,81 +26,60 @@ init: function(el, json) {
 
   // prevent h-scroll of filetree
   $("#filetree").scroll(function(){
-      this.scrollLeft=0;
+     this.scrollLeft=0;
   })
 
 
+    //fisheye
+
+
+    $("#filetree").mousemove(function(e){
+
+        clearTimeout(window.fisheye)
+        // filetree.style.cursor="initial"
+
+        window.fisheye = setTimeout(function(){
+
+            if (e.originalEvent.clientY>filetree.getBoundingClientRect().bottom-30){
+              filetree.scrollTop+=15
+              filetree.style.cursor="s-resize"
+            } else  if (e.originalEvent.clientY<filetree.getBoundingClientRect().top+20){
+              filetree.scrollTop-=15
+              filetree.style.cursor="n-resize"
+            } else{
+              filetree.style.cursor="initial"
+
+            }
+
+        },50)
+
+    }).mouseleave(function(e){
+
+              clearTimeout(window.fisheye)
+
+    })
 
 
 
-  // on scroll, highlight currently-viewed block in nav filetree
+  //
+  //
+  // $("body").on("scroll", ".docs", function(){
+  //   clearTimeout(window.scrollThrottle);
+  //   window.scrollThrottle = setTimeout(navScrollHeading, 500)
+  //
+  // });
 
 
-  function navScrollHeading(){
-
-      var elem = document.elementFromPoint(filetree.offsetWidth+20,
-            filetree.getBoundingClientRect().top  + filetree.clientHeight*.2 + 30);
-
-
-      var closestHead = $(elem).closest("section>*").eq(0).prevUntil("h1,h2,h3").last()
-
-      var headList = $("#doc-"+ft.selected.id).find("h1, h2, h3");
-      this.worked=0;
-
-      if (!closestHead) return
-      for (var i=0; i < headList.length ; i++)
-        if (headList.eq(i).text().length > 0 && headList.eq(i).is(closestHead)){
-           this.worked = 1;
-            break;
-
-
-
-        }
-        if (!this.worked) return
-
-
-        $(".selected").removeClass("selected");
-        $("#" + ft.selected.id).find("li").eq(i-2).addClass("selected");
-
-        // if (i == headList.length)
-        //   $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
-
-        if ($(".selected")[0] && document.body.scrollIntoViewIfNeeded)
-          $(".selected")[0].scrollIntoViewIfNeeded();
-
-
-
-
-
-    //      console.log($(".ft-selected")[0])
-      //
-      // if ($(".ft-selected")[0]){
-      //   $(".ft-selected")[0].scrollIntoView();
-      // //  if ( $(".ft-selected").offset().top < window.innerHeight/2)
-      //     $("#filetree")[0].scrollTop -= filetree.clientHeight*.2
-      //
-      //  // $("#filetree")[0].scrollTop = $(".ft-selected").position().top-window.innerHeight/2+75
-      // }
-
-    }
-
-
-  $(window).on("scroll", function(){
-    clearTimeout(window.scrollThrottle);
-    window.scrollThrottle = setTimeout(navScrollHeading, 500)
-
-  });
-
-
-
-
-  //update filetree and save every 5s
-  setInterval(function() {
-   // if (typeof(MutationObserver) == "undefined")
-    //  ft.updateNeeded = true;
-
-    ft.update();
-  }, 20000);
+  //
+  //
+  //
+  // //update filetree and save every 5s
+  // setInterval(function() {
+  //  // if (typeof(MutationObserver) == "undefined")
+  //   //  ft.updateNeeded = true;
+  //
+  //   ft.update();
+  // }, 20000);
 
   //update triggered only when needed
   ft.updateNeeded = false;
@@ -131,6 +110,20 @@ init: function(el, json) {
 },
 
 /*
+<ul draggable class="open current" id="ft-55b6077b4453ea391da4317f">
+  <label>Hegemony Good</label>
+  <li draggable class="h1 selected">Soft Power 2ac-links</li>
+  <li draggable class="h1">Soft PO BAd</li>
+</ul>
+
+
+<ul class="open current" id="ft-securityk">
+  <label>Hegemony Good</label>
+  <li class="h1 selected">Soft Power 2ac-links</li>
+  <li class="h1">Soft PO BAd</li>
+</ul>
+
+
 <ul draggable class="file opened collapsed" id=55b6077b4453ea391da4317f">
   <label>Hegemony Good</label>
   <li draggable class="h h1 selected">Soft Power 2ac-links</li>
@@ -156,8 +149,8 @@ populate: function(div, json) {
         var item=json[i], itemHTML = '';
         item.type = (item.type||"").replace(/heading /g,'h ').replace(/heading-/g,'').replace(/ft-/g,'') ;
 
-        if (!item.children && item.type.indexOf("collapsed")>-1)
-          item.type+=" collapsed";
+        if (!item.children && item.type=="file")
+          item.type="file collapsed";
 
 
         if (item.type.indexOf("file")>-1 )
@@ -205,7 +198,7 @@ toJSON: function(startLevel) {
 
 
   // debugger
-  $(startLevel).children("ul,li").each(function(){
+  $(startLevel).children('ul,li').each(function(){
     var nav = $(this);
 
     var item = {
@@ -336,10 +329,23 @@ click: function(e) {
     //double cliks! double laods
     var headingId = navFile.find("li").index(nav);
 
+    console.log(headingId)
+
 
 
     function scrollToHeading(){
-        $("#doc-"+ft.selected.id).find("h1, h2, h3")[headingId].scrollIntoView();
+
+
+            var headList = $("#doc-"+ft.selected.id).find("h1, h2, h3");
+
+            for (var i=0; i < headList.length ; i++)
+                if( headList[i].textContent.length < 3)
+                  headList.splice(i--,1);
+                else if( i == headingId)
+                  break;
+
+
+       headList[i].scrollIntoView();  //TODO inexact!!
         //offset scroll level top
         $("#doc-"+ft.selected.id).scrollTop($("#doc-"+ft.selected.id).scrollTop() - 260);
     }

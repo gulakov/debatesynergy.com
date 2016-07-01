@@ -63,7 +63,7 @@ app.get('/read', function(req, res) {
 
                   User.findOne({_id: req.session.user._id}, (err, u)=>{
 
-                      console.log(u.socket)
+                      // console.log(u.socket)
 
                       io.to(u.socket).emit('doc_partial',
                           {id, userid, title, url, text: partialByName});
@@ -123,7 +123,7 @@ app.all('/update',  function(req, res) {
       if (text && (f.userid == userId || isShareUser ) ){
         res.end();
         text = require('sanitize-html')(text, {
-          allowedTags: ['h1', 'h2', 'h3', 'h4', 'p', 'ul', 'li', 'u', 'b', 'i', 'br']
+          allowedTags: ['h1', 'h2', 'h3', 'h4', 'p', 'div', 'br', 'u', 'b', 'i', 'ul', 'li']
           // allowedAttributes: { 'span': ['style'] },
         });
         Doc.update({_id: fileId}, {text, date_updated: Date.now() }).exec(function(e,f){

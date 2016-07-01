@@ -42,18 +42,18 @@ button.active{
     color: #fff;
 }
 /*remove spacing between buttons*/
-button{
+/*button{
     margin-right: -6px;
 }
 button+*:not(button){
   margin-left: 0px;
-}
+}*/
 
 /*dropdown*/
 .dropdown{
     display: inline;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 .dropdown>button::after{
   content: "\25bd";
@@ -65,7 +65,7 @@ button+*:not(button){
   position: absolute;
   left:0;
   z-index: 1000;
-  top: 160%;
+  top: 100%;
   opacity: 1;
 }
 

@@ -18,7 +18,7 @@ one button to control all views
 
 file drag and drop doubling, not adding new
 file drag and drop from one file to another, accepting files & folders
-
+calc wm graph rom scroll              
 google drive sync with this file (both ways)
 google drive folder import
 

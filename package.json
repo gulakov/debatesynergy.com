@@ -2,14 +2,15 @@
   "name": "debatesynergy",
   "description": "DebateSynergy.com web app enables high school and college debate teams to store online research and stream debate rounds.",
   "version": "2.2.0",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -e server.log -o server.log -a -v -w . >/dev/null 2>&1 &",
-    "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db --smallfiles --nojournal --quiet  >> mongo.log  2>&1 &  ",
+    "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -e ~/server.log -o ~/server.log -a -v -w . >/dev/null 2>&1 &",
+    "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db --replSet singleNodeRepl  --smallfiles --nojournal --quiet  >> ~/mongo.log  2>&1 &  ",
     "stop": "sudo killall -9 node nodejs",
     "setup": "npm install forever -g && sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\`` && mv node_modules/mongo-express/config.default.js config.mongo.js",
     "log": "tail -200f ~/debatesynergy/server.log ",
-    "min": "cd public/js && minify -o ../min/ds.min.js alerts.js docedit.js filetree.js init.js roundpanel.js sockets.js timer.js controlbuttons.js filetreedrag.js flow.js offline.js search.js worddocx.js",
+    "min": "cd public/js && minify -o ../min/ds.min.js alerts.js docedit.js filetree.js init.js navigation.js roundpanel.js sockets.js timer.js controlbuttons.js filetreedrag.js flow.js offline.js search.js worddocx.js",
+    "min2": "cd public/css && cat config.json filetree.css roundpanel.css sidebar.css timer.css debate-icons.css docstyle.css flow.css select2.min.css theme_elements.css uiSkylight.css | cleancss -o ../min/ds.min.css",
     "p80": "sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\``",
     "ssl": "echo \"letsencrypt certonly --standalone --config-dir ~/letsencrypt --agree-tos --email contact@debatesynergy.com --domains debatesynergy.com #change\"",
     "config": "echo \"{db:{user:'',password:'',dbname:''},google:{client_id:'',client_secret:'',redirect_uri:''},cookie:'',cache:0,force_https:1};\" >> config.json"
@@ -32,7 +33,9 @@
     "type": "git",
     "url": "https://github.com/gulakov/debatesynergy.com"
   },
-  "engines" : { "node" : ">6.0.0" },
+  "engines": {
+    "node": ">6.0.0"
+  },
   "private": true,
   "license": "CC SA-BY 3.0"
 }

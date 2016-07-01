@@ -1,4 +1,6 @@
-/*highlighted text, only if also underlined, gets bg color*/
+/*@import url(https://fonts.googleapis.com/css?family=Open+Sans);*/
+
+  /*highlighted text, only if also underlined, gets bg color*/
 i>u,u>i,i>b,b>i{
   background: yellow;
 }
@@ -11,11 +13,11 @@ i>u,u>i,i>b,b>i{
 
 
 .highlight-mode{
-  cursor: url("/img/highlight.ico") 0 0, auto;
+  cursor: url("/highlight.ico") 0 0, auto;
 }
 .highlight-mode *[style*='background-color']:not(*[style*=white]) {
 
-    cursor: url("/img/highlight-off.ico") 0 0 , auto;
+    cursor: url("/highlight-off.ico") 0 0 , auto;
 }
 
 #docs{
@@ -40,14 +42,13 @@ i>u,u>i,i>b,b>i{
   overflow-wrap: break-word;
 }
 .doc{
-  _display: flex;
-  _flex-direction: column;
-}
-.chunk{
-  _flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-
+.doc section{
+  flex:1
+}
 
 
 

@@ -17,13 +17,13 @@ app.all('/index.js', function(req, res) {
 
     //check for cookie
 
-    var cookies = {};
-    req.headers && req.headers.cookie.split(';').forEach(function(cookie) {
-       var parts = cookie.match(/(.*?)=(.*)$/)
-       cookies[ parts[1].trim() ] = (parts[2] || '').trim();
-    });
-
-
+    // var cookies = {};
+    // req.headers && req.headers.cookie.split(';').forEach(function(cookie) {
+    //    var parts = cookie.match(/(.*?)=(.*)$/)
+    //    cookies[ parts[1].trim() ] = (parts[2] || '').trim();
+    // });
+    //
+    //
 
 
     if (!req.session.user)

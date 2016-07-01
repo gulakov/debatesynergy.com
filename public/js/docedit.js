@@ -1,5 +1,3 @@
-
-//window.off=true;
 window.chunk=true;
 
 function loadFile(id, callback) {
@@ -230,6 +228,15 @@ function loadFile(id, callback) {
       }
 
 
+      //SCROLL handler
+      $("#doc-" + ft.selected.id).on("scroll", function(){
+          clearTimeout(window.scrollThrottle);
+          window.scrollThrottle = setTimeout(navScrollHeading, 250)
+
+        });
+
+
+
 
 
       if (callback) callback()
@@ -254,6 +261,51 @@ function loadFile(id, callback) {
 
 
 }
+
+
+
+
+  // on scroll, highlight currently-viewed block in nav filetree
+  function navScrollHeading(){
+
+      // var elem = document.elementFromPoint(filetree.offsetWidth+20,
+      //       filetree.getBoundingClientRect().top  + filetree.clientHeight*.2 + 30);
+      //
+      //       // debugger
+      // var closestHead = $(elem).closest("section>*").eq(0).prevUntil("h1,h2,h3").last().prev()
+      //
+      // console.log(closestHead);
+
+
+      var headList = $("#doc-"+ft.selected.id).find("h1, h2, h3");
+
+      for (var i=0; i < headList.length ; i++)
+          if( headList[i].textContent.length < 3)
+            headList.splice(i--,1);
+          else if( headList[i].getBoundingClientRect().top > 100)
+            break;
+
+
+        $(".selected").removeClass("selected");
+        $("#" + ft.selected.id).find("li").eq(i-1).addClass("selected");
+
+
+        // if (i == headList.length)
+        //   $("#" + ft.selected.id).next().children().last().find('.ft-name').addClass("ft-selected");
+
+        // if ($(".selected")[0]) // && document.body.scrollIntoViewIfNeeded)
+        //   $(".selected")[0].scrollIntoViewIfNeeded();
+
+
+      if ($(".selected")[0]){
+        $(".selected")[0].scrollIntoView();
+      //  if ( $(".ft-selected").offset().top < window.innerHeight/2)
+          $("#filetree")[0].scrollTop -= filetree.clientHeight*.2
+
+       // $("#filetree")[0].scrollTop = $(".ft-selected").position().top-window.innerHeight/2+75
+      }
+
+    }
 
 
 

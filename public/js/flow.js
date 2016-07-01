@@ -1,6 +1,10 @@
+//TODO
+//call in neurons and make it likr https://coggle.it/folder/gallery https://coggle.it/diagram/VzG8jZQ8GiE1azVU
 
 
-$(document).ready(function(){
+$(document).ready(initFlow);
+function initFlow(){
+
 
     // FLOWING ****
 
@@ -50,8 +54,8 @@ $(document).ready(function(){
 
       } else{
 
-        var flow = $("<div class='flow'><textarea class='flow-text'></textarea> <div class='fa fa-2x fa-chevron-circle-down flow-toggle'></div> "+
-          "  <div class='flow-link fa fa-2x fa-link'  data-placement='left' title='Click Flow Anchor, then select a response in another speech to scroll to, when you hover over this flow entry'></div></div>");
+        var flow = $("<div class='flow'><textarea class='flow-text'></textarea> <div class='icon-flow-tree flow-toggle'></div> "+
+          "  <div class='flow-link icon-flow-parallel'  data-placement='left' title='Click Flow Anchor, then select a response in another speech to scroll to, when you hover over this flow entry'></div></div>");
 
         flow.insertBefore(p)
 
@@ -125,8 +129,8 @@ $(document).ready(function(){
 
 
     //mouseover the flow entry to scroll lock-onto the linked response
-    $("#round").on("mouseover mousemove", ".flow", function(){
-      var _this = $(this).find(".flow-link");
+    $("#round").on("mouseover mousemove", ".flow-link", function(){
+      var _this = $(this) //.find(".flow-link");
       if (!_this.hasClass("active-link"))
         return;
 
@@ -202,4 +206,4 @@ $(document).ready(function(){
 
     })
 
-})//dom ready
+}//dom ready

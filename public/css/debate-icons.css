@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'debatesynergy-icons';
-  src: url('debatesynergy-icons.woff2') format('woff2'),
-       url('debatesynergy-icons.woff') format('woff');
+  src:
+       url('/css/debatesynergy-icons.woff') format('woff');
   font-style: normal;
 }
 

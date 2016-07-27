@@ -44,6 +44,7 @@ app.all('/update', auth, function(req, res) {
 
   var {userid="", index, custom_js, custom_css, options={}} = req.body!={} ? req.body : req.query;
 
+  // o(req.body)
   //if user has two tabs open with different indexes or accounts, prevent race
   //if (userid != req.session.user._id)
     //return res.send("User ID does not match");
@@ -98,7 +99,32 @@ app.get('/search', function(req, res) {
     var userinfo = {"$regex": req.query.userinfo, "$options": "i"};
 
     User.find({$or:[{email:userinfo}, {name: userinfo}]}, (e, users=[])=>{
-        	res.json(  users.map(u=>{ return {id:u._id, email: u.email, text: u.name} } )  );
+
+        users = users.map(u=>{ return {id:u._id, email: u.email, text: u.name} } )
+
+
+        req.google({
+          url: 'https://www.google.com/m8/feeds/contacts/default/full',
+          qs: {
+            alt: "json",
+            v: "3.0",
+            q: req.query.userinfo
+          }
+          }, body=>{
+
+            return res.send(body.feed)
+
+
+            var contacts = (body.feed.entry||[]).map(function(i){
+              return  i["gd$email"]  && {id: 0, text:  i["gd$name"] ? i["gd$name"]["gd$fullName"]["$t"] : "", email: i["gd$email"][0].address }
+            })
+
+
+            res.json(users.concat(contacts))
+        })
+
+
+        	// res.json(   );
     })
 });
 

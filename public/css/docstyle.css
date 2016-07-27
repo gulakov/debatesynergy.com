@@ -23,7 +23,7 @@ i>u,u>i,i>b,b>i{
 #docs{
   flex: 2;
   overflow: auto;
-
+    overflow-x: hidden;
     padding-left: 20%;
     margin: 0px;
 }

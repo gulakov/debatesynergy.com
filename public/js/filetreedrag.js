@@ -1,4 +1,4 @@
-/* ENABLE FILE & HEADING DRAGGING */
+/* TODO ENABLE FILE & HEADING DRAGGING */
 
 $(document).ready(function(){
 

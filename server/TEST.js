@@ -2,22 +2,32 @@ module.exports = app = require('express').Router(), {User,Doc} = require('./mode
 var request = require('request');
 
 
-app.all('/t', function(req, res) {
+app.all('/t.jpg', function(req, res) {
 
+  req.google({url:"https://www.google.com/m8/feeds/photos/media/alexgulakov%40gmail.com/412b49440e95044a", qs:{v:"3.0"}}, googleFiles => {
 
+   res.writeHead(200, {
+     'Content-Type': 'image/jpeg' //,
+     // 'Cache-Control': 'public, max-age=31557600'
+   });
 
-  var  stream = Doc.synchronize()
-    , count = 0;
+      res.write(googleFiles)
 
-  stream.on('data', function(err, doc){
-    count++;
-  });
-  stream.on('close', function(){
-    console.log('indexed ' + count + ' documents!');
-  });
-  stream.on('error', function(err){
-    console.log(err);
-  });
+      res.end()
+  })
+
+  // var  stream = Doc.synchronize()
+  //   , count = 0;
+  //
+  // stream.on('data', function(err, doc){
+  //   count++;
+  // });
+  // stream.on('close', function(){
+  //   console.log('indexed ' + count + ' documents!');
+  // });
+  // stream.on('error', function(err){
+  //   console.log(err);
+  // });
 
   //
 //   Doc.search ({
@@ -76,10 +86,7 @@ app.use("/contact", function (req, res, next) {
 
 app.use("/test2", function (req, res, next) {
 
-  console.log(req.session.user)
-  return res.send()
 
-/*
   req.google({
     url: 'https://www.google.com/m8/feeds/contacts/default/full',
     qs: {
@@ -89,7 +96,7 @@ app.use("/test2", function (req, res, next) {
     }
     }, body=>{
 
-      return res.send(body)
+      // return res.send(body)
 
       var contacts = body.feed.entry.map(function(i){
         return  i["gd$email"]  && {name:  i["gd$name"] ? i["gd$name"]["gd$fullName"]["$t"] : "", email: i["gd$email"][0].address }
@@ -97,7 +104,7 @@ app.use("/test2", function (req, res, next) {
 
       res.json(contacts)
   })
-*/
+
 
 })
 

@@ -3,7 +3,7 @@ $(document).ready(function(){
 
   // FULL-TEXT FILE SEARCH BOX
 
-  $("#searchtext").select2({
+ $("#searchtext").select2({
     ajax: {
           url: "/doc/search",
           dataType: 'json',

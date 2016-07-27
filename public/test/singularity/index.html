@@ -1,13 +1,36 @@
-<!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<style type="text/css">
+<style>
 
+/*main position*/
 
 @font-face {
   font-family: 'Flynn';
   src:  url('Flynn.woff2') format('woff2');
 }
 
+
+svg{
+  opacity: 0.8;
+}
+
+
+body {
+	margin: 0;
+}
+
+#particles {
+  background: lightblue;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+
+
+/*node tree fly stuff*/
 
 	.node {
     cursor: pointer;
@@ -87,15 +110,34 @@ body *{
   cursor: url(./space.ico) 0 0, nw-resize !important;
 }
 </style>
-</head><body>
-    <div id="tree-container">
 
-    </div>
+<body></body>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.js"></script>
 
-<script src=".//d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.js"></script>
+<script src="d3.v3.min.js"></script>
 
-  <script src="https://debatesynergy.com/user/index.js"></script>
-<script src=".//dndTree.js"></script>
-</body></html>
+<script src="https://debatesynergy.com/user/index.js"></script>
+<script src="dndTree.js"></script>
+
+
+
+
+<script src='particle-design.js'></script>
+
+
+
+
+<script>
+
+
+  document.body.insertAdjacentHTML('beforeend','<div id="particles"></div>')
+
+
+  particleground(document.getElementById('particles'), {
+    dotColor: '#417cdc',
+    lineColor: '#417cdc'
+  });
+
+
+</script>

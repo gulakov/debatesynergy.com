@@ -9,7 +9,7 @@ app.use(function (req, res, next) {
 
       //sign this request with access token from session db, expires 30min
       headers['Authorization'] = 'Bearer ' + req.session.access_token;
-      headers['Content-Type'] = headers['Content-Type'] || 'application/x-www-form-urlencoded'
+      // headers['Content-Type'] = headers['Content-Type'] || 'application/x-www-form-urlencoded'
 
       request({
         url: (url.startsWith("http")?'':'https://www.googleapis.com/')+url,

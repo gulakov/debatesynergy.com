@@ -56,3 +56,29 @@ show title in gray oval on doc loading
 radar recom algo from debaters with assoc research, facts flow ac text shorthand
 
 use csp to prevent users from inline js in doc
+
+
+
+
+
+=== possible layout
+
+
+
+
+Security k
+soft Power
+k aff answers
+-----
+your files
+d3 viz
+search
+search public files
+
+--
+round init
+my rounds
+caselist
+
+--
+team chat / forum

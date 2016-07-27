@@ -206,4 +206,4 @@ function initFlow(){
 
     })
 
-}//dom ready
+}//init flow

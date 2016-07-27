@@ -18,7 +18,7 @@ global.log = global.o = function(msg){
 
 //redirect http to https
 require('http').createServer(force_https ? function (req, res) {
-  var host = req.headers.host || "", domain = host.match(/[^\.]*\.[^.]*$/)[0], sub = host.replace(domain,"").replace(/\./g,"");
+  var host = req.headers.host || "", domain = (host.match(/[^\.]*\.[^.]*$/)||[])[0], sub = host.replace(domain,"").replace(/\./g,"");
   res.writeHead(301, {"Location": "https://" + domain + "/"+ sub.replace("www","") +req.url.substring(1)});
   res.end();
 } : app).listen(80);
@@ -153,13 +153,15 @@ app.use(require('./TEST'));
 app.use('/user', require('./user'));
 app.use('/doc', require('./doc'));
 // app.use('/team', require('./team'));
-app.use('/round', require('./round'));
-
-app.use(require('./socket-api'));
+app.use('/round', require('./round-api'));
+app.use(require('./websocket'));
+app.use('/', require('./misc'));
 app.use('/', require('./home'));
 
 
 //frontend files
+// app.use(express.static(__dirname.replace('/server','') + '/public'));
+//
 app.use(require('serve-static')(__dirname.replace('/server','') + '/public',
   {  maxAge: global.cache ? 1000 * 3600 * 24 : 0  }))
 
@@ -167,5 +169,6 @@ app.use(require('serve-static')(__dirname.replace('/server','') + '/public',
 //errors
 app.use(function (err, req, res, next) {
   console.log(err.stack)
+  res.send(err.stack)
   req.destroy()
 })

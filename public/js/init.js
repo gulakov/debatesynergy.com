@@ -1,3 +1,14 @@
+//analytics
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-79203150-1', 'auto');
+ga('send', 'pageview');
+
+
+
+
 $(document).ready(function(){
 
 
@@ -48,7 +59,7 @@ if (u) {
     loadResourcesDelay = 1
 
 
-    $("#ft-minimize-unread").click();
+    // $("#ft-minimize-unread").click();
 
     u = {index: JSON.parse('[{"id":"manual","title":"Debate Synergy Manual","type":"file selected","children":'+
     '[{"title":"Welcome to Debate Synergy","type":"h h1"},{"title":"Manual","type":"h h1"},{"title":"Debate Sidebar Word AddIn ","type":"h h1"}]}]')};
@@ -88,7 +99,7 @@ setTimeout(function (){
         //init flow-mode
         initFlow()
 
-        if (location.pathname.length<2)
+        if (!u.name && location.pathname.length<2)
           $("#showround").click();
 
       })
@@ -109,7 +120,7 @@ setTimeout(function (){
 // }, 2000)
 
   //minimize unread by default
-  $("#ft-minimize-unread").click();
+  // $("#ft-minimize-unread").click();
 
 
 
@@ -131,9 +142,9 @@ var fileId = location.pathname.substr(1);
 if (fileId && fileId != "#"){ //load if file id/name in url
   loadFileHash(fileId);
 } else if (!u.name || u.index[0].id=="manual"){ //guest home page
-  $('.ft-item:first').click();
+  $('#manual:first').click();
 
-  $("#docs").load("/html/manual.html")
+  // $("#docs").load("/html/manual.html")
 
   // $.get("/doc/read",{id:"manual"}, function(html){
   //
@@ -143,8 +154,11 @@ if (fileId && fileId != "#"){ //load if file id/name in url
 
   window.scrollTo(0,0)
 
-} else if ($('.selected,.opened').length) //click file tree last selected from filetree
+} else if ($('.selected,.opened').length){ //click file tree last selected from filetree
   loadFile($('.selected,.opened').eq(0).attr('id'))
+} else {
+  $('.file:first').click();
+}
 
 
 

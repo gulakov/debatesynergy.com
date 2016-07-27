@@ -230,8 +230,7 @@ var baseSvg = d3.select("body").append("svg")
 var g = $('svg')[0];
 
 
-g.insertAdjacentHTML('beforeend','<image xlink:href="./space2.png" x="0" y="0" height="121%" width="100%" >'+
-        '')
+// g.insertAdjacentHTML('beforeend','<image xlink:href="./space2.png" x="0" y="0" height="121%" width="100%" >'+        '')
 
 
 g.insertAdjacentHTML('beforeend','<image id="astro"  xlink:href="./astro.png" x="0" y="100%" height="170px" width="400px" '+

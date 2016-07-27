@@ -1,3 +1,4 @@
+// Proudly sponsored by Total Business Synergy, Inc., distributed under the TotalBS 2.0 License
 
 window.docShareAlert = function(msg) {
 

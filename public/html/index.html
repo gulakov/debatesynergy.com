@@ -1,62 +1,48 @@
-<!DOCTYPE html><html><head>
-    <title>Debate Synergy</title>
-    <meta name="description" content="DebateSynergy.com enables debate students to store online research and stream debates. Developed by Alex Gulakov 2010-2017 alexgulakov@gmail.com, CC BY-SA 4.0">
-    <link rel="stylesheet" href="/css/select2.min.css" />
-    <link rel="stylesheet" href="/css/theme_elements.css" />
-    <link rel="stylesheet" href="/css/docstyle.css" />
-    <link rel="stylesheet" href="/css/uiSkylight.css" />
-    <link rel="stylesheet" href="/css/sidebar.css" />
-    <link rel="stylesheet" href="/css/filetree.css" />
-    <link rel="stylesheet" href="/css/flow.css" />
-    <link rel="stylesheet" href="/css/roundpanel.css" />
-    <link rel="stylesheet" href="/css/timer.css" />
-    <link rel="stylesheet" href="/css/icon/debate-icons.css" />
+<!DOCTYPE html><title>Debate Synergy</title>
+<meta name="description" content="DebateSynergy.com enables debate students to store online research and stream debates. Developed by Alex Gulakov 2010-2017 contact@debatesynergy.com. All content licensed as Creative Commons BY-SA 4.0">
+<link rel="stylesheet" href="/css/select2.min.css" />
+<link rel="stylesheet" href="/css/theme_elements.css" />
+<link rel="stylesheet" href="/css/docstyle.css" />
+<link rel="stylesheet" href="/css/uiSkylight.css" />
+<link rel="stylesheet" href="/css/sidebar.css" />
+<link rel="stylesheet" href="/css/filetree.css" />
+<link rel="stylesheet" href="/css/flow.css" />
+<link rel="stylesheet" href="/css/roundpanel.css" />
+<link rel="stylesheet" href="/css/timer.css" />
+<link rel="stylesheet" href="/css/icon/debate-icons.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
-    <script src="user/index.js"></script>
-    <script src="js/alerts.js"></script>
-    <script src="js/controlbuttons.js"></script>
-    <script src="js/controlsettings.js"></script>
-    <script src="js/sockets.js"></script>
-    <script src="js/roundpanel.js"></script>
-    <script src="js/roundaction.js"></script>
-    <script src="js/roundflow.js"></script>
-    <script src="js/timer.js"></script>
-    <script src="js/filetree.js"></script>
-    <script src="js/docopen.js"></script>
-    <script src="js/docedit.js"></script>
-    <script src="js/search.js"></script>
-    <script src="js/offline.js"></script>
-    <script src="js/worddocx.js"></script>
-    <script src="js/navigation.js"></script>
-    <script src="js/init.js"></script>
-    <!-- <script src="/min/ds.bin.js"></script> -->
-</head>
-<body>
-    <aside id="sidebar">
-        <div id="controls">
-            <select id="searchtext"></select>
-            <button id="format-highlight" class="icon-sw-highlighter" title="Highlight underlined read card text"></button>
-            <button id="readcard" title="Read text" class="icon-underline"></button>
-            <button id="block" title="Heading" class="icon-header"></button>
-            <button id="read" title="Bold" class="icon-bold"></button>
-            <button id="format-remove" title="Clear formatting" class="icon-eraser"></button>
-            <button id="showfileinfo" title="File Info &amp; Sharing" class="icon-share"></button>
-            <button id="file-new" title="New File" class="icon-doc-new"></button>
-            <button id="showsettings" title="Settings" class="icon-sliders"></button>
-            <button id="showround" title="Round"></button>
-            <div class="dropdown">
-                <button class="icon-ellipsis-vert"></button>
-                <div class="dropdown-menu">
-                    <button id="ft-minimize-unread" class="icon-fontsize"> Minimize Unread Text</button>
-                    <button id="ft-collapse" class="icon-tree"> Collapse Filetree</button>
-                </div>
-            </div>
-        </div>
-        <div id="filetree"></div>
-    </aside>
-    <main id="docs"></main>
-</body>
-</html>
+<script src="user/index.js"></script>
+
+<script src="js/alerts.js"></script>
+<script src="js/controlbuttons.js"></script>
+<script src="js/controlsettings.js"></script>
+<script src="js/sockets.js"></script>
+<script src="js/roundpanel.js"></script>
+<script src="js/roundaction.js"></script>
+<script src="js/roundflow.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/filetree.js"></script>
+<script src="js/docopen.js"></script>
+<script src="js/docedit.js"></script>
+<script src="js/search.js"></script>
+<script src="js/offline.js"></script>
+<script src="js/worddocx.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/init.js"></script>
+<!-- <script src="/min/ds.js"></script> -->
+
+<aside id="sidebar">
+  <div id="controls">
+    <select id="searchtext"></select>
+    <button id="format-highlight" class="icon-sw-highlighter" title="Highlight underlined read card text"></button> <button id="readcard" title="Read text" class="icon-underline"></button> <button id="block" title="Heading" class="icon-header"></button>
+    <button id="read" title="Bold" class="icon-bold"></button> <button id="format-remove" title="Clear formatting" class="icon-eraser"></button> <button id="showfileinfo" title="File Info &amp; Sharing" class="icon-share"></button> <button id="file-new" title="New File" class="icon-doc-new">
+    </button> <button id="showsettings" title="Settings" class="icon-sliders"></button> <button id="showround" title="Round"></button> <div class="dropdown"> <button class="icon-ellipsis-vert"></button> <div class="dropdown-menu"> <button id="ft-minimize-unread" class="icon-fontsize"> Minimize Unread Text</button>
+    <button id="ft-collapse" class="icon-tree"> Collapse Filetree</button> </div> </div>
+  </div>
+  <div id="filetree"></div>
+</aside>
+
+  <main id="docs" class="size-mode-1"></main>

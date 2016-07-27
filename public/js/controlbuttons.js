@@ -1,25 +1,29 @@
+var sidebarHtml = '<aside id="sidebar"> <div id="controls"> <select id="searchtext"></select> <button id="format-highlight" class="icon-sw-highlighter" title="Highlight underlined read card text"></button> <button id="readcard" title="Read text" class="icon-underline"></button> <button id="block" title="Heading" class="icon-header"></button> <button id="read" title="Bold" class="icon-bold"></button> <button id="format-remove" title="Clear formatting" class="icon-eraser"></button> <button id="showfileinfo" title="File Info &amp; Sharing" class="icon-share"></button> <button id="file-new" title="New File" class="icon-doc-new"></button> <button id="showsettings" title="Settings" class="icon-sliders"></button> <button id="showround" title="Round"></button> <div class="dropdown"> <button class="icon-ellipsis-vert"></button> <div class="dropdown-menu"> <button id="ft-minimize-unread" class="icon-fontsize"> Minimize Unread Text</button> <button id="ft-collapse" class="icon-tree"> Collapse Filetree</button> </div> </div> </div> <div id="filetree"></div> </aside>'
 
 
 $(document).ready(function() {
 
 
+    // $(sidebarHtml).prependTo('body')
+
+
 
 //key shorcuts UHB
 
-
-  $(document).keydown(function(e){
-    if (getSelection().isCollapsed) return;
-
-if (e.which==66 ) {
-    document.execCommand('bold');  e.preventDefault()
-}
-if (e.which==72 ) {
-    $("#format-highlight").click();  e.preventDefault()
-}
-if (e.which==85 ) {
-    document.execCommand('underline');  e.preventDefault()
-}
-})
+//
+//   $(document).keydown(function(e){
+//     if (getSelection().isCollapsed) return;
+//
+// if (e.which==66 ) {
+//     document.execCommand('bold');  e.preventDefault()
+// }
+// if (e.which==72 ) {
+//     $("#format-highlight").click();  e.preventDefault()
+// }
+// if (e.which==85 ) {
+//     document.execCommand('underline');  e.preventDefault()
+// }
+// })
 
 $(".btn").click(function(){ $(this).blur() })
 

@@ -75,7 +75,7 @@ function loadFile(id, callback) {
           //  $("#info").html('<span class="loading-doc"></span> <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>');
 
           if (ft.ongoingXhrId == id){
-            $("#"+id).parent().css("background",
+            $("#"+id).closest('ul').css("background",
               "linear-gradient(90deg, rgb(170, 207, 231) "+percentComplete+"%, transparent 0%)");
 
               $("#"+id).next().css("background-color","white");
@@ -186,7 +186,7 @@ function loadFile(id, callback) {
 
 
 
-            docs.insertAdjacentHTML('beforeend',docDivHTML)
+            $("#docs")[0].insertAdjacentHTML('beforeend',docDivHTML)
 
             // $('#doc-'  +  ft.selected.id )[0].style.display='block';
 

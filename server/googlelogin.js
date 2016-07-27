@@ -21,9 +21,9 @@ app.all('/login', function(req, res, next){
     if(next)
       params.state = "https://" + host + next;
     if(youtube)
-      params.scope +=" https://www.googleapis.com/auth/youtube"
-    if(contacts)
-      params.scope +=  " https://www.google.com/m8/feeds/"
+      params.scope +=" https://www.googleapis.com/auth/youtube.upload"
+    // if(contacts)
+      params.scope +=  " https://www.googleapis.com/auth/contacts.readonly"
 
     if(cloud)
       params.scope +=  " https://www.googleapis.com/auth/cloud-platform"
@@ -95,19 +95,17 @@ app.all('/user/auth', function(req, res, next) {
                       text: "Welcome to your first file, " + newAppUser.name + "!"
                     }, function(err, firstDoc){
 
-                      newAppUser.index=[{id: firstDoc._id, title:"First File", type:"ft-file ft-selected"}, {
-                        "id": "home",
-                        "title": "Home Page",
-                        "type": "ft-file"}];
+                      newAppUser.index=[{id: firstDoc._id, title:"First File", type:"ft-file ft-selected"},
+                          {"id":"manual","title":"Debate Synergy Manual","type":"file"}];
 
                       newAppUser.save(function(e){
 
                           console.log("NEW USER: " + newAppUser.name  + " " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString());
 
-                            req.session.user = {_id: u._id, email: u.email};
+                            req.session.user = {_id: newAppUser._id, email:newAppUser.email};
 
                             if (refresh_token)
-                              User.update({_id:u._id}, {auth: refresh_token}).exec()
+                              User.update({_id:newAppUser._id}, {auth: refresh_token}).exec()
 
                           return res.redirect("/")
                        });

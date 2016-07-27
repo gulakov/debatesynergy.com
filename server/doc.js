@@ -2,41 +2,79 @@ module.exports = app = require('express').Router(), {Doc, User} = require('./mod
 var request = require('request'), fs = require('fs');
 
 
-//takes doc ID, return doc text -- allowed if user is owner, share, or public/publicedit
-app.get('/read', function(req, res) {
-    var fileId = req.query.id;
-
-
-    var userId = req.session.user ? req.session.user._id : "";
+global.getdoc =  (fileId, userId, callback) => {
 
     Doc.findOne({$or: [ {"_id": fileId.length == 24 ? fileId : null},
       {"token":  fileId },
-			{"url":  fileId.replace(/[\W_]+/g," ").toLowerCase() },
-			{"title": {"$regex": "^"+fileId.replace(/\+/g,' ')+"$", "$options": "i" }} ] }, (e, f)=>{
+      {"url":  fileId.replace(/[\W_]+/g," ").toLowerCase() },
+      {"title": {"$regex": "^"+fileId.replace(/\+/g,' ')+"$", "$options": "i" }} ] }, (e, f)=>{
 
         if (!f)
+            return callback("Not found");
+
+        if (f.share!="public" && f.userid != userId && !f.shareusers.filter(i => i.id==userId).length)
+          return callback("Access denied");
+
+
+        f['id']=f._id; //both ways work
+
+
+        return callback(f);
+
+
+    });
+
+}
+
+
+
+
+//getdoc
+//to read file, must be owner or share user, or file is public
+app.use(function(req, res, next) {
+
+    req.getdoc=global.getdoc
+
+    next()
+
+})
+
+//takes doc ID, return doc text -- allowed if user is owner, share, or public/publicedit
+app.get('/read', function(req, res) {
+    var fileId = req.query.id;
+    var userId = req.session.user ? req.session.user._id : "";
+
+
+    //special
+    if (fileId=="manual"){
+
+      var html = fs.readFileSync(__dirname.replace("/server", "") + "/public/html/manual.html").toString();
+
+
+      return res.json({
+        _id: "manual",
+        userid: "5776ec6d754915dc6eca48be",
+        title: "Manual",
+        text: html,
+        date_updated: "2016-07-01T22:24:50.049Z",
+        date_created: "2016-07-01T22:19:25.888Z",
+        shareusers: [ ]
+        })
+
+    }
+
+
+
+    req.getdoc(fileId, userId, function(f){
+
+        if (f=="Not found")
             return res.status(404).send("Not found");
 
         //to read file, must be owner or share user, or file is public
-        if (f.share!="public" && f.userid != userId && !f.shareusers.filter(i => i.id==userId).length)
+        if (f=="Access denied")
           return res.status(401).send("Access denied");
 
-
-
-
-                      //    console.log(Object.keys(req.session))
-
-
-          //  } else{
-                f['id']=f._id; //both ways work
-
-                //send file objects
-                 res.json(f);
-
-
-
-
-
+              //send partial response
                   var partial = req.query.partial || false;
 
                   var partialByName = partial ? f.text.substr(f.text.toLowerCase().search( ">"+partial.toLowerCase()+"<" )-20)
@@ -60,7 +98,7 @@ app.get('/read', function(req, res) {
 
                   var {_id: id, userid, title, url} = f;
 
-
+                  if(userId)
                   User.findOne({_id: req.session.user._id}, (err, u)=>{
 
                       // console.log(u.socket)
@@ -73,6 +111,10 @@ app.get('/read', function(req, res) {
 
 
 
+
+
+              //SEND FILE JSON
+               res.json(f);
 
 
 

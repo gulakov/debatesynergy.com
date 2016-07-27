@@ -90,7 +90,7 @@ button+*:not(button){
 
 
 /*TEXT INPUT FIELD*/
-
+textarea,
 input[type=text], input[type=password] {
     padding: .375rem .75rem;
     font-size: 1rem;

@@ -197,8 +197,8 @@ toJSON: function(startLevel) {
   var array = [];
 
 
-  // debugger
-  $(startLevel).children('ul,li').each(function(){
+  // debugger           //ul, li
+  $(startLevel).children('ul').each(function(){
     var nav = $(this);
 
     var item = {
@@ -207,10 +207,10 @@ toJSON: function(startLevel) {
       type: nav.attr("class")
     };
 
-
-    var subNavs = nav.find('li');
-    if (subNavs.length)
-      item.children = ft.toJSON(nav);
+    //
+    // var subNavs = nav.find('li');
+    // if (subNavs.length)
+    //   item.children = ft.toJSON(nav);
 
     array.push(item);
   });
@@ -283,7 +283,7 @@ update: function() {
   }
 
   //save indexJSON
-  ft.updateIndex();
+//  ft.updateIndex();
 
   //save ft html to fast-pull from local
 

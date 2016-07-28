@@ -4,7 +4,7 @@ var sidebarHtml = '<aside id="sidebar"> <div id="controls"> <select id="searchte
 $(document).ready(function() {
 
 
-    // $(sidebarHtml).prependTo('body')
+    $(sidebarHtml).prependTo('body')
 
 
 

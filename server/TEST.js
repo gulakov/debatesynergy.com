@@ -4,17 +4,7 @@ var request = require('request');
 
 app.all('/t.jpg', function(req, res) {
 
-  req.google({url:"https://www.google.com/m8/feeds/photos/media/alexgulakov%40gmail.com/412b49440e95044a", qs:{v:"3.0"}}, googleFiles => {
-
-   res.writeHead(200, {
-     'Content-Type': 'image/jpeg' //,
-     // 'Cache-Control': 'public, max-age=31557600'
-   });
-
-      res.write(googleFiles)
-
-      res.end()
-  })
+  
 
   // var  stream = Doc.synchronize()
   //   , count = 0;

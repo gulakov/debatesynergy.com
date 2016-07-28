@@ -53,7 +53,7 @@ ul > label {
   white-space: nowrap;
   display: block;
   width: 100%;
-  cursor: url(icon/minimize.ico) 0 0, nw-resize !important;
+  cursor: url(/css/icon/minimize.ico) 0 0, nw-resize !important;
   padding: 0px 1px;
   font-weight: bold;
   _border-top: 1px solid  rgb(170, 207, 231);;
@@ -65,7 +65,7 @@ ul > label::before{
 }
 
 ul.collapsed > label {
-  cursor: url(icon/expand.ico) 0 0, nw-resize !important;
+  cursor: url(/css/icon/expand.ico) 0 0, nw-resize !important;
 }
  ul.collapsed > label::before{
   content: "\e80d";

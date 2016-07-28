@@ -28,12 +28,12 @@
 }
 
 .icon-sw-highlighter{
-  background: url('icon/highlight.ico') no-repeat center center;
+  background: url('/css/icon/highlight.ico') no-repeat center center;
   background-size: 18px 18px;
 }
 
 #showround{
-  background: url('icon/dslogo.png') no-repeat center center;
+  background: url('/css/icon/dslogo.png') no-repeat center center;
 }
 
 

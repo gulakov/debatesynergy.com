@@ -10,7 +10,7 @@
  "setup": "npm install forever -g && sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\`` && mv node_modules/mongo-express/config.default.js config.mongo.js",
  "log": "tail -200f ~/debatesynergy/server.log ",
  "min": "cd public/js && minify -o ../min/ds.js alerts.js controlsettings.js docopen.js filetree.js navigation.js roundaction.js roundpanel.js sockets.js timer.js controlbuttons.js docedit.js filetreedrag.js init.js offline.js roundflow.js search.js  worddocx.js",
- "min2": "cd public/css && cat filetree.css roundpanel.css sidebar.css timer.css icon/debate-icons.css docstyle.css flow.css select2.min.css theme_elements.css uiSkylight.css | cleancss -o ../min/ds.min.css",
+ "min2": "cd public/css && cat filetree.css roundpanel.css sidebar.css timer.css icon/debate-icons.css docstyle.css flow.css select2.min.css theme_elements.css uiSkylight.css | cleancss -o ../min/ds.css",
  "p80": "sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\``",
  "ssl": "echo \"letsencrypt certonly --standalone --config-dir ~/letsencrypt --agree-tos --email contact@debatesynergy.com --domains debatesynergy.com #change\"",
  "config": "echo \"{db:{user:'',password:'',dbname:''},google:{client_id:'',client_secret:'',redirect_uri:''},cookie:'',cache:0,force_https:1};\" >> config.json"

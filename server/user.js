@@ -102,7 +102,6 @@ app.get('/search', function(req, res) {
 
         users = users.map(u=>{ return {id:u._id, email: u.email, text: u.name} } )
 
-
         req.google({
           url: 'https://www.google.com/m8/feeds/contacts/default/full',
           qs: {
@@ -112,10 +111,7 @@ app.get('/search', function(req, res) {
           }
           }, body=>{
 
-            return res.send(body.feed)
-
-
-            var contacts = (body.feed.entry||[]).map(function(i){
+            var contacts = (body && body.feed && body.feed.entry||[]).map(i=>{
               return  i["gd$email"]  && {id: 0, text:  i["gd$name"] ? i["gd$name"]["gd$fullName"]["$t"] : "", email: i["gd$email"][0].address }
             })
 

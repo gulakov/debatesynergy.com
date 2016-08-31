@@ -18,8 +18,8 @@ global.log = global.o = function(msg){
 
 //redirect http to https
 require('http').createServer(force_https ? function (req, res) {
-  var host = req.headers.host || "", domain = (host.match(/[^\.]*\.[^.]*$/)||[])[0], sub = host.replace(domain,"").replace(/\./g,"");
-  res.writeHead(301, {"Location": "https://" + domain + "/"+ sub.replace("www","") +req.url.substring(1)});
+  // var host = req.headers.host || "", domain = (host.match(/[^\.]*\.[^.]*$/)||[])[0], sub = host.replace(domain,"").replace(/\./g,"");
+  res.writeHead(301, {"Location": "https://" + req.headers.host + req.url});
   res.end();
 } : app).listen(80);
 
@@ -126,8 +126,6 @@ app.use(function(req, res, next) {
 
       app.set('x-powered-by', false);
       app.set('etag', false);
-    app.disable("x-powered-by");
-
     res.removeHeader("ETag");
 
     app.disable("etag");

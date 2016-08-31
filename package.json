@@ -5,7 +5,7 @@
  "main": "server/server.js",
  "scripts": {
  "start": "nohup forever --minUptime=10 --spinSleepTime=2000 -e ~/server.log -o ~/server.log -a -v -w . >/dev/null 2>&1 &",
- "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db --replSet singleNodeRepl --smallfiles --nojournal --quiet >> ~/mongo.log 2>&1 & ",
+ "mongo": "rm -f db/mongod.lock && nohup mongod --dbpath=db  --smallfiles --nojournal --quiet >> ~/mongo.log 2>&1 & ",
  "stop": "sudo killall -9 node nodejs",
  "setup": "npm install forever -g && sudo setcap cap_net_bind_service=+ep `readlink -f \\`which node\\`` && mv node_modules/mongo-express/config.default.js config.mongo.js",
  "log": "tail -200f ~/debatesynergy/server.log ",
@@ -37,5 +37,5 @@
  "node": ">6.0.0"
  },
  "private": true,
- "license": "CC SA-BY 3.0"
+ "license": "CC SA-BY 4.0"
 }

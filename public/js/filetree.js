@@ -73,13 +73,15 @@ init: function(el, json) {
   //
   //
   //
-  // //update filetree and save every 5s
-  // setInterval(function() {
-  //  // if (typeof(MutationObserver) == "undefined")
-  //   //  ft.updateNeeded = true;
-  //
-  //   ft.update();
-  // }, 20000);
+  //update filetree and save every 5s
+  setInterval(function() {
+   // if (typeof(MutationObserver) == "undefined")
+    //  ft.updateNeeded = true;
+
+    ft.update();
+
+    ft.updateNeeded = false;
+  }, 5000);
 
   //update triggered only when needed
   ft.updateNeeded = false;

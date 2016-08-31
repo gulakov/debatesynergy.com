@@ -53,13 +53,9 @@ app.get(/\/[a-zA-Z0-9]*/, function(req, res, next) {
                // isMobile ? "/public/html/index.mobile.html" :
                 "/public/html/index.html"
 
+  //
+  var minified = '<!DOCTYPE html><title>Debate Synergy | Share online research and stream debates</title><link href=/min/ds.css rel=stylesheet><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.full.min.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js></script><body><script src=/min/ds.js></script></body>'
 
-  var minified =  `<!DOCTYPE html><title>Debate Synergy | Store online research and stream debates</title><link href=/min/ds.css rel=stylesheet><main id=docs></main><script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.full.min.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js></script><script src=user/index.js></script><script src=https://cdn.gitcdn.link/cdn/gulakov/debatesynergy.com/c918eab2632efad179c661162d5f7caedc6b7fc4/public/min/ds.js></script>`;
-
-
-
-
-  var indexHtml = fs.readFileSync(__dirname.replace("/server", "") + indexPath).toString();
 
 
 
@@ -72,7 +68,15 @@ app.get(/\/[a-zA-Z0-9]*/, function(req, res, next) {
 
 
     // if (fileId.length<2)
-      return res.send(minified ) //indexHtml)
+    // return res.send(minified)
+
+
+
+
+      var indexHtml = fs.readFileSync(__dirname.replace("/server", "") + indexPath).toString();
+
+
+      return res.send(indexHtml)
 
 
       /*

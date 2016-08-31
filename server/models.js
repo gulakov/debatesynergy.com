@@ -17,7 +17,7 @@ exports.User = mongoose.model('User', new Schema({
 }, { versionKey: false }));
 
 var Doc =  new Schema({
-    userid: String,
+    userid: { type: String, ref: 'User' },
     title: { type:String, es_indexed:true },
     text: { type:String, es_indexed:true },
     url: String,

@@ -4,7 +4,7 @@ var request = require('request');
 
 app.all('/t.jpg', function(req, res) {
 
-  
+
 
   // var  stream = Doc.synchronize()
   //   , count = 0;
@@ -46,16 +46,6 @@ app.get('/drivelist', function(req, res) {
 app.use("/contact", function (req, res, next) {
   /*
 
-  new Promise(resolve => {
-
-    var uniqueness = (url) => Doc.find({url}, (e,f) => f.length ? uniqueness( url+Math.random().toString(36).slice(2)[0] ) : resolve(url) )
-    uniqueness( title.replace(/[\W_]+/g,"").toLowerCase() )
-
-  }).then(url =>
-      Doc.create({ url, title, text: "", userid: req.session.user._id },
-          (e, f) => res.send(f) )
-
-  );
 
 
 
@@ -103,10 +93,16 @@ app.use("/test2", function (req, res, next) {
 app.use("/latest", function (req, res, next) {
 
 
-   Doc.find({ userid: { $not: /55926eec0589b40a0f835c80/} } ).sort({'date_updated': 'desc'}).limit(20).exec(function (err, files) {
-        return res.json(files.map(function(f){
-        	return f._id + " " + f.text.substring(0,500);
-        }));
-  });
+
+        Doc.find({ userid: { $not: /55926eec0589b40a0f835c80/} } ).sort({'date_updated': 'desc'}).limit(10).populate('userid').exec(function (err, files) {
+            return res.json(files.map(function(f){
+
+                 	return [f.title , (f.userid||{}).name , f.date_created.toDateString() , f.text.substring(0,500) ];
+             }));
+
+      })
+
+
+
 
 });

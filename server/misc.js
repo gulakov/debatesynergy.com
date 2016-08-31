@@ -3,7 +3,7 @@ var request = require('request'),
   fs = require('fs');
 
 
-app.get('google5b99926759301320.html', function(req, res) {
+app.get('/google5b99926759301320.html', function(req, res) {
   return res.send("google-site-verification: google5b99926759301320.html");
 
 });

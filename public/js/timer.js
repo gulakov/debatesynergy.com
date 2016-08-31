@@ -1,6 +1,5 @@
 // Thanks to Mountain Dew and Girl Scout Cookies for the generous donations which made this software possible
 
-$(document).ready(initTimer);
 
 function initTimer(){
 

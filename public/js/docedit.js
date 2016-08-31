@@ -44,6 +44,8 @@
 
 
 function pasteHtmlAtCaret(html) {
+
+
     sel = getSelection()
     range = sel.getRangeAt(0);
     range.deleteContents();
@@ -73,21 +75,37 @@ function pasteHtmlAtCaret(html) {
 
 //EDITOR PASTE SPECIAL -- paste plain text except debate formatting
 //TODO it's all bold if ur in bold place >> smart unformatting
-$(window)[0].addEventListener("paste", function(e) { return;
+$(window)[0].addEventListener("paste", function(e) {
+
+
+
+      var data =  e.clipboardData.getData("text/html") ;
+
+      //
+      // debugger
+      // console.log(data);
+
+
+    // return;
+
     //disable default paste
     e.preventDefault();
 
 
     var data =  e.clipboardData.getData("text/html") || e.clipboardData.getData("text/plain");
 
-    console.log(data);
+    // console.log(data);
+    temp = $("<div>").html(data)
+
+    data = temp.html()
+
 
     data = data.replace(/<u([^>]+)>/gi, 'UNDERLINE_START').replace(/<\/u>/gi, 'UNDERLINE_END')
     data = data.replace(/<b([^>]+)>/gi, 'BOLD_START').replace(/<\/b>/gi, 'BOLD_END')
     data = data.replace(/<p([^>]+)>/gi, 'P_START').replace(/<\/p>/gi, 'P_END')
 
     //remove html tags
-    data=data.replace(/(<([^>]+)>)/ig,'')
+    // data=data.replace(/(<([^>]+)>)/ig,'')
 
     //save debate formatting
     data=data.replace(/P_START/gi, '<p>').replace(/P_END/gi, '</p>')

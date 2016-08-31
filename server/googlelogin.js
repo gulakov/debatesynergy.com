@@ -51,6 +51,7 @@ app.all('/user/auth', function(req, res, next) {
      }
   }, oauth_res => {
 
+
     //refresh available if explicitly requested
     var {access_token, refresh_token} = oauth_res;
 

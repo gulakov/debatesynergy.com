@@ -47,6 +47,9 @@ function loadFile(id, callback) {
   ft.selected = {};
 
 
+  console.time(id)
+
+
   $.ajax({
     xhr: function() {
       //download percentage as the download is in progress
@@ -124,14 +127,12 @@ function loadFile(id, callback) {
     success: function(r) {
 
 
-      console.log(Date.now())
-
-
-
-
       //set as selected doc object and change URL without reloading apge
       ft.selected = r;
       ft.selected.id = ft.selected._id
+
+      //show load time
+      console.timeEnd(id)
 
       if (typeof history.pushState == "undefined") //ie9
         location.hash=ft.selected.id;

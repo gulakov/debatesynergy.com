@@ -66,10 +66,12 @@
 //EDITOR PASTE SPECIAL -- paste plain text except debate formatting
 //TODO it's all bold if ur in bold place >> smart unformatting
 //CARD SELECT - click to select whole card and normalize its font size
-//analytics
-//if user logged in, initiallize settings and index
-// if (nochromeext)
-//init filetree
+// (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+// (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+// m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+// })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+// ga('create', 'UA-79203150-1', 'auto');
+// ga('send', 'pageview');
 //RESOURCE DELAYED LOADER
 // //reset scrolls
 // setInterval(function () { return;
@@ -81,9 +83,6 @@
 // //	window.scrollTo(0,200)
 //
 // }, 2000)
-//URL fileID change to load debate file
-//TODO back fwd overrites hisory non sequential because of push state on back button
-//$(window).trigger('popstate')
 //TODO
 //call in neurons and make it likr https://coggle.it/folder/gallery https://coggle.it/diagram/VzG8jZQ8GiE1azVU
 // "What I cannot create, I do not understand."
@@ -161,7 +160,7 @@ console.log(e),e.length||$(this).parent().remove()}),$("#round").on("blur",".flo
 e.length||$(this).parent().remove()})}window.docShareAlert=function(e){$("#info").append('<div class="alert alert-success alert-dismissable"><button  class="close" data-dismiss="alert">&times;</button>'+e.owner+' has shared "'+e.title+'" with you. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button></div>').on("close.bs.alert",".alert",function(){$.get("/user/notify",{fileId:e.fileId})}).on("click",".btn-primary",function(){ft.click(e.fileId),window.location.pathname="/"+e.fileId})},window.alert=function(e,t,n,i){var o=$('<div class="alert-'+(t||"info")+'">'+(i?"":'<span class="close"></span>')+(e||"")+"</div>")
 return n=n||"#sidebar",$($(n+">.alert-position")[0]||$("<div class='alert-position'>").prependTo(n)).prepend(o),i?o.hide().fadeIn(300).delay(1500).closeAlert():o.find(".close").click(function(){$(this).parent().closeAlert()}),o},jQuery.fn.closeAlert=function(){this.animate({opacity:0,"margin-top":"-50px",display:"none"},"fast").delay(300,function(){this.remove()})},window.roundInviteAlert=function(e){alert("You have been invited into a round with "+e.people+'. <button data-dismiss="alert" class="btn btn-xs btn-primary">Accept</button>',"success").find(".btn-primary").click(function(){r={_id:e.roundId},$.get("/round/accept",{roundId:e.roundId},startRound)})},$(document).ready(function(){setTimeout(function(){$(".modal").css("left",$("#sidebar").width()+35+"px"),$(".modal").each(function(){$(this).prepend('<span class="close">')}),$(".modal-overlay, .close").click(function(e){$(".modal").hide()})},4e3)}),window.chunk=!0,NodeList.prototype.forEach=Array.prototype.forEach
 var ft={init:function(e,t){ft.root=$(e),ft.dragging=!1,ft.selected={},ft.populate(e,t),$("#filetree").on("click","ul,li",ft.click),$("#filetree").on("click","label",function(e){var t=$(this).parent()
-t.toggleClass("collapsed")}),$("#filetree").scroll(function(){this.scrollLeft=0}),$("#filetree").mousemove(function(e){clearTimeout(window.fisheye),window.fisheye=setTimeout(function(){e.originalEvent.clientY>filetree.getBoundingClientRect().bottom-30?(filetree.scrollTop+=15,filetree.style.cursor="s-resize"):e.originalEvent.clientY<filetree.getBoundingClientRect().top+20?(filetree.scrollTop-=15,filetree.style.cursor="n-resize"):filetree.style.cursor="initial"},50)}).mouseleave(function(e){clearTimeout(window.fisheye)}),ft.updateNeeded=!1,$("#docs").keyup(function(e){ft.updateNeeded=!0,$(window.getSelection().anchorNode).closest("h1,h2,h3").length&&(ft.updateNeeded=!0)})},populate:function(e,t){function n(e){var t=""
+t.toggleClass("collapsed")}),$("#filetree").scroll(function(){this.scrollLeft=0}),$("#filetree").mousemove(function(e){clearTimeout(window.fisheye),window.fisheye=setTimeout(function(){e.originalEvent.clientY>filetree.getBoundingClientRect().bottom-30?(filetree.scrollTop+=15,filetree.style.cursor="s-resize"):e.originalEvent.clientY<filetree.getBoundingClientRect().top+20?(filetree.scrollTop-=15,filetree.style.cursor="n-resize"):filetree.style.cursor="initial"},50)}).mouseleave(function(e){clearTimeout(window.fisheye)}),setInterval(function(){ft.update(),ft.updateNeeded=!1},5e3),ft.updateNeeded=!1,$("#docs").keyup(function(e){ft.updateNeeded=!0,$(window.getSelection().anchorNode).closest("h1,h2,h3").length&&(ft.updateNeeded=!0)})},populate:function(e,t){function n(e){var t=""
 for(var i in e){var o=e[i],a=""
 o.type=(o.type||"").replace(/heading /g,"h ").replace(/heading-/g,"").replace(/ft-/g,""),o.children||"file"!=o.type||(o.type="file collapsed"),o.type.indexOf("file")>-1&&(a="<ul draggable class='"+o.type+"' id='"+o.id+"'><label>"+o.title+"</label>"),o.type.search(/h\d/i)>-1&&(a="<li draggable class='"+o.type+"'><label>"+o.title+"</label>"),o.children&&o.children.length&&(a+=n(o.children)),o.type.indexOf("file")>-1&&(a+="</ul>"),o.type.search(/h\d/i)>-1&&(a+="</li>"),t+=a}return t}ft.root&&e[0]&&e[0].id==ft.root[0].id,outputHTML=n(t),e.append(outputHTML)},toJSON:function(e){"undefined"==typeof e&&(e=filetree)
 var t=[]
@@ -183,7 +182,7 @@ var xPos=null,yPos=null
 window.addEventListener("touchmove",function(e){var t=e.touches[0]
 return oldX=xPos,oldY=yPos,xPos=t.pageX,yPos=t.pageY,null==oldX&&null==oldY?!1:Math.abs(oldX-xPos)>Math.abs(oldY-yPos)?(e.preventDefault(),!1):void 0}),$(window).keydown(function(e){83==e.which&&e.ctrlKey&&(e.preventDefault(),ft.update()),e.keyCode>=112&&e.keyCode<120?(e.preventDefault(),$("#controls button")[e.keyCode-112].click()):27==e.keyCode&&$("#searchtext").select2("open")}),$(window).on("beforeunload",function(){})
 var r={}
-$(document).ready(initRoundPanel),initSockets(),$(document).ready(initTimer)
+$(document).ready(initRoundPanel),initSockets()
 var sidebarHtml='<aside id="sidebar"> <div id="controls"> <select id="searchtext"></select> <button id="format-highlight" class="icon-sw-highlighter" title="Highlight underlined read card text"></button> <button id="readcard" title="Read text" class="icon-underline"></button> <button id="block" title="Heading" class="icon-header"></button> <button id="read" title="Bold" class="icon-bold"></button> <button id="format-remove" title="Clear formatting" class="icon-eraser"></button> <button id="showfileinfo" title="File Info &amp; Sharing" class="icon-share"></button> <button id="file-new" title="New File" class="icon-doc-new"></button> <button id="showsettings" title="Settings" class="icon-sliders"></button> <button id="showround" title="Round"></button> <div class="dropdown"> <button class="icon-ellipsis-vert"></button> <div class="dropdown-menu"> <button id="ft-minimize-unread" class="icon-fontsize"> Minimize Unread Text</button> <button id="ft-collapse" class="icon-tree"> Collapse Filetree</button> </div> </div> </div> <div id="filetree"></div> </aside>'
 $(document).ready(function(){$(sidebarHtml).prependTo("body"),$(".btn").click(function(){$(this).blur()}),$("#block").click(function(){var e="h1",t=$(window.getSelection().anchorNode.parentNode).closest("h1")
 t.length>0?t[0].outerHTML=t.html():!document.execCommand("formatBlock",!1,e),document.execCommand("formatBlock",!1,"<"+e+">")}),$("#read").click(function(){document.execCommand("bold")}),$("#readcard").click(function(){document.execCommand("underline")}),$("body").on("mouseup",".highlight-mode",function(e){var t=getSelection().getRangeAt(0).cloneContents()
@@ -206,16 +205,16 @@ var o=parseInt(t.find(".ft-name").attr("id").substring(t.find(".ft-name").attr("
 r.selectNodeContents(l),r.setEnd(c,c.childNodes.length)
 var d=$("<span>")
 d.append(r.extractContents()),console.log(d.html()),s.before(d)}}else $("#filetree > .ft-list > .ft-item:last").after(ft.dragging)
-$(".ft-being-dragged:first").closest(".ft-item").remove(),u.index=ft.toJSON(),ft.updateIndex()}})}),function(e,t,n,i,o,a,s){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,a=t.createElement(n),s=t.getElementsByTagName(n)[0],a.async=1,a.src=i,s.parentNode.insertBefore(a,s)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-79203150-1","auto"),ga("send","pageview"),$(document).ready(function(){function e(e){u.index&&u.index.filter(function(t){return t.id==e}).length&&ft.selected.id!=e?$("#"+e).click():loadFile(decodeURIComponent(e).replace(/[\W]+/g,""))}if(u){var t=$("<style>").appendTo("head")
-t.html(u.custom_css)
-var n=$("<script id='custom_script'>").html(u.custom_js)
-n.appendTo("head"),u.options&&u.options.sidebar&&$("#sidebar").css("max-width",u.options.sidebar+"px"),u.options&&3==u.options.debatetype&&($(".nav-item:has(.nav-link[href='#speech2AC']), .nav-item:has(.nav-link[href='#speech2NC']), .nav-item:has(.nav-link[href='#speech1NR'])").remove(),$(".nav-link[href='#speech1AC']").text("AC"),$(".nav-link[href='#speech1NC']").text("NC"),$(".nav-link[href='#speech2NR']").text("NR"),$("#aff2+span,#neg2+span").hide())
-for(var i in u.notifications)"round_youAreInvited"==u.notifications[i].type?roundInviteAlert(u.notifications[i]):"doc_share"==u.notifications[i].type&&docShareAlert(u.notifications[i])}else $('<button type="submit" id="login">Sign In</button>').prependTo("#sidebar").click(function(){location.href="/login"}),location.pathname.length<2?(o=1,u={index:JSON.parse('[{"id":"manual","title":"Debate Synergy Manual","type":"file selected","children":[{"title":"Welcome to Debate Synergy","type":"h h1"},{"title":"Manual","type":"h h1"},{"title":"Debate Sidebar Word AddIn ","type":"h h1"}]}]')}):u={index:[]}
-$("head").append('<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/noecbaibfhbmpapofcdkgchfifmoinfj">'),"local"==u.index,ft.init($("#filetree"),u.index)
-var o=window.loadResourcesDelay||3e3
-setTimeout(function(){$.get("/html/interface.panels.html",function(e){$("body").append(e),initRoundPanel(),initRoundActions(),initTimer(),initControls(),initFlow(),!u.name&&location.pathname.length<2&&$("#showround").click()})},o),$(window).on("popstate",loadFile)
+$(".ft-being-dragged:first").closest(".ft-item").remove(),u.index=ft.toJSON(),ft.updateIndex()}})}),$("body").prepend('<main id="docs" class="size-mode-1"></main>'),$.getJSON("/user",function(e){function t(t){e.index&&e.index.filter(function(e){return e.id==t}).length&&ft.selected.id!=t?$("#"+t).click():loadFile(decodeURIComponent(t).replace(/[\W]+/g,""))}if(window.u=e,e){var n=$("<style>").appendTo("head")
+n.html(e.custom_css)
+var i=$("<script id='custom_script'>").html(e.custom_js)
+i.appendTo("head"),e.options&&e.options.sidebar&&$("#sidebar").css("max-width",e.options.sidebar+"px"),e.options&&3==e.options.debatetype&&($(".nav-item:has(.nav-link[href='#speech2AC']), .nav-item:has(.nav-link[href='#speech2NC']), .nav-item:has(.nav-link[href='#speech1NR'])").remove(),$(".nav-link[href='#speech1AC']").text("AC"),$(".nav-link[href='#speech1NC']").text("NC"),$(".nav-link[href='#speech2NR']").text("NR"),$("#aff2+span,#neg2+span").hide())
+for(var o in e.notifications)"round_youAreInvited"==e.notifications[o].type?roundInviteAlert(e.notifications[o]):"doc_share"==e.notifications[o].type&&docShareAlert(e.notifications[o])}else $('<button type="submit" id="login">Sign In</button>').prependTo("#sidebar").click(function(){location.href="/login"}),location.pathname.length<2?(loadResourcesDelay=1,e={index:JSON.parse('[{"id":"manual","title":"Debate Synergy Manual","type":"file selected","children":[{"title":"Welcome to Debate Synergy","type":"h h1"},{"title":"Manual","type":"h h1"},{"title":"Debate Sidebar Word AddIn ","type":"h h1"}]}]')}):e={index:[]}
+$("head").append('<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/noecbaibfhbmpapofcdkgchfifmoinfj">'),"local"==e.index,ft.init($("#filetree"),e.index),$(window).on("popstate",loadFile)
 var a=location.pathname.substr(1)
-a&&"#"!=a?e(a):u.name&&"manual"!=u.index[0].id?$(".selected,.opened").length?loadFile($(".selected,.opened").eq(0).attr("id")):$(".file:first").click():($("#manual:first").click(),window.scrollTo(0,0))}),window.chrome&&window.chrome.runtime,1,$(document).ready(initFlow),$(document).ready(function(){$("#searchtext").select2({ajax:{url:"/doc/search",dataType:"json",delay:50,data:function(e){return $("#searchtext").data("term",e.term),{q:e.term}},processResults:function(e,t){var n=t.term.toLowerCase().split(" "),i=u.index,o=u.index.map(function(e){return e.children||[]})
+a&&"#"!=a?t(a):e.name&&"manual"!=e.index[0].id?$(".selected,.opened").length?loadFile($(".selected,.opened").eq(0).attr("id")):$(".file:first").click():($("#manual:first").click(),window.scrollTo(0,0))})
+var loadResourcesDelay=window.loadResourcesDelay||3e3
+setTimeout(function(){$.get("/html/interface.panels.html",function(e){$("body").append(e),initRoundPanel(),initRoundActions(),initTimer(),initControls(),initFlow(),!u.name&&location.pathname.length<2&&$("#showround").click()})},loadResourcesDelay),window.chrome&&window.chrome.runtime,1,$(document).ready(initFlow),$(document).ready(function(){$("#searchtext").select2({ajax:{url:"/doc/search",dataType:"json",delay:50,data:function(e){return $("#searchtext").data("term",e.term),{q:e.term}},processResults:function(e,t){var n=t.term.toLowerCase().split(" "),i=u.index,o=u.index.map(function(e){return e.children||[]})
 for(var a in o)i=i.concat(o[a])
 i=i.map(function(e){return{id:e.id,text:e.title}})
 for(var a in n)i=i.filter(function(e){return e.text.toLowerCase().indexOf(n[a])>-1})

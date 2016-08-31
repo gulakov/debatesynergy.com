@@ -1,3 +1,4 @@
+two sidebars on each side - for index and main shit
 document.elementFromPoint for scrol
 www fwd
 4c tokens
